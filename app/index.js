@@ -1,5 +1,5 @@
 import QrCodeStyling from "qr-code-styling";
-import logo from "./assets/fb_logo.png";
+import logo from "./assets/fb_logo_resized.png";
 
 const qrCode = new QrCodeStyling({
     width: 300,
