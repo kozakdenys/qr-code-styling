@@ -1,139 +1,173 @@
 import qrcode from "qrcode-generator";
+import calculateImageSize from "./tools/calculateImageSize";
+import { getDOMElement } from "./tools/domTools";
+import getMode from "./tools/getMode";
+import mergeDeep from "./tools/merge";
+import errorCorrectLevels from "./constants/errorCorrectLevels";
+import types from "./constants/types";
+import errorCorrectionPercents from "./constants/errorCorrectionPercents";
 
-function guessImageSizeForSide ({ imageWidth, imageHeight, maxPixelsHide, pixelSize, side }) {
-    let hiddenPixelsWidth, hiddenPixelsHeight, imageResizedWidth, imageResizedHeight;
-
-
-    if (side === "x") {
-        hiddenPixelsWidth = Math.floor(Math.sqrt((maxPixelsHide * imageWidth / imageHeight)));
-
-        if (hiddenPixelsWidth % 2 === 0) {
-            hiddenPixelsWidth--;
-        }
-
-        imageResizedWidth = hiddenPixelsWidth * pixelSize;
-        imageResizedHeight = imageResizedWidth * imageHeight / imageWidth;
-        hiddenPixelsHeight = Math.ceil(imageResizedHeight / pixelSize);
-    } else {
-        hiddenPixelsHeight = Math.floor(Math.sqrt((maxPixelsHide * imageHeight / imageWidth)));
-
-        if (hiddenPixelsHeight % 2 === 0) {
-            hiddenPixelsHeight--;
-        }
-
-        imageResizedHeight = hiddenPixelsHeight * pixelSize;
-        imageResizedWidth = imageResizedHeight * imageWidth / imageHeight;
-        hiddenPixelsWidth = Math.ceil(imageResizedWidth / pixelSize);
+const defaultProps = {
+    width: 300,
+    height: 300,
+    qrOptions: {
+        typeNumber: types[0],
+        errorCorrectionLevel: errorCorrectLevels.L,
+    },
+    dotsOptions: {
+        colour: "#000",
+    },
+    backgroundOptions: {
+        colour: "#fff",
     }
+};
 
-    return { hiddenPixelsWidth, hiddenPixelsHeight, imageResizedWidth, imageResizedHeight };
-}
-
-function calculateImageSize (props) {
-    const v1 = guessImageSizeForSide({ ...props, side: "x"});
-    const v2 = guessImageSizeForSide({ ...props, side: "y"});
-
-    if (v1.imageResizedWidth >= v2.imageResizedWidth) {
-        return v1;
-    } else {
-        return v2;
+const defaultImageProps = {
+    qrOptions: {
+        errorCorrectionLevel: errorCorrectLevels.Q,
+    },
+    imageOptions: {
+        hideBackgroundDots: true,
+        imageSize: 0.4
     }
-}
+};
 
 export default class QrCodeStyling {
     constructor(options) {
-        const typeNumber = 4;
-        const errorCorrectionLevel = "H";
+        let mergedOptions;
 
-        this.qr = qrcode(typeNumber, errorCorrectionLevel);
-        this.qr.addData(options.data);
+        if (options.image) {
+            mergedOptions = mergeDeep(defaultProps, defaultImageProps, options);
+        } else {
+            mergedOptions = mergeDeep(defaultProps, options);
+        }
+        this.initialOptions = mergedOptions;
+        this.qr = qrcode(mergedOptions.qrOptions.typeNumber, mergedOptions.qrOptions.errorCorrectionLevel);
+        this.canvas = document.createElement("canvas");
+        this.canvas.width = mergedOptions.width;
+        this.canvas.height = mergedOptions.height;
+
+        if (mergedOptions.data) {
+            this.addData(mergedOptions.data, mergedOptions.qrOptions.mode);
+        }
+    }
+
+    addData(data, mode) {
+        this.qr.addData(data, mode || getMode(data));
         this.qr.make();
+        this.drawQR();
+    }
 
+    drawQR() {
+        const options = this.initialOptions;
+
+        this.drawBackground();
+
+        if (options.image) {
+            this.drawImageAndDots();
+        } else {
+            this.drawDots();
+        }
+    }
+
+    drawBackground() {
+        const canvasContext = this.canvas.getContext("2d");
+        const options = this.initialOptions;
+
+        canvasContext.fillStyle = options.backgroundOptions.colour;
+        canvasContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+
+    drawDots(filter) {
+        const canvasContext = this.canvas.getContext("2d");
+        const options = this.initialOptions;
         const count = this.qr.getModuleCount();
-        const arr = [];
+        const minSize = Math.min(options.width, options.height);
+        const dotSize = Math.floor(minSize / count);
+        const xBeginning = Math.floor((options.width - count * dotSize) / 2);
+        const yBeginning = Math.floor((options.height - count * dotSize) / 2);
 
-        for(let i = 0; i < count;  i++) {
-            if (!arr[i]) {
-                arr[i] = [];
-            }
-            for(let j = 0; j < count;  j++) {
-                arr[i][j] = this.qr.isDark(i, j) ? 1: 0;
-            }
+        if (count > options.width || count > options.height) {
+            throw "The canvas is too small.";
         }
 
-        const baseImage = new Image();
+        for(let i = 0; i < count;  i++) {
+            for(let j = 0; j < count;  j++) {
+                if (filter && !filter(i, j)) {
+                    continue;
+                }
 
-        this.canvas = document.createElement("canvas");
-
-        this.canvas.width = options.width;
-        this.canvas.height = options.height;
-
-        const generatedCanvas = this.canvas.getContext("2d");
-        const minSize = Math.min(options.width, options.height);
-        const pixelSize = Math.floor(minSize / count);
-        const xBeginning = Math.floor((options.width - count * pixelSize) / 2);
-        const yBeginning = Math.floor((options.height - count * pixelSize) / 2);
-        const coverLevel = 0.2;
-
-        baseImage.src = options.image;
-        baseImage.onload = () => {
-            const maxPixelsHide = Math.floor(coverLevel * count * count);
-            const result = calculateImageSize({
-                imageWidth: baseImage.width,
-                imageHeight: baseImage.height,
-                maxPixelsHide,
-                pixelSize
-            });
-
-            generatedCanvas.drawImage(
-                baseImage,
-                xBeginning + (count - result.hiddenPixelsWidth) / 2 * pixelSize,
-                yBeginning + (count - result.hiddenPixelsHeight) / 2 * pixelSize,
-                result.imageResizedWidth,
-                result.imageResizedHeight);
-
-            for(let i = 0; i < count;  i++) {
-                for(let j = 0; j < count;  j++) {
-                    if (
-                        i >= (count - result.hiddenPixelsHeight) / 2
-                        && i < (count + result.hiddenPixelsHeight) / 2
-                        && j >= (count - result.hiddenPixelsWidth) / 2
-                        && j < (count + result.hiddenPixelsWidth) / 2
-                    ) {
-                        continue;
-                    }
-
-                    if (this.qr.isDark(i, j)) {
-                        generatedCanvas.fillRect (xBeginning + i * pixelSize, yBeginning + j * pixelSize, pixelSize, pixelSize);
-                    }
+                if (this.qr.isDark(i, j)) {
+                    canvasContext.fillStyle = options.dotsOptions.colour;
+                    this.drawDot(xBeginning + i * dotSize, yBeginning + j * dotSize, dotSize);
                 }
             }
+        }
+    }
+
+    drawDot(x, y, size) {
+        const canvasContext = this.canvas.getContext("2d");
+        const options = this.initialOptions;
+
+        if (options.dotsOptions.style === "dots") {
+            canvasContext.beginPath();
+            canvasContext.arc(x + size / 2, y + size / 2,size / 2,0,Math.PI*2,true);
+            canvasContext.fill();
+        } else {
+            canvasContext.fillRect(x, y, size, size);
+        }
+    }
+
+    drawImageAndDots() {
+        const canvasContext = this.canvas.getContext("2d");
+        const options = this.initialOptions;
+        const count = this.qr.getModuleCount();
+        const minSize = Math.min(options.width, options.height);
+        const dotSize = Math.floor(minSize / count);
+        const xBeginning = Math.floor((options.width - count * dotSize) / 2);
+        const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+
+        const image = new Image();
+        const coverLevel = options.imageOptions.imageSize * errorCorrectionPercents[options.qrOptions.errorCorrectionLevel];
+
+        image.src = options.image;
+        image.onload = () => {
+            const maxHiddenDots = Math.floor(coverLevel * count * count);
+            const {
+                resizedImageWidth,
+                resizedImageHeight,
+                hiddenDotsWidth,
+                hiddenDotsHeight
+            } = calculateImageSize({
+                originalWidth: image.width,
+                originalHeight: image.height,
+                maxHiddenDots,
+                dotSize
+            });
+
+            this.drawDots((i, j) => {
+                if (!options.imageOptions.hideBackgroundDots) {
+                    return true;
+                }
+                return (
+                    i < (count - hiddenDotsWidth) / 2
+                    || i >= (count + hiddenDotsWidth) / 2
+                    || j < (count - hiddenDotsHeight) / 2
+                    || j >= (count + hiddenDotsHeight) / 2
+                )
+            });
+
+            canvasContext.drawImage(
+                image,
+                xBeginning + (count * dotSize - resizedImageWidth) / 2,
+                yBeginning + (count * dotSize - resizedImageHeight) / 2,
+                resizedImageWidth,
+                resizedImageHeight);
         };
     }
 
     append(selector) {
-        if (!selector) {
-            throw "'selector' is required";
-        }
-
-        if (selector[0] === ".") {
-            const elements = document.getElementsByClassName(selector.substr(1));
-
-            if (elements && elements.length) {
-                elements[0].appendChild(this.canvas);
-            } else {
-                throw "element is not found";
-            }
-        } else if (selector[0] === "#") {
-            const element = document.getElementById(selector.substr(1));
-
-            if (element) {
-                element.appendChild(this.canvas);
-            } else {
-                throw "element is not found";
-            }
-        } else {
-            throw "unknown selector";
-        }
+        getDOMElement(selector).appendChild(this.canvas);
     }
 };

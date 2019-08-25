@@ -8,7 +8,6 @@
     "lib"
   ],
   "dependencies": {
-    "qrcode": "^1.4.1",
     "qrcode-generator": "^1.4.3"
   },
   "devDependencies": {
