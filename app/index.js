@@ -6,7 +6,6 @@ const qrCode = new QrCodeStyling({
     height: 300,
     data: "https://www.facebook.com/",
     image: logo,
-
     qrOptions: {
         // typeNumber: 10,
         // errorCorrectionLevel: "H",

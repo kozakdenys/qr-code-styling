@@ -6,6 +6,7 @@ import mergeDeep from "./tools/merge";
 import errorCorrectLevels from "./constants/errorCorrectLevels";
 import types from "./constants/types";
 import errorCorrectionPercents from "./constants/errorCorrectionPercents";
+import Dot from "./dot";
 
 const defaultProps = {
     width: 300,
@@ -92,6 +93,8 @@ export default class QrCodeStyling {
             throw "The canvas is too small.";
         }
 
+        const dot = new Dot({ context: canvasContext, type: options.dotsOptions.type });
+
         for(let i = 0; i < count;  i++) {
             for(let j = 0; j < count;  j++) {
                 if (filter && !filter(i, j)) {
@@ -100,22 +103,14 @@ export default class QrCodeStyling {
 
                 if (this.qr.isDark(i, j)) {
                     canvasContext.fillStyle = options.dotsOptions.colour;
-                    this.drawDot(xBeginning + i * dotSize, yBeginning + j * dotSize, dotSize);
+                    dot.draw(xBeginning + i * dotSize, yBeginning + j * dotSize, dotSize, (xOffset, yOffset) => {
+                        if (i + xOffset >= 0 && j + yOffset >= 0 && i + xOffset < count && j + yOffset < count) {
+                            if (filter && !filter(i + xOffset, j + yOffset)) return false;
+                            return this.qr.isDark(i + xOffset, j + yOffset);
+                        }
+                    });
                 }
             }
-        }
-    }
-
-    drawDot(x, y, size) {
-        const canvasContext = this.canvas.getContext("2d");
-        const options = this.initialOptions;
-
-        if (options.dotsOptions.style === "dots") {
-            canvasContext.beginPath();
-            canvasContext.arc(x + size / 2, y + size / 2,size / 2,0,Math.PI*2,true);
-            canvasContext.fill();
-        } else {
-            canvasContext.fillRect(x, y, size, size);
         }
     }
 
