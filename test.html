@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling/lib/qr-code-styling.js"></script>
+</head>
+<body>
+<div id="canvas"></div>
+<script type="text/javascript">
+
+    const qrCode = new QrCodeStyling({
+        width: 300,
+        height: 300,
+        data: "https://www.facebook.com/",
+        image: "https://facebookbrand.com/wp-content/themes/fb-branding/assets/images/fb-logo.png?v2",
+        dotsOptions: {
+            colour: "#4267b2",
+            type: "rounded"
+        },
+        backgroundOptions: {
+            colour: "#e9ebee",
+        }
+    });
+
+    qrCode.append("#canvas");
+</script>
+</body>
+</html>

@@ -4,9 +4,9 @@ JavaScript library for generating QR codes with a logo and styling.
 
 ### Examples
 <p float="left">
-<img style="display:inline-block" src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/facebook_example.png" width="270" />
-<img style="display:inline-block" src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/instagram_example.png" width="270" />
-<img style="display:inline-block" src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/telegram_example.png" width="270" />
+<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/app/assets/facebook_example.png" width="270" />
+<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/app/assets/instagram_example.png" width="270" />
+<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/app/assets/telegram_example.png" width="270" />
 </p>
 
 ### Installation
@@ -23,28 +23,28 @@ npm install qr-code-styling
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script type="text/javascript" src="../lib/qr-code-styling.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling/lib/qr-code-styling.js"></script>
 </head>
 <body>
-    <div id="canvas"></div>
-    <script type="text/javascript">
+<div id="canvas"></div>
+<script type="text/javascript">
 
-        const qrCode = new QrCodeStyling({
-            width: 300,
-            height: 300,
-            data: "https://www.facebook.com/",
-            image: "./assets/fb_logo.png",
-            dotsOptions: {
-                colour: "#4267b2",
-                type: "rounded"
-            },
-            backgroundOptions: {
-                colour: "#e9ebee",
-            }
-        });
+    const qrCode = new QrCodeStyling({
+        width: 300,
+        height: 300,
+        data: "https://www.facebook.com/",
+        image: "https://facebookbrand.com/wp-content/themes/fb-branding/assets/images/fb-logo.png?v2",
+        dotsOptions: {
+            colour: "#4267b2",
+            type: "rounded"
+        },
+        backgroundOptions: {
+            colour: "#e9ebee",
+        }
+    });
 
-        qrCode.append("#canvas");
-    </script>
+    qrCode.append("#canvas");
+</script>
 </body>
 </html>
 ```
