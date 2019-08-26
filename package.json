@@ -1,6 +1,6 @@
 {
   "name": "qr-code-styling",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Add a style and an image to your QR code",
   "main": "lib/qr-code-styling.js",
   "module": "src/index.js",
