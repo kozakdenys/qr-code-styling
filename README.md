@@ -3,10 +3,11 @@
 JavaScript library for generating QR codes with a logo and styling.
 
 ### Examples
-
-<img src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/facebook_example.png" width="640" />
-<img src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/instagram_example.png" width="640" />
-<img src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/telegram_example.png" width="640" />
+<p float="left">
+<img style="display:inline-block" src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/facebook_example.png" width="270" />
+<img style="display:inline-block" src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/instagram_example.png" width="270" />
+<img style="display:inline-block" src="https://github.com/kozakdenys/qr-code-styling/blob/master/app/assets/telegram_example.png" width="270" />
+</p>
 
 ### Installation
 
