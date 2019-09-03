@@ -23,7 +23,7 @@ npm install qr-code-styling
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>QR Code Styling</title>
     <script type="text/javascript" src="https://unpkg.com/qr-code-styling/lib/qr-code-styling.js"></script>
 </head>
 <body>
@@ -44,29 +44,76 @@ npm install qr-code-styling
         }
     });
 
-    qrCode.append("#canvas");
+    qrCode.append(document.getElementById("canvas"));
 </script>
 </body>
 </html>
 ```
 
-### API
+### API Documentation
 
-options                          | type                                                   | required | default value
----------------------------------|--------------------------------------------------------|----------|---------------
-`width`                          | `number`                                               |          | 300
-`height`                         | `number`                                               |          | 300
-`data`                           | `string`                                               | true     |
-`image`                          | `string`                                               |          |
-`qrOptions.typeNumber`           | `number` (`0 - 40`)                                    |          | 0
-`qrOptions.mode`                 | `string` (`'Numeric' 'Alphanumeric' 'Byte' 'Kanji'`)   |          |
-`qrOptions.errorCorrectionLevel` | `string` (`'L' 'M' 'Q' 'H'`)                           |          | 'L'
-`imageOptions.hideBackgroundDots`| `boolean`                                              |          | true
-`imageOptions.imageSize`         | `number`                                               |          | 0.4
-`dotsOptions.colour`             | `string`                                               |          | '#000'
-`dotsOptions.type`               | `string`  (`'rounded' 'dots' 'default')                |          | 'default'
-`backgroundOptions.colour`       | `string`                                               |          | '#fff'
+#### QrCodeStyling instance
+`new QrCodeStyling(options) => QrCodeStyling`
+
+Param  |Type  |Description
+-------|------|------------
+options|object|Init object
+
+`options` structure
+
+Property         |Type  |Default Value|Description
+-----------------|------|-------------|-----------------------------------------------------
+width            |number|`300`        |Size of canvas
+height           |number|`300`        |Size of canvas
+data             |string|             |The date will be encoded to the QR code
+image            |string|             |The image will be copied to the center of the QR code
+qrOptions        |object|             |Options will be passed to `qrcode-generator` lib
+imageOptions     |object|             |Specific image options, details see below
+dotsOptions      |object|             |Dots styling options
+backgroundOptions|object|             |QR background styling options
+
+`options.qrOptions` structure
+
+Property            |Type                                              |Default Value
+--------------------|--------------------------------------------------|-------------
+typeNumber          |number (`0 - 40`)                                 |`0`
+mode                |string (`'Numeric' 'Alphanumeric' 'Byte' 'Kanji'`)|
+errorCorrectionLevel|string (`'L' 'M' 'Q' 'H'`)                        |`'Q'`
+
+`options.imageOptions` structure
+
+Property          |Type   |Default Value|Description
+------------------|-------|-------------|------------------------------------------------------------------------------
+hideBackgroundDots|boolean|`true`       |Hide all dots covered by the image
+imageSize         |number |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
+
+`options.dotsOptions` structure
+
+Property|Type                                |Default Value|Description
+--------|------------------------------------|-------------|-----------------
+colour  |string                              |`'#000'`     |Colour of QR dots
+type    |string (`'rounded' 'dots' 'square'`)|`'default'`  |Style of QR dots
+
+`options.backgroundOptions` structure
+
+Property|Type  |Default Value
+--------|------|-------------
+colour  |string|`'#fff'`
+
+#### QrCodeStyling methods
+`QrCodeStyling.append(container) => void`
+
+Param    |Type       |Description
+---------|-----------|-----------
+container|DOM element|This container will be used for appending of the QR code
+
+`QrCodeStyling.update(options) => void`
+
+Param  |Type  |Description
+-------|------|--------------------------------------
+options|object|The same options as for initialization
 
 ### License
 
-MIT
+[MIT License](https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/LICENSE). Copyright (c) 2019 Denys Kozak
+
