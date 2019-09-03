@@ -10,7 +10,7 @@ export default function mergeDeep(target, ...sources) {
     }
 
     if (!isObject(target) || !isObject(source)) {
-        return source;
+        return target;
     }
 
     Object.keys(source).forEach(key => {
