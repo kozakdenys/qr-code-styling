@@ -1,4 +1,4 @@
-export default class Dot {
+export default class QRDot {
     constructor({ context, type }) {
         this.context = context;
         this.type = type;

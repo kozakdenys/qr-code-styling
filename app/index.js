@@ -23,4 +23,4 @@ const qrCode = new QrCodeStyling({
     }
 });
 
-qrCode.append("#canvas");
+qrCode.append(document.getElementById("canvas"));
