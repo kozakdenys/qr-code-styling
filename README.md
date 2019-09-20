@@ -36,11 +36,11 @@ npm install qr-code-styling
         data: "https://www.facebook.com/",
         image: "https://facebookbrand.com/wp-content/themes/fb-branding/assets/images/fb-logo.png?v2",
         dotsOptions: {
-            colour: "#4267b2",
+            color: "#4267b2",
             type: "rounded"
         },
         backgroundOptions: {
-            colour: "#e9ebee",
+            color: "#e9ebee",
         }
     });
 
@@ -91,14 +91,14 @@ imageSize         |number |`0.4`        |Coefficient of the image size. Not reco
 
 Property|Type                                |Default Value|Description
 --------|------------------------------------|-------------|-----------------
-colour  |string                              |`'#000'`     |Colour of QR dots
+color  |string                              |`'#000'`     |Color of QR dots
 type    |string (`'rounded' 'dots' 'square'`)|`'default'`  |Style of QR dots
 
 `options.backgroundOptions` structure
 
 Property|Type  |Default Value
 --------|------|-------------
-colour  |string|`'#fff'`
+color  |string|`'#fff'`
 
 #### QrCodeStyling methods
 `QrCodeStyling.append(container) => void`

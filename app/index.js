@@ -15,11 +15,11 @@ const qrCode = new QrCodeStyling({
         imageSize: 0.4
     },
     dotsOptions: {
-        colour: "#4267b2",
+        color: "#4267b2",
         style: "dots"
     },
     backgroundOptions: {
-        colour: "#e9ebee",
+        color: "#e9ebee",
     }
 });
 

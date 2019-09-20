@@ -21,10 +21,10 @@ const defaultOptions = {
     },
     dotsOptions: {
         type: "square",
-        colour: "#000",
+        color: "#000",
     },
     backgroundOptions: {
-        colour: "#fff",
+        color: "#fff",
     }
 };
 
