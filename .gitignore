@@ -1,9 +1,6 @@
 # IDEA
 .idea
 
-# Build folder
-/dist
-
 # Lib folder
 /lib
 

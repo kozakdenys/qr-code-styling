@@ -1,10 +1,9 @@
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const rootPath = path.resolve(__dirname, "./..");
+const rootPath = path.resolve(__dirname, "./");
 const srcPath = path.resolve(rootPath, "src");
 const libPath = path.resolve(rootPath, "lib");
-const appPath = path.resolve(rootPath, "app");
 
 const config = {
     entry: srcPath + "/index.js",
@@ -19,7 +18,7 @@ const config = {
         rules: [
             {
                 test: /\.js$/,
-                include: appPath,
+                include: libPath,
                 loader: "babel-loader"
             }
         ]

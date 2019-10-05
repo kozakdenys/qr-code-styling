@@ -14,16 +14,13 @@
     "@babel/core": "^7.5.5",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
-    "file-loader": "^4.2.0",
-    "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.8.0"
   },
   "scripts": {
-    "build:lib": "webpack --mode=production --config configs/webpack.config.lib.js",
-    "build:app": "webpack --mode=production --config configs/webpack.config.app.js",
-    "start": "webpack-dev-server --mode=development --open --config configs/webpack.config.app.js"
+    "build": "webpack --mode=production",
+    "build:dev": "webpack --mode=development"
   },
   "repository": {
     "type": "git",
