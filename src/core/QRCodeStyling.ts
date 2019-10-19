@@ -4,7 +4,6 @@ import QRCanvas from "./QRCanvas";
 import defaultOptions, { Options } from "./QROptions";
 import qrcode from "qrcode-generator";
 
-console.log("Adfasdf");
 export default class QRCodeStyling {
   _options: Options;
   _container?: HTMLElement;
