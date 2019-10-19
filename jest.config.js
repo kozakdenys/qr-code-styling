@@ -1,3 +1,5 @@
+const { defaults: tsjPreset } = require("ts-jest/presets");
+
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
@@ -72,11 +74,7 @@ module.exports = {
   moduleFileExtensions: ["ts", "js", "json"],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
-  moduleNameMapper: {
-    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-      "<rootDir>/tests/mocks/fileMock.js",
-    "\\.(css|less)$": "<rootDir>/tests/mocks/styleMock.js"
-  },
+  // moduleNameMapper: {},
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -88,7 +86,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: null,
+  preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: null,
@@ -163,7 +161,7 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.(js|ts)$": "<rootDir>/node_modules/ts-jest"
+    "^.+\\.(js|ts)$": "ts-jest"
   }
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

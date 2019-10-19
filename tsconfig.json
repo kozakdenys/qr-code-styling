@@ -4,7 +4,7 @@
         "sourceMap": true,
         "module": "es6",
         "target": "es5",
-        "allowJs": false,
+        "allowJs": true,
         "moduleResolution": "node",
         "strict": true,
         "noImplicitAny": true,
@@ -16,5 +16,5 @@
         "noUnusedLocals": true,
         "esModuleInterop": true
     },
-    "include": ["./src/**/*", "./tests/**/*"]
+    "include": ["./src/**/*"]
 }
