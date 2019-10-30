@@ -9,7 +9,9 @@ export default class QRCanvas {
   _canvas: HTMLCanvasElement;
   _options: Options;
   _qr?: QRCode;
+  _image?: HTMLImageElement;
 
+  //TODO don't pass all options to this class
   constructor(options: Options) {
     this._canvas = document.createElement("canvas");
     this._canvas.width = options.width;
@@ -41,15 +43,16 @@ export default class QRCanvas {
     }
   }
 
-  drawQR(qr: QRCode): void {
+  drawQR(qr: QRCode): Promise<void> {
     this.clear();
     this.drawBackground();
     this._qr = qr;
 
     if (this._options.image) {
-      this.drawImageAndDots();
+      return this.drawImageAndDots();
     } else {
       this.drawDots();
+      return Promise.resolve();
     }
   }
 
@@ -110,60 +113,66 @@ export default class QRCanvas {
     }
   }
 
-  drawImageAndDots(): void {
-    if (!this._qr) {
-      throw "QR code is not defined";
-    }
+  drawImageAndDots(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this._qr) {
+        return reject("QR code is not defined");
+      }
 
-    const canvasContext = this.context;
+      const canvasContext = this.context;
 
-    if (!canvasContext) {
-      throw "QR code is not defined";
-    }
+      if (!canvasContext) {
+        return reject("QR code is not defined");
+      }
 
-    const options = this._options;
-    const count = this._qr.getModuleCount();
-    const minSize = Math.min(options.width, options.height);
-    const dotSize = Math.floor(minSize / count);
-    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+      const options = this._options;
+      const count = this._qr.getModuleCount();
+      const minSize = Math.min(options.width, options.height);
+      const dotSize = Math.floor(minSize / count);
+      const xBeginning = Math.floor((options.width - count * dotSize) / 2);
+      const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+      const image = new Image();
+      const coverLevel =
+        options.imageOptions.imageSize * errorCorrectionPercents[options.qrOptions.errorCorrectionLevel];
 
-    const image = new Image();
-    const coverLevel = options.imageOptions.imageSize * errorCorrectionPercents[options.qrOptions.errorCorrectionLevel];
+      if (!options.image) {
+        return reject("Image is not defined");
+      }
 
-    if (!options.image) {
-      throw "Image is not defined";
-    }
+      this._image = image;
+      //TODO remove it from this place
+      image.onload = (): void => {
+        const maxHiddenDots = Math.floor(coverLevel * count * count);
+        const { width, height, hideXDots, hideYDots } = calculateImageSize({
+          originalWidth: image.width,
+          originalHeight: image.height,
+          maxHiddenDots,
+          maxHiddenAxisDots: count - 14,
+          dotSize
+        });
 
-    image.src = options.image;
-    image.onload = (): void => {
-      const maxHiddenDots = Math.floor(coverLevel * count * count);
-      const { resizedImageWidth, resizedImageHeight, hiddenDotsWidth, hiddenDotsHeight } = calculateImageSize({
-        originalWidth: image.width,
-        originalHeight: image.height,
-        maxHiddenDots,
-        dotSize
-      });
+        this.drawDots((i: number, j: number): boolean => {
+          if (!options.imageOptions.hideBackgroundDots) {
+            return true;
+          }
+          return (
+            i < (count - hideXDots) / 2 ||
+            i >= (count + hideXDots) / 2 ||
+            j < (count - hideYDots) / 2 ||
+            j >= (count + hideYDots) / 2
+          );
+        });
 
-      this.drawDots((i: number, j: number): boolean => {
-        if (!options.imageOptions.hideBackgroundDots) {
-          return true;
-        }
-        return (
-          i < (count - hiddenDotsWidth) / 2 ||
-          i >= (count + hiddenDotsWidth) / 2 ||
-          j < (count - hiddenDotsHeight) / 2 ||
-          j >= (count + hiddenDotsHeight) / 2
+        canvasContext.drawImage(
+          image,
+          xBeginning + (count * dotSize - width) / 2,
+          yBeginning + (count * dotSize - height) / 2,
+          width,
+          height
         );
-      });
-
-      canvasContext.drawImage(
-        image,
-        xBeginning + (count * dotSize - resizedImageWidth) / 2,
-        yBeginning + (count * dotSize - resizedImageHeight) / 2,
-        resizedImageWidth,
-        resizedImageHeight
-      );
-    };
+        resolve();
+      };
+      image.src = options.image;
+    });
   }
 }
