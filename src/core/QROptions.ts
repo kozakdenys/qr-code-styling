@@ -1,5 +1,5 @@
 import qrTypes from "../constants/qrTypes";
-import errorCorrectLevels from "../constants/errorCorrectLevels";
+import errorCorrectionLevels from "../constants/errorCorrectionLevels";
 
 export type Options = {
   width: number;
@@ -32,7 +32,7 @@ const defaultOptions: Options = {
   qrOptions: {
     typeNumber: qrTypes[0],
     mode: undefined,
-    errorCorrectionLevel: errorCorrectLevels.Q
+    errorCorrectionLevel: errorCorrectionLevels.Q
   },
   imageOptions: {
     hideBackgroundDots: true,

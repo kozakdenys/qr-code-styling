@@ -12,7 +12,7 @@ export default class QRCodeStyling {
 
   constructor(options?: Partial<Options>) {
     this._options = options ? (mergeDeep(defaultOptions, options) as Options) : defaultOptions;
-    this.update();
+    this.update(options);
   }
 
   static _clearContainer(container?: HTMLElement): void {

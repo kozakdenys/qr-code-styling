@@ -12,6 +12,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.4.0",
     "@typescript-eslint/parser": "^2.4.0",
+    "canvas": "^2.6.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^6.2.1",
     "eslint-config-prettier": "^6.1.0",
@@ -19,6 +20,7 @@
     "eslint-plugin-jest": "^22.15.1",
     "eslint-plugin-prettier": "^3.1.0",
     "jest": "^24.9.0",
+    "jest-environment-jsdom-fifteen": "^1.0.0",
     "prettier": "^1.18.2",
     "ts-jest": "^24.0.2",
     "ts-loader": "^6.2.0",

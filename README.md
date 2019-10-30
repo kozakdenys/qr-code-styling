@@ -30,7 +30,7 @@ npm install qr-code-styling
 <div id="canvas"></div>
 <script type="text/javascript">
 
-    const qrCode = new QrCodeStyling({
+    const qrCode = new QRCodeStyling({
         width: 300,
         height: 300,
         data: "https://www.facebook.com/",
@@ -52,8 +52,8 @@ npm install qr-code-styling
 
 ### API Documentation
 
-#### QrCodeStyling instance
-`new QrCodeStyling(options) => QrCodeStyling`
+#### QRCodeStyling instance
+`new QRCodeStyling(options) => QRCodeStyling`
 
 Param  |Type  |Description
 -------|------|------------
@@ -100,14 +100,14 @@ Property|Type  |Default Value
 --------|------|-------------
 color  |string|`'#fff'`
 
-#### QrCodeStyling methods
-`QrCodeStyling.append(container) => void`
+#### QRCodeStyling methods
+`QRCodeStyling.append(container) => void`
 
 Param    |Type       |Description
 ---------|-----------|-----------
 container|DOM element|This container will be used for appending of the QR code
 
-`QrCodeStyling.update(options) => void`
+`QRCodeStyling.update(options) => void`
 
 Param  |Type  |Description
 -------|------|--------------------------------------

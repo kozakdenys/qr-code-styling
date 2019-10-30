@@ -10,7 +10,7 @@ const config = {
   output: {
     path: libPath,
     filename: "qr-code-styling.js",
-    library: "QrCodeStyling",
+    library: "QRCodeStyling",
     libraryTarget: "umd",
     libraryExport: "default"
   },
