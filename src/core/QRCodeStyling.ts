@@ -1,5 +1,6 @@
 import getMode from "../tools/getMode";
 import mergeDeep from "../tools/merge";
+import downloadURI from "../tools/downloadURI";
 import QRCanvas from "./QRCanvas";
 import defaultOptions, { Options } from "./QROptions";
 import qrcode from "qrcode-generator";
@@ -51,5 +52,11 @@ export default class QRCodeStyling {
     }
 
     this._container = container;
+  }
+
+  download(extension?: Extension): void {
+    if (!this._canvas) return;
+    const data = this._canvas.getCanvas().toDataURL(extension ? `image/${extension}` : undefined);
+    downloadURI(data, `qr.${extension || "png"}`);
   }
 }
