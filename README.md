@@ -3,6 +3,7 @@
 
 JavaScript library for generating QR codes with a logo and styling.
 
+If you have issues / suggestions / notes / questions, please make a pull request or contact me. Let's create a usable library together.
 ### Examples
 <p float="left">
 <img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/facebook_example.png" width="240" />
@@ -112,6 +113,12 @@ container|DOM element|This container will be used for appending of the QR code
 Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
+
+`QRCodeStyling.download(extension) => void`
+
+Param    |Type                          |Default Value
+---------|------------------------------|-------------
+extension|string (`'png' 'jpeg' 'webp'`)|`'png'`
 
 ### License
 
