@@ -52,6 +52,7 @@ describe("Test QRCanvas class", () => {
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAQAAAAnOwc2AAAAEUlEQVR42mNk+M+AARiHsiAAcCIKAYwFoQ8AAAAASUVORK5CYII="
     });
     canvas.drawQR(qr);
+    //TODO remove setTimout
     setTimeout(() => {
       canvas._image.onload();
       expect(canvas.getCanvas().toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));
@@ -73,6 +74,7 @@ describe("Test QRCanvas class", () => {
       }
     });
     canvas.drawQR(qr);
+    //TODO remove setTimout
     setTimeout(() => {
       canvas._image.onload();
       expect(canvas.getCanvas().toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));

@@ -23,7 +23,7 @@ export default function calculateImageSize({
   const hideDots = { x: 0, y: 0 };
   const imageSize = { x: 0, y: 0 };
 
-  if (originalHeight <= 0 || originalWidth <= 0 || maxHiddenDots  <= 0 || dotSize  <= 0) {
+  if (originalHeight <= 0 || originalWidth <= 0 || maxHiddenDots <= 0 || dotSize <= 0) {
     return {
       height: 0,
       width: 0,
