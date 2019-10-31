@@ -3,11 +3,12 @@
 
 JavaScript library for generating QR codes with a logo and styling.
 
+If you have issues / suggestions / notes / questions, please make a pull request or contact me. Let's create a usable library together.
 ### Examples
 <p float="left">
-<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/app/assets/facebook_example.png" width="240" />
-<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/app/assets/instagram_example.png" width="240" />
-<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/app/assets/telegram_example.png" width="240" />
+<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/facebook_example.png" width="240" />
+<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/instagram_example.png" width="240" />
+<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/telegram_example.png" width="240" />
 </p>
 
 ### Installation
@@ -30,7 +31,7 @@ npm install qr-code-styling
 <div id="canvas"></div>
 <script type="text/javascript">
 
-    const qrCode = new QrCodeStyling({
+    const qrCode = new QRCodeStyling({
         width: 300,
         height: 300,
         data: "https://www.facebook.com/",
@@ -52,8 +53,8 @@ npm install qr-code-styling
 
 ### API Documentation
 
-#### QrCodeStyling instance
-`new QrCodeStyling(options) => QrCodeStyling`
+#### QRCodeStyling instance
+`new QRCodeStyling(options) => QRCodeStyling`
 
 Param  |Type  |Description
 -------|------|------------
@@ -100,18 +101,24 @@ Property|Type  |Default Value
 --------|------|-------------
 color  |string|`'#fff'`
 
-#### QrCodeStyling methods
-`QrCodeStyling.append(container) => void`
+#### QRCodeStyling methods
+`QRCodeStyling.append(container) => void`
 
 Param    |Type       |Description
 ---------|-----------|-----------
 container|DOM element|This container will be used for appending of the QR code
 
-`QrCodeStyling.update(options) => void`
+`QRCodeStyling.update(options) => void`
 
 Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
+
+`QRCodeStyling.download(extension) => void`
+
+Param    |Type                          |Default Value
+---------|------------------------------|-------------
+extension|string (`'png' 'jpeg' 'webp'`)|`'png'`
 
 ### License
 
