@@ -4,6 +4,7 @@ interface UnknownObject {
 }
 
 type DotType = "dots" | "rounded" | "square";
+type Extension = "png" | "jpeg" | "webp";
 
 interface DotTypes {
   [key: string]: DotType;
