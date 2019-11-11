@@ -2,6 +2,7 @@ import calculateImageSize from "../tools/calculateImageSize";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "./QRDot";
 import { Options } from "./QROptions";
+import { QRCode } from "qrcode-generator-ts";
 
 type FilterFunction = (i: number, j: number) => boolean;
 
