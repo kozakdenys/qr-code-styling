@@ -2,6 +2,8 @@ import calculateImageSize from "../tools/calculateImageSize";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "./QRDot";
 import { Options } from "./QROptions";
+import { QRCode } from "qrcode-generator-ts";
+import QREye from "./QREye";
 
 type FilterFunction = (i: number, j: number) => boolean;
 
@@ -10,6 +12,7 @@ export default class QRCanvas {
   _options: Options;
   _qr?: QRCode;
   _image?: HTMLImageElement;
+  private _positionProbeModules: any = {};
 
   //TODO don't pass all options to this class
   constructor(options: Options) {
@@ -47,6 +50,11 @@ export default class QRCanvas {
     this.clear();
     this.drawBackground();
     this._qr = qr;
+
+    this.setupPositionProbeModules(0, 0);
+    this.setupPositionProbeModules(this._qr.getModuleCount() - 7, 0);
+    this.setupPositionProbeModules(0, this._qr.getModuleCount() - 7);
+    this.drawEyes();
 
     if (this._options.image) {
       return this.drawImageAndDots();
@@ -98,6 +106,10 @@ export default class QRCanvas {
         if (!this._qr.isDark(i, j)) {
           continue;
         }
+        if (i in this._positionProbeModules && j in this._positionProbeModules[i]) {
+          continue;
+        }
+
         canvasContext.fillStyle = options.dotsOptions.color;
         dot.draw(
           xBeginning + i * dotSize,
@@ -174,5 +186,77 @@ export default class QRCanvas {
       };
       image.src = options.image;
     });
+  }
+
+  drawEyes(): void {
+    if (!this._qr) {
+      throw "QR code is not defined";
+    }
+
+    const canvas = this._canvas;
+    const canvasContext = this.context;
+    const options = this._options;
+    const count = this._qr.getModuleCount();
+
+    if (!canvasContext) {
+      throw "QR code is not defined";
+    }
+    if (count > options.width || count > options.height) {
+      throw "The canvas is too small.";
+    }
+
+    const minSize = Math.min(options.width, options.height);
+    const dotSize = Math.floor(minSize / count);
+    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
+    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+
+    const qrEye = new QREye({
+      context: canvasContext,
+      options: options
+    });
+
+    qrEye.draw(xBeginning, yBeginning, dotSize);
+
+    canvasContext.save();
+    canvasContext.translate(canvas.width, 0);
+    canvasContext.scale(-1, 1);
+    qrEye.draw(xBeginning, yBeginning, dotSize);
+    canvasContext.restore();
+
+    canvasContext.save();
+    canvasContext.translate(0, canvas.height);
+    canvasContext.scale(1, -1);
+    qrEye.draw(xBeginning, yBeginning, dotSize);
+    canvasContext.restore();
+  }
+
+  private setupPositionProbeModules(row: number, col: number): void {
+    if (!this._qr) {
+      throw "QR code is not defined";
+    }
+
+    for (let r = -1; r <= 7; r += 1) {
+      for (let c = -1; c <= 7; c += 1) {
+        if (
+          row + r <= -1 ||
+          this._qr.getModuleCount() <= row + r ||
+          col + c <= -1 ||
+          this._qr.getModuleCount() <= col + c
+        ) {
+          continue;
+        }
+
+        if (
+          (0 <= r && r <= 6 && (c == 0 || c == 6)) ||
+          (0 <= c && c <= 6 && (r == 0 || r == 6)) ||
+          (2 <= r && r <= 4 && 2 <= c && c <= 4)
+        ) {
+          if (!(row + r in this._positionProbeModules)) {
+            this._positionProbeModules[row + r] = {};
+          }
+          this._positionProbeModules[row + r][col + c] = true;
+        }
+      }
+    }
   }
 }
