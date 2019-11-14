@@ -3,7 +3,9 @@ interface UnknownObject {
   [key: string]: any;
 }
 
-type DotType = "dots" | "rounded" | "square";
+type DotType = "dots" | "small-dots" | "rounded" | "square";
+type EyeFrameType = 0 | 1 | 2;
+type EyeBallType = 0;
 type Extension = "png" | "jpeg" | "webp";
 
 interface DotTypes {
