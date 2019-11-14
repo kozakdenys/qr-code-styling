@@ -20,6 +20,14 @@ export type Options = {
     type: DotType;
     color: string;
   };
+  eyeFramesOptions: {
+    type: EyeFrameType;
+    color: string;
+  };
+  eyeBallsOptions: {
+    type: EyeBallType;
+    color: string;
+  };
   backgroundOptions: {
     color: string;
   };
@@ -41,6 +49,14 @@ const defaultOptions: Options = {
   },
   dotsOptions: {
     type: "square",
+    color: "#000"
+  },
+  eyeFramesOptions: {
+    type: 0,
+    color: "#000"
+  },
+  eyeBallsOptions: {
+    type: 0,
     color: "#000"
   },
   backgroundOptions: {

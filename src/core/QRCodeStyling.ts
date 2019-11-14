@@ -60,4 +60,8 @@ export default class QRCodeStyling {
     const data = this._canvas.getCanvas().toDataURL(extension ? `image/${extension}` : undefined);
     downloadURI(data, `qr.${extension || "png"}`);
   }
+
+  getQRCanvas(): QRCanvas | undefined {
+    return this._canvas;
+  }
 }
