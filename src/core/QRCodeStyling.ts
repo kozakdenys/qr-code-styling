@@ -10,6 +10,7 @@ export default class QRCodeStyling {
   _container?: HTMLElement;
   _canvas?: QRCanvas;
   _qr?: QRCode;
+  _drawingPromise?: Promise<void>;
 
   constructor(options?: Partial<Options>) {
     this._options = options ? (mergeDeep(defaultOptions, options) as Options) : defaultOptions;
@@ -34,7 +35,7 @@ export default class QRCodeStyling {
     this._qr.addData(this._options.data, this._options.qrOptions.mode || getMode(this._options.data));
     this._qr.make();
     this._canvas = new QRCanvas(this._options);
-    this._canvas.drawQR(this._qr);
+    this._drawingPromise = this._canvas.drawQR(this._qr);
     this.append(this._container);
   }
 
@@ -55,8 +56,13 @@ export default class QRCodeStyling {
   }
 
   download(extension?: Extension): void {
-    if (!this._canvas) return;
-    const data = this._canvas.getCanvas().toDataURL(extension ? `image/${extension}` : undefined);
-    downloadURI(data, `qr.${extension || "png"}`);
+    if (!this._drawingPromise) return;
+
+    this._drawingPromise.then(() => {
+      if (!this._canvas) return;
+
+      const data = this._canvas.getCanvas().toDataURL(extension ? `image/${extension}` : undefined);
+      downloadURI(data, `qr.${extension || "png"}`);
+    });
   }
 }

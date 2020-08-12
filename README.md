@@ -83,16 +83,17 @@ errorCorrectionLevel|string (`'L' 'M' 'Q' 'H'`)                        |`'Q'`
 
 `options.imageOptions` structure
 
-Property          |Type   |Default Value|Description
-------------------|-------|-------------|------------------------------------------------------------------------------
-hideBackgroundDots|boolean|`true`       |Hide all dots covered by the image
-imageSize         |number |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
+Property          |Type                                   |Default Value|Description
+------------------|---------------------------------------|-------------|------------------------------------------------------------------------------
+hideBackgroundDots|boolean                                |`true`       |Hide all dots covered by the image
+imageSize         |number                                 |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
+crossOrigin       |string(`'anonymous' 'use-credentials'`)|             |Set "anonymous" if you want to download QR code from other origins.
 
 `options.dotsOptions` structure
 
 Property|Type                                |Default Value|Description
 --------|------------------------------------|-------------|-----------------
-color  |string                              |`'#000'`     |Color of QR dots
+color   |string                              |`'#000'`     |Color of QR dots
 type    |string (`'rounded' 'dots' 'square'`)|`'default'`  |Style of QR dots
 
 `options.backgroundOptions` structure

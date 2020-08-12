@@ -139,6 +139,10 @@ export default class QRCanvas {
         return reject("Image is not defined");
       }
 
+      if (typeof options.imageOptions.crossOrigin === "string") {
+        image.crossOrigin = options.imageOptions.crossOrigin;
+      }
+
       this._image = image;
       //TODO remove it from this place
       image.onload = (): void => {

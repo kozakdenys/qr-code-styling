@@ -14,6 +14,7 @@ export type Options = {
   imageOptions: {
     hideBackgroundDots: boolean;
     imageSize: number;
+    crossOrigin?: string;
   };
   dotsOptions: {
     type: DotType;
@@ -36,7 +37,8 @@ const defaultOptions: Options = {
   },
   imageOptions: {
     hideBackgroundDots: true,
-    imageSize: 0.4
+    imageSize: 0.4,
+    crossOrigin: undefined
   },
   dotsOptions: {
     type: "square",
