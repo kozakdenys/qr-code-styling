@@ -123,5 +123,5 @@ extension|string (`'png' 'jpeg' 'webp'`)|`'png'`
 
 ### License
 
-[MIT License](https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/LICENSE). Copyright (c) 2019 Denys Kozak
+[MIT License](https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/LICENSE). Copyright (c) 2020 Denys Kozak
 
