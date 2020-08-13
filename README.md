@@ -35,13 +35,16 @@ npm install qr-code-styling
         width: 300,
         height: 300,
         data: "https://www.facebook.com/",
-        image: "https://facebookbrand.com/wp-content/themes/fb-branding/assets/images/fb-logo.png?v2",
+        image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
         dotsOptions: {
             color: "#4267b2",
             type: "rounded"
         },
         backgroundOptions: {
             color: "#e9ebee",
+        },
+        imageOptions: {
+            crossOrigin: "anonymous"
         }
     });
 
