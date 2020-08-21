@@ -118,11 +118,18 @@ Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
 
-`QRCodeStyling.download(extension) => void`
+`QRCodeStyling.download(downloadOptions) => void`
 
-Param    |Type                          |Default Value
----------|------------------------------|-------------
-extension|string (`'png' 'jpeg' 'webp'`)|`'png'`
+Param          |Type  |Description
+---------------|------|------------
+downloadOptions|object|Options with extension and name of file (not required)
+
+`downloadOptions` structure
+
+Property |Type                          |Default Value|Description
+---------|------------------------------|-------------|-----------------------------------------------------
+name     |string                        |`'qr'`       |Name of the downloaded file
+extension|string (`'png' 'jpeg' 'webp'`)|`'png'`      |File extension
 
 ### License
 
