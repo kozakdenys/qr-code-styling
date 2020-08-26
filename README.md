@@ -35,13 +35,16 @@ npm install qr-code-styling
         width: 300,
         height: 300,
         data: "https://www.facebook.com/",
-        image: "https://facebookbrand.com/wp-content/themes/fb-branding/assets/images/fb-logo.png?v2",
+        image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
         dotsOptions: {
             color: "#4267b2",
             type: "rounded"
         },
         backgroundOptions: {
             color: "#e9ebee",
+        },
+        imageOptions: {
+            crossOrigin: "anonymous"
         }
     });
 
@@ -83,16 +86,17 @@ errorCorrectionLevel|string (`'L' 'M' 'Q' 'H'`)                        |`'Q'`
 
 `options.imageOptions` structure
 
-Property          |Type   |Default Value|Description
-------------------|-------|-------------|------------------------------------------------------------------------------
-hideBackgroundDots|boolean|`true`       |Hide all dots covered by the image
-imageSize         |number |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
+Property          |Type                                   |Default Value|Description
+------------------|---------------------------------------|-------------|------------------------------------------------------------------------------
+hideBackgroundDots|boolean                                |`true`       |Hide all dots covered by the image
+imageSize         |number                                 |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
+crossOrigin       |string(`'anonymous' 'use-credentials'`)|             |Set "anonymous" if you want to download QR code from other origins.
 
 `options.dotsOptions` structure
 
 Property|Type                                |Default Value|Description
 --------|------------------------------------|-------------|-----------------
-color  |string                              |`'#000'`     |Color of QR dots
+color   |string                              |`'#000'`     |Color of QR dots
 type    |string (`'rounded' 'dots' 'square'`)|`'default'`  |Style of QR dots
 
 `options.backgroundOptions` structure
@@ -114,13 +118,20 @@ Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
 
-`QRCodeStyling.download(extension) => void`
+`QRCodeStyling.download(downloadOptions) => void`
 
-Param    |Type                          |Default Value
----------|------------------------------|-------------
-extension|string (`'png' 'jpeg' 'webp'`)|`'png'`
+Param          |Type  |Description
+---------------|------|------------
+downloadOptions|object|Options with extension and name of file (not required)
+
+`downloadOptions` structure
+
+Property |Type                          |Default Value|Description
+---------|------------------------------|-------------|-----------------------------------------------------
+name     |string                        |`'qr'`       |Name of the downloaded file
+extension|string (`'png' 'jpeg' 'webp'`)|`'png'`      |File extension
 
 ### License
 
-[MIT License](https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/LICENSE). Copyright (c) 2019 Denys Kozak
+[MIT License](https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/LICENSE). Copyright (c) 2020 Denys Kozak
 
