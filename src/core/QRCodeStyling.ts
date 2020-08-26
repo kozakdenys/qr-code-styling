@@ -1,9 +1,8 @@
-import getMode from "../tools/getMode";
 import mergeDeep from "../tools/merge";
 import downloadURI from "../tools/downloadURI";
 import QRCanvas from "./QRCanvas";
 import defaultOptions, { Options } from "./QROptions";
-import qrcode from "qrcode-generator";
+import { QRCode } from "qrcode-generator-ts";
 
 type DownloadOptions = {
   name?: string;
@@ -36,8 +35,10 @@ export default class QRCodeStyling {
       return;
     }
 
-    this._qr = qrcode(this._options.qrOptions.typeNumber, this._options.qrOptions.errorCorrectionLevel);
-    this._qr.addData(this._options.data, this._options.qrOptions.mode || getMode(this._options.data));
+    this._qr = new QRCode();
+    this._qr.setTypeNumber(this._options.qrOptions.typeNumber);
+    this._qr.setErrorCorrectLevel(this._options.qrOptions.errorCorrectionLevel);
+    this._qr.addData(this._options.data);
     this._qr.make();
     this._canvas = new QRCanvas(this._options);
     this._drawingPromise = this._canvas.drawQR(this._qr);
@@ -87,5 +88,9 @@ export default class QRCodeStyling {
       const data = this._canvas.getCanvas().toDataURL(`image/${extension}`);
       downloadURI(data, `${name}.${extension}`);
     });
+  }
+
+  getQRCanvas(): QRCanvas | undefined {
+    return this._canvas;
   }
 }

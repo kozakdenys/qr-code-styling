@@ -7,7 +7,7 @@
     "lib"
   ],
   "dependencies": {
-    "qrcode-generator": "^1.4.3"
+    "qrcode-generator-ts": "0.0.4"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.4.0",

@@ -1,15 +1,16 @@
-import qrTypes from "../constants/qrTypes";
-import errorCorrectionLevels from "../constants/errorCorrectionLevels";
+import { ErrorCorrectLevel } from "qrcode-generator-ts";
+import { Mode } from "qrcode-generator-ts/js/qrcode/Mode";
+import { QRData } from "qrcode-generator-ts/js/qrcode/QRData";
 
 export type Options = {
   width: number;
   height: number;
-  data?: string;
+  data?: QRData | string;
   image?: string;
   qrOptions: {
-    typeNumber: TypeNumber;
+    typeNumber: number;
     mode?: Mode;
-    errorCorrectionLevel: ErrorCorrectionLevel;
+    errorCorrectionLevel: ErrorCorrectLevel;
   };
   imageOptions: {
     hideBackgroundDots: boolean;
@@ -18,6 +19,14 @@ export type Options = {
   };
   dotsOptions: {
     type: DotType;
+    color: string;
+  };
+  eyeFramesOptions: {
+    type: EyeFrameType;
+    color: string;
+  };
+  eyeBallsOptions: {
+    type: EyeBallType;
     color: string;
   };
   backgroundOptions: {
@@ -31,9 +40,9 @@ const defaultOptions: Options = {
   data: undefined,
   image: undefined,
   qrOptions: {
-    typeNumber: qrTypes[0],
+    typeNumber: 0,
     mode: undefined,
-    errorCorrectionLevel: errorCorrectionLevels.Q
+    errorCorrectionLevel: ErrorCorrectLevel.Q
   },
   imageOptions: {
     hideBackgroundDots: true,
@@ -42,6 +51,14 @@ const defaultOptions: Options = {
   },
   dotsOptions: {
     type: "square",
+    color: "#000"
+  },
+  eyeFramesOptions: {
+    type: 0,
+    color: "#000"
+  },
+  eyeBallsOptions: {
+    type: 0,
     color: "#000"
   },
   backgroundOptions: {
