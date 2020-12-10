@@ -169,10 +169,10 @@ export default class QRCanvas {
 
         canvasContext.drawImage(
           image,
-          xBeginning + (count * dotSize - width) / 2,
-          yBeginning + (count * dotSize - height) / 2,
-          width,
-          height
+          xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2,
+          yBeginning + options.imageOptions.margin + (count * dotSize - height) / 2,
+          width - options.imageOptions.margin * 2,
+          height - options.imageOptions.margin * 2
         );
         resolve();
       };
