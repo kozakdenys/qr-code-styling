@@ -97,7 +97,7 @@ crossOrigin       |string(`'anonymous' 'use-credentials'`)|             |Set "an
 Property|Type                                |Default Value|Description
 --------|------------------------------------|-------------|-----------------
 color   |string                              |`'#000'`     |Color of QR dots
-type    |string (`'rounded' 'dots' 'square'`)|`'default'`  |Style of QR dots
+type    |string (`'rounded' 'dots' 'classy' 'classyround' 'square'`)|`'default'`  |Style of QR dots
 
 `options.backgroundOptions` structure
 

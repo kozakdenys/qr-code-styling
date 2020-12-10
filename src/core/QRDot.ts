@@ -25,6 +25,12 @@ export default class QRDot {
       case "dots":
         drawFunction = this._drawDots;
         break;
+      case "classy":
+        drawFunction = this._drawClassy;
+        break;
+      case "classyround":
+        drawFunction = this._drawClassy2;
+        break;
       case "rounded":
         drawFunction = this._drawRounded;
         break;
@@ -76,6 +82,87 @@ export default class QRDot {
       context.lineTo(x, y + size / 2);
     } else {
       context.arc(x + size / 2, y + size / 2, size / 2, Math.PI / 2, Math.PI);
+    }
+
+    context.fill();
+  }
+
+  _drawClassy({ x, y, size, context, getNeighbor }: DrawFunctionArgs): void {
+    context.beginPath();
+    context.moveTo(x, y + size / 2);
+
+    if (getNeighbor(-1, 0) || getNeighbor(0, -1)) {
+      context.lineTo(x, y);
+      context.lineTo(x + size / 2, y);
+    } else {
+      // Left top
+      context.arc(x + size / 2, y + size / 2, size / 2, -Math.PI, -Math.PI / 2);
+    }
+
+    if (getNeighbor(0, -1) || getNeighbor(1, 0)) {
+      context.lineTo(x + size, y);
+      context.lineTo(x + size, y + size / 2);
+    } else {
+      // right top
+      context.lineTo(x + size, y);
+    }
+
+    if (getNeighbor(1, 0) || getNeighbor(0, 1)) {
+      context.lineTo(x + size, y + size);
+      context.lineTo(x + size / 2, y + size);
+    } else {
+      // Right bottom
+      // context.arc(x, y, size, 0, Math.PI / 2);
+      context.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI / 2);
+    }
+
+    if (getNeighbor(0, 1) || getNeighbor(-1, 0)) {
+      context.lineTo(x, y + size);
+      context.lineTo(x, y + size / 2);
+    } else {
+      // Left bottom
+      context.lineTo(x, y + size);
+      context.lineTo(x, y + size / 2);
+    }
+
+    context.fill();
+  }
+
+  _drawClassy2({ x, y, size, context, getNeighbor }: DrawFunctionArgs): void {
+    context.beginPath();
+    context.moveTo(x, y + size / 2);
+
+    if (getNeighbor(-1, 0) || getNeighbor(0, -1)) {
+      context.lineTo(x, y);
+      context.lineTo(x + size / 2, y);
+    } else {
+      // Left top
+      context.arc(x + size, y + size, size, -Math.PI, -Math.PI / 2);
+    }
+
+    if (getNeighbor(0, -1) || getNeighbor(1, 0)) {
+      context.lineTo(x + size, y);
+      context.lineTo(x + size, y + size / 2);
+    } else {
+      // right top
+      context.lineTo(x + size, y);
+    }
+
+    if (getNeighbor(1, 0) || getNeighbor(0, 1)) {
+      context.lineTo(x + size, y + size);
+      context.lineTo(x + size / 2, y + size);
+    } else {
+      // Right bottom
+      context.arc(x, y, size, 0, Math.PI / 2);
+    }
+
+    if (getNeighbor(0, 1) || getNeighbor(-1, 0)) {
+      context.lineTo(x, y + size);
+      context.lineTo(x, y + size / 2);
+    } else {
+      // Left bottom
+      context.lineTo(x, y + size);
+      context.lineTo(x, y + size / 2);
     }
 
     context.fill();
