@@ -29,7 +29,7 @@ export default class QRDot {
         drawFunction = this._drawClassy;
         break;
       case "classyround":
-        drawFunction = this._drawClassy2;
+        drawFunction = this._drawClassyRound;
         break;
       case "rounded":
         drawFunction = this._drawRounded;
@@ -128,7 +128,7 @@ export default class QRDot {
     context.fill();
   }
 
-  _drawClassy2({ x, y, size, context, getNeighbor }: DrawFunctionArgs): void {
+  _drawClassyRound({ x, y, size, context, getNeighbor }: DrawFunctionArgs): void {
     context.beginPath();
     context.moveTo(x, y + size / 2);
 
