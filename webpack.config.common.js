@@ -5,7 +5,7 @@ const rootPath = path.resolve(__dirname, "./");
 const srcPath = path.resolve(rootPath, "src");
 const libPath = path.resolve(rootPath, "lib");
 
-const config = {
+module.exports = {
   entry: srcPath + "/index.ts",
   output: {
     path: libPath,
@@ -33,19 +33,4 @@ const config = {
   resolve: {
     extensions: [".ts", ".js"]
   }
-};
-
-module.exports = (env, argv) => {
-  if (argv.mode === "development") {
-    config.devtool = "inline-source-map";
-    config.watch = true;
-    config.mode = argv.mode;
-  }
-
-  if (argv.mode === "production") {
-    config.devtool = "source-map";
-    config.mode = argv.mode;
-  }
-
-  return config;
 };
