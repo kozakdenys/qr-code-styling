@@ -44,7 +44,8 @@ npm install qr-code-styling
             color: "#e9ebee",
         },
         imageOptions: {
-            crossOrigin: "anonymous"
+            crossOrigin: "anonymous",
+            margin: 20
         }
     });
 
@@ -90,6 +91,7 @@ Property          |Type                                   |Default Value|Descrip
 ------------------|---------------------------------------|-------------|------------------------------------------------------------------------------
 hideBackgroundDots|boolean                                |`true`       |Hide all dots covered by the image
 imageSize         |number                                 |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
+margin         |number                                 |`0`        |Margin of the image in px
 crossOrigin       |string(`'anonymous' 'use-credentials'`)|             |Set "anonymous" if you want to download QR code from other origins.
 
 `options.dotsOptions` structure
