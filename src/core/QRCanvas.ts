@@ -167,13 +167,12 @@ export default class QRCanvas {
           );
         });
 
-        canvasContext.drawImage(
-          image,
-          xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2,
-          yBeginning + options.imageOptions.margin + (count * dotSize - height) / 2,
-          width - options.imageOptions.margin * 2,
-          height - options.imageOptions.margin * 2
-        );
+        const dx = xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2;
+        const dy = yBeginning + options.imageOptions.margin + (count * dotSize - height) / 2;
+        const dw = width - options.imageOptions.margin * 2;
+        const dh = height - options.imageOptions.margin * 2;
+
+        canvasContext.drawImage(image, dx, dy, dw < 0 ? 0 : dw, dh < 0 ? 0 : dh);
         resolve();
       };
       image.src = options.image;
