@@ -3,7 +3,7 @@ interface UnknownObject {
   [key: string]: any;
 }
 
-type DotType = "dots" | "rounded" | "classy" | "classyround" | "square";
+type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 type Extension = "png" | "jpeg" | "webp";
 
 interface DotTypes {

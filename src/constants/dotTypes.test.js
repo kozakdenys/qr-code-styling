@@ -8,8 +8,4 @@ describe("Dot Types", () => {
   it.each(Object.values(dotTypes))("Values should be strings", value => {
     expect(typeof value).toBe("string");
   });
-
-  it.each(Object.keys(dotTypes))("A key of the object should be the same as a value", key => {
-    expect(key).toBe(dotTypes[key]);
-  });
 });
