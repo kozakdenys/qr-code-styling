@@ -70,8 +70,8 @@ export default class QRDot {
 
     context.translate(cx, cy);
     rotation && context.rotate(rotation);
-    context.beginPath();
     draw();
+    context.closePath();
     rotation && context.rotate(-rotation);
     context.translate(-cx, -cy);
   }
@@ -83,7 +83,6 @@ export default class QRDot {
       ...args,
       draw: () => {
         context.arc(0, 0, size / 2, 0, Math.PI * 2);
-        context.fill();
       }
     });
   }
@@ -95,7 +94,6 @@ export default class QRDot {
       ...args,
       draw: () => {
         context.rect(-size / 2, -size / 2, size, size);
-        context.fill();
       }
     });
   }
@@ -111,7 +109,6 @@ export default class QRDot {
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
         context.lineTo(0, -size / 2);
-        context.fill();
       }
     });
   }
@@ -128,7 +125,6 @@ export default class QRDot {
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
         context.lineTo(0, -size / 2);
-        context.fill();
       }
     });
   }
@@ -143,7 +139,6 @@ export default class QRDot {
         context.arc(-size / 2, size / 2, size, -Math.PI / 2, 0);
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
-        context.fill();
       }
     });
   }
@@ -160,7 +155,6 @@ export default class QRDot {
         context.arc(0, 0, size / 2, Math.PI / 2, Math.PI);
         context.lineTo(-size / 2, -size / 2);
         context.lineTo(0, -size / 2);
-        context.fill();
       }
     });
   }
@@ -173,7 +167,6 @@ export default class QRDot {
       draw: () => {
         context.arc(-size / 2, size / 2, size, -Math.PI / 2, 0);
         context.arc(size / 2, -size / 2, size, Math.PI / 2, Math.PI);
-        context.fill();
       }
     });
   }
@@ -196,10 +189,12 @@ export default class QRDot {
 
     if (neighborsCount === 0) {
       this._basicDot({ x, y, size, context, rotation: 0 });
+      return;
     }
 
     if (neighborsCount > 2 || (leftNeighbor && rightNeighbor) || (topNeighbor && bottomNeighbor)) {
       this._basicSquare({ x, y, size, context, rotation: 0 });
+      return;
     }
 
     if (neighborsCount === 2) {
@@ -214,6 +209,7 @@ export default class QRDot {
       }
 
       this._basicCornerRounded({ x, y, size, context, rotation });
+      return;
     }
 
     if (neighborsCount === 1) {
@@ -228,6 +224,7 @@ export default class QRDot {
       }
 
       this._basicSideRounded({ x, y, size, context, rotation });
+      return;
     }
   }
 
@@ -241,10 +238,12 @@ export default class QRDot {
 
     if (neighborsCount === 0) {
       this._basicDot({ x, y, size, context, rotation: 0 });
+      return;
     }
 
     if (neighborsCount > 2 || (leftNeighbor && rightNeighbor) || (topNeighbor && bottomNeighbor)) {
       this._basicSquare({ x, y, size, context, rotation: 0 });
+      return;
     }
 
     if (neighborsCount === 2) {
@@ -259,6 +258,7 @@ export default class QRDot {
       }
 
       this._basicCornerExtraRounded({ x, y, size, context, rotation });
+      return;
     }
 
     if (neighborsCount === 1) {
@@ -273,6 +273,7 @@ export default class QRDot {
       }
 
       this._basicSideRounded({ x, y, size, context, rotation });
+      return;
     }
   }
 

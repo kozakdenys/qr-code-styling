@@ -60,8 +60,8 @@ export default class QRCornerSquare {
 
     context.translate(cx, cy);
     rotation && context.rotate(rotation);
-    context.beginPath();
     draw();
+    context.closePath();
     rotation && context.rotate(-rotation);
     context.translate(-cx, -cy);
   }
@@ -73,9 +73,8 @@ export default class QRCornerSquare {
     this._rotateFigure({
       ...args,
       draw: () => {
-        context.lineWidth = dotSize;
-        context.arc(0, 0, size / 2 - dotSize / 2, 0, Math.PI * 2);
-        context.stroke();
+        context.arc(0, 0, size / 2, 0, Math.PI * 2);
+        context.arc(0, 0, size / 2 - dotSize, 0, Math.PI * 2);
       }
     });
   }
@@ -87,9 +86,8 @@ export default class QRCornerSquare {
     this._rotateFigure({
       ...args,
       draw: () => {
-        context.lineWidth = dotSize;
-        context.rect(-size / 2 + dotSize / 2, -size / 2 + dotSize / 2, size - dotSize, size - dotSize);
-        context.stroke();
+        context.rect(-size / 2, -size / 2, size, size);
+        context.rect(-size / 2 + dotSize, -size / 2 + dotSize, size - 2 * dotSize, size - 2 * dotSize);
       }
     });
   }
@@ -101,16 +99,23 @@ export default class QRCornerSquare {
     this._rotateFigure({
       ...args,
       draw: () => {
-        context.lineWidth = dotSize;
-        context.arc(-dotSize, -dotSize, 2 * dotSize, Math.PI, -Math.PI / 2);
-        context.lineTo(dotSize, -3 * dotSize);
-        context.arc(dotSize, -dotSize, 2 * dotSize, -Math.PI / 2, 0);
-        context.lineTo(3 * dotSize, -dotSize);
-        context.arc(dotSize, dotSize, 2 * dotSize, 0, Math.PI / 2);
-        context.lineTo(-dotSize, 3 * dotSize);
-        context.arc(-dotSize, dotSize, 2 * dotSize, Math.PI / 2, Math.PI);
-        context.lineTo(-3 * dotSize, -dotSize);
-        context.stroke();
+        context.arc(-dotSize, -dotSize, 2.5 * dotSize, Math.PI, -Math.PI / 2);
+        context.lineTo(dotSize, -3.5 * dotSize);
+        context.arc(dotSize, -dotSize, 2.5 * dotSize, -Math.PI / 2, 0);
+        context.lineTo(3.5 * dotSize, -dotSize);
+        context.arc(dotSize, dotSize, 2.5 * dotSize, 0, Math.PI / 2);
+        context.lineTo(-dotSize, 3.5 * dotSize);
+        context.arc(-dotSize, dotSize, 2.5 * dotSize, Math.PI / 2, Math.PI);
+        context.lineTo(-3.5 * dotSize, -dotSize);
+
+        context.arc(-dotSize, -dotSize, 1.5 * dotSize, Math.PI, -Math.PI / 2);
+        context.lineTo(dotSize, -2.5 * dotSize);
+        context.arc(dotSize, -dotSize, 1.5 * dotSize, -Math.PI / 2, 0);
+        context.lineTo(2.5 * dotSize, -dotSize);
+        context.arc(dotSize, dotSize, 1.5 * dotSize, 0, Math.PI / 2);
+        context.lineTo(-dotSize, 2.5 * dotSize);
+        context.arc(-dotSize, dotSize, 1.5 * dotSize, Math.PI / 2, Math.PI);
+        context.lineTo(-2.5 * dotSize, -dotSize);
       }
     });
   }

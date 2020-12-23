@@ -57,8 +57,8 @@ export default class QRCornerDot {
 
     context.translate(cx, cy);
     rotation && context.rotate(rotation);
-    context.beginPath();
     draw();
+    context.closePath();
     rotation && context.rotate(-rotation);
     context.translate(-cx, -cy);
   }
@@ -70,7 +70,6 @@ export default class QRCornerDot {
       ...args,
       draw: () => {
         context.arc(0, 0, size / 2, 0, Math.PI * 2);
-        context.fill();
       }
     });
   }
@@ -82,7 +81,6 @@ export default class QRCornerDot {
       ...args,
       draw: () => {
         context.rect(-size / 2, -size / 2, size, size);
-        context.fill();
       }
     });
   }

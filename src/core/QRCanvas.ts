@@ -65,16 +65,72 @@ export default class QRCanvas {
     }
   }
 
-  drawQR(qr: QRCode): Promise<void> {
-    this.clear();
-    this.drawBackground();
+  async drawQR(qr: QRCode): Promise<void> {
+    const count = qr.getModuleCount();
+    const minSize = Math.min(this._options.width, this._options.height);
+    const dotSize = Math.floor(minSize / count);
+    let drawImageSize = {
+      hideXDots: 0,
+      hideYDots: 0,
+      width: 0,
+      height: 0
+    };
+
     this._qr = qr;
 
     if (this._options.image) {
-      return this.drawImageAndDots();
-    } else {
-      this.drawDots();
-      return Promise.resolve();
+      await this.loadImage();
+      if (!this._image) return;
+      const { imageOptions, qrOptions } = this._options;
+      const coverLevel = imageOptions.imageSize * errorCorrectionPercents[qrOptions.errorCorrectionLevel];
+      const maxHiddenDots = Math.floor(coverLevel * count * count);
+
+      drawImageSize = calculateImageSize({
+        originalWidth: this._image.width,
+        originalHeight: this._image.height,
+        maxHiddenDots,
+        maxHiddenAxisDots: count - 14,
+        dotSize
+      });
+    }
+
+    this.clear();
+    this.drawBackground();
+    this.drawDots((i: number, j: number): boolean => {
+      if (this._options.imageOptions.hideBackgroundDots) {
+        if (
+          i >= (count - drawImageSize.hideXDots) / 2 &&
+          i < (count + drawImageSize.hideXDots) / 2 &&
+          j >= (count - drawImageSize.hideYDots) / 2 &&
+          j < (count + drawImageSize.hideYDots) / 2
+        ) {
+          return false;
+        }
+      }
+
+      if (this._options.cornersSquareOptions?.type) {
+        if (squareMask[i]?.[j] || squareMask[i - count + 7]?.[j] || squareMask[i]?.[j - count + 7]) {
+          return false;
+        }
+      }
+
+      if (this._options.cornersDotOptions?.type) {
+        if (dotMask[i]?.[j] || dotMask[i - count + 7]?.[j] || dotMask[i]?.[j - count + 7]) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+    this.drawCornersSquare((): boolean => {
+      return !!this._options.cornersSquareOptions?.type;
+    });
+    this.drawCornersDot((): boolean => {
+      return !!this._options.cornersDotOptions?.type;
+    });
+
+    if (this._options.image) {
+      this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
     }
   }
 
@@ -83,7 +139,23 @@ export default class QRCanvas {
     const options = this._options;
 
     if (canvasContext) {
-      canvasContext.fillStyle = options.backgroundOptions.color;
+      if (options.backgroundOptions.gradient) {
+        const gradientOptions = options.backgroundOptions.gradient;
+        const gradient = canvasContext.createLinearGradient(
+          (gradientOptions.start.x * this._canvas.width) / 100,
+          (gradientOptions.start.y * this._canvas.height) / 100,
+          (gradientOptions.end.x * this._canvas.width) / 100,
+          (gradientOptions.end.y * this._canvas.height) / 100
+        );
+
+        gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
+          gradient.addColorStop(offset, color);
+        });
+
+        canvasContext.fillStyle = gradient;
+      } else if (options.backgroundOptions.color) {
+        canvasContext.fillStyle = options.backgroundOptions.color;
+      }
       canvasContext.fillRect(0, 0, this._canvas.width, this._canvas.height);
     }
   }
@@ -112,6 +184,8 @@ export default class QRCanvas {
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
     const dot = new QRDot({ context: canvasContext, type: options.dotsOptions.type });
 
+    canvasContext.beginPath();
+
     for (let i = 0; i < count; i++) {
       for (let j = 0; j < count; j++) {
         if (filter && !filter(i, j)) {
@@ -120,7 +194,6 @@ export default class QRCanvas {
         if (!this._qr.isDark(i, j)) {
           continue;
         }
-        canvasContext.fillStyle = options.dotsOptions.color;
         dot.draw(
           xBeginning + i * dotSize,
           yBeginning + j * dotSize,
@@ -133,6 +206,26 @@ export default class QRCanvas {
         );
       }
     }
+
+    if (options.dotsOptions.gradient) {
+      const gradientOptions = options.dotsOptions.gradient;
+      const gradient = canvasContext.createLinearGradient(
+        (gradientOptions.start.x * count * dotSize) / 100,
+        (gradientOptions.start.y * count * dotSize) / 100,
+        (gradientOptions.end.x * count * dotSize) / 100,
+        (gradientOptions.end.y * count * dotSize) / 100
+      );
+
+      gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
+        gradient.addColorStop(offset, color);
+      });
+
+      canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
+    } else if (options.dotsOptions.color) {
+      canvasContext.fillStyle = canvasContext.strokeStyle = options.dotsOptions.color;
+    }
+
+    canvasContext.fill("evenodd");
   }
 
   drawCornersSquare(filter?: FilterFunction): void {
@@ -149,7 +242,7 @@ export default class QRCanvas {
     const options = this._options;
 
     if (!options.cornersSquareOptions?.type) {
-      throw "Type is not defined";
+      return;
     }
 
     const count = this._qr.getModuleCount();
@@ -168,15 +261,31 @@ export default class QRCanvas {
       if (filter && !filter(i, j)) {
         return;
       }
+      const x = xBeginning + i * dotSize * (count - 7);
+      const y = yBeginning + j * dotSize * (count - 7);
 
-      canvasContext.fillStyle = options.cornersSquareOptions?.color || options.dotsOptions.color;
-      canvasContext.strokeStyle = options.cornersSquareOptions?.color || options.dotsOptions.color;
-      cornersSquare.draw(
-        xBeginning + i * dotSize * (count - 7),
-        yBeginning + j * dotSize * (count - 7),
-        cornersSquareSize,
-        rotation
-      );
+      canvasContext.beginPath();
+      cornersSquare.draw(x, y, cornersSquareSize, rotation);
+
+      if (options.cornersSquareOptions?.gradient) {
+        const gradientOptions = options.cornersSquareOptions.gradient;
+        const gradient = canvasContext.createLinearGradient(
+          (gradientOptions.start.x * cornersSquareSize) / 100 + x,
+          (gradientOptions.start.y * cornersSquareSize) / 100 + y,
+          (gradientOptions.end.x * cornersSquareSize) / 100 + x,
+          (gradientOptions.end.y * cornersSquareSize) / 100 + y
+        );
+
+        gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
+          gradient.addColorStop(offset, color);
+        });
+
+        canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
+      } else if (options.cornersSquareOptions?.color) {
+        canvasContext.fillStyle = canvasContext.strokeStyle = options.cornersSquareOptions.color;
+      }
+
+      canvasContext.fill("evenodd");
     });
   }
 
@@ -194,7 +303,7 @@ export default class QRCanvas {
     const options = this._options;
 
     if (!options.cornersDotOptions?.type) {
-      throw "Type is not defined";
+      return;
     }
 
     const count = this._qr.getModuleCount();
@@ -213,39 +322,38 @@ export default class QRCanvas {
       if (filter && !filter(i, j)) {
         return;
       }
+      const x = xBeginning + dotSize * 2 + i * dotSize * (count - 7);
+      const y = yBeginning + dotSize * 2 + j * dotSize * (count - 7);
 
-      canvasContext.fillStyle = options.cornersDotOptions?.color || options.dotsOptions.color;
-      canvasContext.strokeStyle = options.cornersDotOptions?.color || options.dotsOptions.color;
-      cornersDot.draw(
-        xBeginning + dotSize * 2 + i * dotSize * (count - 7),
-        yBeginning + dotSize * 2 + j * dotSize * (count - 7),
-        cornersDotSize,
-        rotation
-      );
+      canvasContext.beginPath();
+      cornersDot.draw(x, y, cornersDotSize, rotation);
+
+      if (options.cornersDotOptions?.gradient) {
+        const gradientOptions = options.cornersDotOptions.gradient;
+        const gradient = canvasContext.createLinearGradient(
+          (gradientOptions.start.x * cornersDotSize) / 100 + x,
+          (gradientOptions.start.y * cornersDotSize) / 100 + y,
+          (gradientOptions.end.x * cornersDotSize) / 100 + x,
+          (gradientOptions.end.y * cornersDotSize) / 100 + y
+        );
+
+        gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
+          gradient.addColorStop(offset, color);
+        });
+
+        canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
+      } else if (options.cornersDotOptions?.color) {
+        canvasContext.fillStyle = canvasContext.strokeStyle = options.cornersDotOptions.color;
+      }
+
+      canvasContext.fill("evenodd");
     });
   }
 
-  drawImageAndDots(): Promise<void> {
+  loadImage(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this._qr) {
-        return reject("QR code is not defined");
-      }
-
-      const canvasContext = this.context;
-
-      if (!canvasContext) {
-        return reject("QR code is not defined");
-      }
-
       const options = this._options;
-      const count = this._qr.getModuleCount();
-      const minSize = Math.min(options.width, options.height);
-      const dotSize = Math.floor(minSize / count);
-      const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-      const yBeginning = Math.floor((options.height - count * dotSize) / 2);
       const image = new Image();
-      const coverLevel =
-        options.imageOptions.imageSize * errorCorrectionPercents[options.qrOptions.errorCorrectionLevel];
 
       if (!options.image) {
         return reject("Image is not defined");
@@ -256,61 +364,42 @@ export default class QRCanvas {
       }
 
       this._image = image;
-      //TODO remove it from this place
       image.onload = (): void => {
-        const maxHiddenDots = Math.floor(coverLevel * count * count);
-        const { width, height, hideXDots, hideYDots } = calculateImageSize({
-          originalWidth: image.width,
-          originalHeight: image.height,
-          maxHiddenDots,
-          maxHiddenAxisDots: count - 14,
-          dotSize
-        });
-
-        this.drawDots((i: number, j: number): boolean => {
-          if (options.imageOptions.hideBackgroundDots) {
-            if (
-              i >= (count - hideXDots) / 2 &&
-              i < (count + hideXDots) / 2 &&
-              j >= (count - hideYDots) / 2 &&
-              j < (count + hideYDots) / 2
-            ) {
-              return false;
-            }
-          }
-
-          if (options.cornersSquareOptions?.type) {
-            if (squareMask[i]?.[j] || squareMask[i - count + 7]?.[j] || squareMask[i]?.[j - count + 7]) {
-              return false;
-            }
-          }
-
-          if (options.cornersDotOptions?.type) {
-            if (dotMask[i]?.[j] || dotMask[i - count + 7]?.[j] || dotMask[i]?.[j - count + 7]) {
-              return false;
-            }
-          }
-
-          return true;
-        });
-
-        this.drawCornersSquare((): boolean => {
-          return !!options.cornersSquareOptions?.type;
-        });
-
-        this.drawCornersDot((): boolean => {
-          return !!options.cornersDotOptions?.type;
-        });
-
-        const dx = xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2;
-        const dy = yBeginning + options.imageOptions.margin + (count * dotSize - height) / 2;
-        const dw = width - options.imageOptions.margin * 2;
-        const dh = height - options.imageOptions.margin * 2;
-
-        canvasContext.drawImage(image, dx, dy, dw < 0 ? 0 : dw, dh < 0 ? 0 : dh);
         resolve();
       };
       image.src = options.image;
     });
+  }
+
+  drawImage({
+    width,
+    height,
+    count,
+    dotSize
+  }: {
+    width: number;
+    height: number;
+    count: number;
+    dotSize: number;
+  }): void {
+    const canvasContext = this.context;
+
+    if (!canvasContext) {
+      throw "canvasContext is not defined";
+    }
+
+    if (!this._image) {
+      throw "image is not defined";
+    }
+
+    const options = this._options;
+    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
+    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+    const dx = xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2;
+    const dy = yBeginning + options.imageOptions.margin + (count * dotSize - height) / 2;
+    const dw = width - options.imageOptions.margin * 2;
+    const dh = height - options.imageOptions.margin * 2;
+
+    canvasContext.drawImage(this._image, dx, dy, dw < 0 ? 0 : dw, dh < 0 ? 0 : dh);
   }
 }

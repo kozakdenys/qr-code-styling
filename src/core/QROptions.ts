@@ -1,6 +1,21 @@
 import qrTypes from "../constants/qrTypes";
 import errorCorrectionLevels from "../constants/errorCorrectionLevels";
 
+export type Gradient = {
+  start: {
+    x: number;
+    y: number;
+  };
+  end: {
+    x: number;
+    y: number;
+  };
+  colorStops: {
+    offset: number;
+    color: string;
+  }[];
+};
+
 export type Options = {
   width: number;
   height: number;
@@ -19,18 +34,22 @@ export type Options = {
   };
   dotsOptions: {
     type: DotType;
-    color: string;
+    color?: string;
+    gradient?: Gradient;
   };
   cornersSquareOptions?: {
     type?: CornerSquareType;
     color?: string;
+    gradient?: Gradient;
   };
   cornersDotOptions?: {
     type?: CornerDotType;
     color?: string;
+    gradient?: Gradient;
   };
   backgroundOptions: {
-    color: string;
+    color?: string;
+    gradient?: Gradient;
   };
 };
 
