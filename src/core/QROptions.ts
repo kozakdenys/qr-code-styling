@@ -21,6 +21,14 @@ export type Options = {
     type: DotType;
     color: string;
   };
+  cornersSquareOptions?: {
+    type?: CornerSquareType;
+    color?: string;
+  };
+  cornersDotOptions?: {
+    type?: CornerDotType;
+    color?: string;
+  };
   backgroundOptions: {
     color: string;
   };

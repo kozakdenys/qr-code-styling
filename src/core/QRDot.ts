@@ -72,7 +72,6 @@ export default class QRDot {
     rotation && context.rotate(rotation);
     context.beginPath();
     draw();
-    context.fill();
     rotation && context.rotate(-rotation);
     context.translate(-cx, -cy);
   }
@@ -84,6 +83,7 @@ export default class QRDot {
       ...args,
       draw: () => {
         context.arc(0, 0, size / 2, 0, Math.PI * 2);
+        context.fill();
       }
     });
   }
@@ -95,6 +95,7 @@ export default class QRDot {
       ...args,
       draw: () => {
         context.rect(-size / 2, -size / 2, size, size);
+        context.fill();
       }
     });
   }
@@ -110,6 +111,7 @@ export default class QRDot {
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
         context.lineTo(0, -size / 2);
+        context.fill();
       }
     });
   }
@@ -126,6 +128,7 @@ export default class QRDot {
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
         context.lineTo(0, -size / 2);
+        context.fill();
       }
     });
   }
@@ -140,6 +143,7 @@ export default class QRDot {
         context.arc(-size / 2, size / 2, size, -Math.PI / 2, 0);
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
+        context.fill();
       }
     });
   }
@@ -156,6 +160,7 @@ export default class QRDot {
         context.arc(0, 0, size / 2, Math.PI / 2, Math.PI);
         context.lineTo(-size / 2, -size / 2);
         context.lineTo(0, -size / 2);
+        context.fill();
       }
     });
   }
@@ -168,6 +173,7 @@ export default class QRDot {
       draw: () => {
         context.arc(-size / 2, size / 2, size, -Math.PI / 2, 0);
         context.arc(size / 2, -size / 2, size, Math.PI / 2, Math.PI);
+        context.fill();
       }
     });
   }
