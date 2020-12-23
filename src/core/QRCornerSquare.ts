@@ -43,6 +43,9 @@ export default class QRCornerSquare {
       case cornerSquareTypes.square:
         drawFunction = this._drawSquare;
         break;
+      case cornerSquareTypes.extraRounded:
+        drawFunction = this._drawExtraRounded;
+        break;
       case cornerSquareTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -65,12 +68,13 @@ export default class QRCornerSquare {
 
   _basicDot(args: BasicFigureDrawArgs): void {
     const { size, context } = args;
+    const dotSize = size / 7;
 
     this._rotateFigure({
       ...args,
       draw: () => {
-        context.lineWidth = size / 7;
-        context.arc(0, 0, size / 2 - size / 14, 0, Math.PI * 2);
+        context.lineWidth = dotSize;
+        context.arc(0, 0, size / 2 - dotSize / 2, 0, Math.PI * 2);
         context.stroke();
       }
     });
@@ -78,17 +82,34 @@ export default class QRCornerSquare {
 
   _basicSquare(args: BasicFigureDrawArgs): void {
     const { size, context } = args;
+    const dotSize = size / 7;
 
     this._rotateFigure({
       ...args,
       draw: () => {
-        context.lineWidth = size / 7;
-        context.rect(
-          -size / 2 + context.lineWidth / 2,
-          -size / 2 + context.lineWidth / 2,
-          size - context.lineWidth,
-          size - context.lineWidth
-        );
+        context.lineWidth = dotSize;
+        context.rect(-size / 2 + dotSize / 2, -size / 2 + dotSize / 2, size - dotSize, size - dotSize);
+        context.stroke();
+      }
+    });
+  }
+
+  _basicExtraRounded(args: BasicFigureDrawArgs): void {
+    const { size, context } = args;
+    const dotSize = size / 7;
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        context.lineWidth = dotSize;
+        context.arc(-dotSize, -dotSize, 2 * dotSize, Math.PI, -Math.PI / 2);
+        context.lineTo(dotSize, -3 * dotSize);
+        context.arc(dotSize, -dotSize, 2 * dotSize, -Math.PI / 2, 0);
+        context.lineTo(3 * dotSize, -dotSize);
+        context.arc(dotSize, dotSize, 2 * dotSize, 0, Math.PI / 2);
+        context.lineTo(-dotSize, 3 * dotSize);
+        context.arc(-dotSize, dotSize, 2 * dotSize, Math.PI / 2, Math.PI);
+        context.lineTo(-3 * dotSize, -dotSize);
         context.stroke();
       }
     });
@@ -100,5 +121,9 @@ export default class QRCornerSquare {
 
   _drawSquare({ x, y, size, context, rotation }: DrawArgs): void {
     this._basicSquare({ x, y, size, context, rotation });
+  }
+
+  _drawExtraRounded({ x, y, size, context, rotation }: DrawArgs): void {
+    this._basicExtraRounded({ x, y, size, context, rotation });
   }
 }

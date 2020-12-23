@@ -5,7 +5,7 @@ interface UnknownObject {
 
 type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 type CornerDotType = "dot" | "square";
-type CornerSquareType = "dot" | "square";
+type CornerSquareType = "dot" | "square" | "extra-rounded";
 type Extension = "png" | "jpeg" | "webp";
 
 interface DotTypes {
