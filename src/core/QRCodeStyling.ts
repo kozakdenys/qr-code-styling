@@ -3,6 +3,7 @@ import mergeDeep from "../tools/merge";
 import downloadURI from "../tools/downloadURI";
 import QRCanvas from "./QRCanvas";
 import defaultOptions, { Options } from "./QROptions";
+import sanitizeOptions from "../tools/sanitizeOptions";
 import qrcode from "qrcode-generator";
 
 type DownloadOptions = {
@@ -18,7 +19,7 @@ export default class QRCodeStyling {
   _drawingPromise?: Promise<void>;
 
   constructor(options?: Partial<Options>) {
-    this._options = options ? (mergeDeep(defaultOptions, options) as Options) : defaultOptions;
+    this._options = options ? sanitizeOptions(mergeDeep(defaultOptions, options) as Options) : defaultOptions;
     this.update();
   }
 
@@ -30,7 +31,7 @@ export default class QRCodeStyling {
 
   update(options?: Partial<Options>): void {
     QRCodeStyling._clearContainer(this._container);
-    this._options = options ? (mergeDeep(this._options, options) as Options) : this._options;
+    this._options = options ? sanitizeOptions(mergeDeep(this._options, options) as Options) : this._options;
 
     if (!this._options.data) {
       return;
