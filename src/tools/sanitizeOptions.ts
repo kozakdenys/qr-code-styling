@@ -3,29 +3,15 @@ import { Gradient, Options } from "../core/QROptions";
 function sanitizeGradient(gradient: Gradient): Gradient {
   const newGradient = { ...gradient };
 
-  if (!newGradient.start) {
-    throw "Field 'start' is required in gradient";
-  }
-
-  if (!newGradient.end) {
-    throw "Field 'end' is required in gradient";
-  }
-
   if (!newGradient.colorStops || !newGradient.colorStops.length) {
     throw "Field 'colorStops' is required in gradient";
   }
 
-  newGradient.start = {
-    ...newGradient.start,
-    x: Number(newGradient.start.x),
-    y: Number(newGradient.start.y)
-  };
-
-  newGradient.end = {
-    ...newGradient.end,
-    x: Number(newGradient.end.x),
-    y: Number(newGradient.end.y)
-  };
+  if (newGradient.rotation) {
+    newGradient.rotation = Number(newGradient.rotation);
+  } else {
+    newGradient.rotation = 0;
+  }
 
   newGradient.colorStops = newGradient.colorStops.map((colorStop: { offset: number; color: string }) => ({
     ...colorStop,

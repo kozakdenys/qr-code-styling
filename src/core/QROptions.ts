@@ -2,14 +2,8 @@ import qrTypes from "../constants/qrTypes";
 import errorCorrectionLevels from "../constants/errorCorrectionLevels";
 
 export type Gradient = {
-  start: {
-    x: number;
-    y: number;
-  };
-  end: {
-    x: number;
-    y: number;
-  };
+  type: GradientType;
+  rotation?: number;
   colorStops: {
     offset: number;
     color: string;

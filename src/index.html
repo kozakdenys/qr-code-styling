@@ -9,38 +9,10 @@
         <script type="text/javascript">
 
           const qrCode = new QRCodeStyling({
-            width: 700,
-            height: 700,
+            width: 500,
+            height: 500,
             data: "h",
             image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
-            dotsOptions: {
-              type: "extra-rounded",
-              gradient: {
-                start: {x: 0, y: 0},
-                end: {x: 0, y: 100},
-                colorStops: [{
-                  offset: 0,
-                  color: '#1678F2'
-                }, {
-                  offset: 1,
-                  color: '#0003f2'
-                }]
-              },
-            },
-
-            backgroundOptions: {
-              gradient: {
-                start: {x: 0, y: 0},
-                end: {x: 0, y: 100},
-                colorStops: [{
-                  offset: 0,
-                  color: '#bfc1c4'
-                }, {
-                  offset: 1,
-                  color: '#ffffff'
-                }]
-              },
-            },
             imageOptions: {
               crossOrigin: "anonymous",
               margin: 30

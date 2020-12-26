@@ -3,7 +3,8 @@ import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "./QRDot";
 import QRCornerSquare from "./QRCornerSquare";
 import QRCornerDot from "./QRCornerDot";
-import { Options } from "./QROptions";
+import { Options, Gradient } from "./QROptions";
+import gradientTypes from "../constants/gradientTypes";
 
 type FilterFunction = (i: number, j: number) => boolean;
 
@@ -108,26 +109,18 @@ export default class QRCanvas {
         }
       }
 
-      if (this._options.cornersSquareOptions?.type) {
-        if (squareMask[i]?.[j] || squareMask[i - count + 7]?.[j] || squareMask[i]?.[j - count + 7]) {
-          return false;
-        }
+      if (squareMask[i]?.[j] || squareMask[i - count + 7]?.[j] || squareMask[i]?.[j - count + 7]) {
+        return false;
       }
 
-      if (this._options.cornersDotOptions?.type) {
-        if (dotMask[i]?.[j] || dotMask[i - count + 7]?.[j] || dotMask[i]?.[j - count + 7]) {
-          return false;
-        }
+      if (dotMask[i]?.[j] || dotMask[i - count + 7]?.[j] || dotMask[i]?.[j - count + 7]) {
+        return false;
       }
 
       return true;
     });
-    this.drawCornersSquare((): boolean => {
-      return !!this._options.cornersSquareOptions?.type;
-    });
-    this.drawCornersDot((): boolean => {
-      return !!this._options.cornersDotOptions?.type;
-    });
+    this.drawCornersSquare();
+    this.drawCornersDot();
 
     if (this._options.image) {
       this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
@@ -141,12 +134,14 @@ export default class QRCanvas {
     if (canvasContext) {
       if (options.backgroundOptions.gradient) {
         const gradientOptions = options.backgroundOptions.gradient;
-        const gradient = canvasContext.createLinearGradient(
-          (gradientOptions.start.x * this._canvas.width) / 100,
-          (gradientOptions.start.y * this._canvas.height) / 100,
-          (gradientOptions.end.x * this._canvas.width) / 100,
-          (gradientOptions.end.y * this._canvas.height) / 100
-        );
+        const gradient = this._createGradient({
+          context: canvasContext,
+          options: gradientOptions,
+          additionalRotation: 0,
+          x: 0,
+          y: 0,
+          size: this._canvas.width > this._canvas.height ? this._canvas.width : this._canvas.height
+        });
 
         gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
           gradient.addColorStop(offset, color);
@@ -209,12 +204,14 @@ export default class QRCanvas {
 
     if (options.dotsOptions.gradient) {
       const gradientOptions = options.dotsOptions.gradient;
-      const gradient = canvasContext.createLinearGradient(
-        (gradientOptions.start.x * count * dotSize) / 100,
-        (gradientOptions.start.y * count * dotSize) / 100,
-        (gradientOptions.end.x * count * dotSize) / 100,
-        (gradientOptions.end.y * count * dotSize) / 100
-      );
+      const gradient = this._createGradient({
+        context: canvasContext,
+        options: gradientOptions,
+        additionalRotation: 0,
+        x: xBeginning,
+        y: yBeginning,
+        size: count * dotSize
+      });
 
       gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
         gradient.addColorStop(offset, color);
@@ -241,40 +238,61 @@ export default class QRCanvas {
 
     const options = this._options;
 
-    if (!options.cornersSquareOptions?.type) {
-      return;
-    }
-
     const count = this._qr.getModuleCount();
     const minSize = Math.min(options.width, options.height);
     const dotSize = Math.floor(minSize / count);
     const cornersSquareSize = dotSize * 7;
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
-    const cornersSquare = new QRCornerSquare({ context: canvasContext, type: options.cornersSquareOptions?.type });
 
     [
       [0, 0, 0],
       [1, 0, Math.PI / 2],
       [0, 1, -Math.PI / 2]
-    ].forEach(([i, j, rotation]) => {
-      if (filter && !filter(i, j)) {
+    ].forEach(([column, row, rotation]) => {
+      if (filter && !filter(column, row)) {
         return;
       }
-      const x = xBeginning + i * dotSize * (count - 7);
-      const y = yBeginning + j * dotSize * (count - 7);
 
-      canvasContext.beginPath();
-      cornersSquare.draw(x, y, cornersSquareSize, rotation);
+      const x = xBeginning + column * dotSize * (count - 7);
+      const y = yBeginning + row * dotSize * (count - 7);
+
+      if (options.cornersSquareOptions?.type) {
+        const cornersSquare = new QRCornerSquare({ context: canvasContext, type: options.cornersSquareOptions?.type });
+
+        canvasContext.beginPath();
+        cornersSquare.draw(x, y, cornersSquareSize, rotation);
+      } else {
+        const dot = new QRDot({ context: canvasContext, type: options.dotsOptions.type });
+
+        canvasContext.beginPath();
+
+        for (let i = 0; i < squareMask.length; i++) {
+          for (let j = 0; j < squareMask[i].length; j++) {
+            if (!squareMask[i]?.[j]) {
+              continue;
+            }
+
+            dot.draw(
+              x + i * dotSize,
+              y + j * dotSize,
+              dotSize,
+              (xOffset: number, yOffset: number): boolean => !!squareMask[i + xOffset]?.[j + yOffset]
+            );
+          }
+        }
+      }
 
       if (options.cornersSquareOptions?.gradient) {
         const gradientOptions = options.cornersSquareOptions.gradient;
-        const gradient = canvasContext.createLinearGradient(
-          (gradientOptions.start.x * cornersSquareSize) / 100 + x,
-          (gradientOptions.start.y * cornersSquareSize) / 100 + y,
-          (gradientOptions.end.x * cornersSquareSize) / 100 + x,
-          (gradientOptions.end.y * cornersSquareSize) / 100 + y
-        );
+        const gradient = this._createGradient({
+          context: canvasContext,
+          options: gradientOptions,
+          additionalRotation: rotation,
+          x,
+          y,
+          size: cornersSquareSize
+        });
 
         gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
           gradient.addColorStop(offset, color);
@@ -301,41 +319,56 @@ export default class QRCanvas {
     }
 
     const options = this._options;
-
-    if (!options.cornersDotOptions?.type) {
-      return;
-    }
-
     const count = this._qr.getModuleCount();
     const minSize = Math.min(options.width, options.height);
     const dotSize = Math.floor(minSize / count);
     const cornersDotSize = dotSize * 3;
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
-    const cornersDot = new QRCornerDot({ context: canvasContext, type: options.cornersDotOptions?.type });
 
     [
       [0, 0, 0],
       [1, 0, Math.PI / 2],
       [0, 1, -Math.PI / 2]
-    ].forEach(([i, j, rotation]) => {
-      if (filter && !filter(i, j)) {
+    ].forEach(([column, row, rotation]) => {
+      if (filter && !filter(column, row)) {
         return;
       }
-      const x = xBeginning + dotSize * 2 + i * dotSize * (count - 7);
-      const y = yBeginning + dotSize * 2 + j * dotSize * (count - 7);
+      const x = xBeginning + dotSize * 2 + column * dotSize * (count - 7);
+      const y = yBeginning + dotSize * 2 + row * dotSize * (count - 7);
 
-      canvasContext.beginPath();
-      cornersDot.draw(x, y, cornersDotSize, rotation);
+      if (options.cornersDotOptions?.type) {
+        const cornersDot = new QRCornerDot({ context: canvasContext, type: options.cornersDotOptions?.type });
+
+        canvasContext.beginPath();
+        cornersDot.draw(x, y, cornersDotSize, rotation);
+      } else {
+        const dot = new QRDot({ context: canvasContext, type: options.dotsOptions.type });
+
+        canvasContext.beginPath();
+
+        for (let i = 0; i < 3; i++) {
+          for (let j = 0; j < 3; j++) {
+            dot.draw(
+              x + i * dotSize,
+              y + j * dotSize,
+              dotSize,
+              (xOffset: number, yOffset: number): boolean => !!dotMask[i + xOffset]?.[j + yOffset]
+            );
+          }
+        }
+      }
 
       if (options.cornersDotOptions?.gradient) {
         const gradientOptions = options.cornersDotOptions.gradient;
-        const gradient = canvasContext.createLinearGradient(
-          (gradientOptions.start.x * cornersDotSize) / 100 + x,
-          (gradientOptions.start.y * cornersDotSize) / 100 + y,
-          (gradientOptions.end.x * cornersDotSize) / 100 + x,
-          (gradientOptions.end.y * cornersDotSize) / 100 + y
-        );
+        const gradient = this._createGradient({
+          context: canvasContext,
+          options: gradientOptions,
+          additionalRotation: rotation,
+          x,
+          y,
+          size: cornersDotSize
+        });
 
         gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
           gradient.addColorStop(offset, color);
@@ -401,5 +434,70 @@ export default class QRCanvas {
     const dh = height - options.imageOptions.margin * 2;
 
     canvasContext.drawImage(this._image, dx, dy, dw < 0 ? 0 : dw, dh < 0 ? 0 : dh);
+  }
+
+  _createGradient({
+    context,
+    options,
+    additionalRotation,
+    x,
+    y,
+    size
+  }: {
+    context: CanvasRenderingContext2D;
+    options: Gradient;
+    additionalRotation: number;
+    x: number;
+    y: number;
+    size: number;
+  }): CanvasGradient {
+    let gradient;
+
+    if (options.type === gradientTypes.radial) {
+      gradient = context.createRadialGradient(
+        x + size / 2,
+        y + size / 2,
+        0,
+        x + size / 2,
+        y + size / 2,
+        Math.sqrt(size * size * 1.25)
+      );
+    } else {
+      const rotation = ((options.rotation || 0) + additionalRotation) % (2 * Math.PI);
+      const positiveRotation = (rotation + 2 * Math.PI) % (2 * Math.PI);
+      let x0 = x + size / 2;
+      let y0 = y + size / 2;
+      let x1 = x + size / 2;
+      let y1 = y + size / 2;
+
+      if (
+        (positiveRotation >= 0 && positiveRotation <= 0.25 * Math.PI) ||
+        (positiveRotation > 1.75 * Math.PI && positiveRotation <= 2 * Math.PI)
+      ) {
+        x0 = x0 - size / 2;
+        y0 = y0 - (size / 2) * Math.tan(rotation);
+        x1 = x1 + size / 2;
+        y1 = y1 + (size / 2) * Math.tan(rotation);
+      } else if (positiveRotation > 0.25 * Math.PI && positiveRotation <= 0.75 * Math.PI) {
+        y0 = y0 - size / 2;
+        x0 = x0 - size / 2 / Math.tan(rotation);
+        y1 = y1 + size / 2;
+        x1 = x1 + size / 2 / Math.tan(rotation);
+      } else if (positiveRotation > 0.75 * Math.PI && positiveRotation <= 1.25 * Math.PI) {
+        x0 = x0 + size / 2;
+        y0 = y0 + (size / 2) * Math.tan(rotation);
+        x1 = x1 - size / 2;
+        y1 = y1 - (size / 2) * Math.tan(rotation);
+      } else if (positiveRotation > 1.25 * Math.PI && positiveRotation <= 1.75 * Math.PI) {
+        y0 = y0 + size / 2;
+        x0 = x0 + size / 2 / Math.tan(rotation);
+        y1 = y1 - size / 2;
+        x1 = x1 - size / 2 / Math.tan(rotation);
+      }
+
+      gradient = context.createLinearGradient(Math.round(x0), Math.round(y0), Math.round(x1), Math.round(y1));
+    }
+
+    return gradient;
   }
 }
