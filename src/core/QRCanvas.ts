@@ -119,8 +119,7 @@ export default class QRCanvas {
 
       return true;
     });
-    this.drawCornersSquare();
-    this.drawCornersDot();
+    this.drawCorners();
 
     if (this._options.image) {
       this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
@@ -225,7 +224,7 @@ export default class QRCanvas {
     canvasContext.fill("evenodd");
   }
 
-  drawCornersSquare(filter?: FilterFunction): void {
+  drawCorners(filter?: FilterFunction): void {
     if (!this._qr) {
       throw "QR code is not defined";
     }
@@ -242,6 +241,7 @@ export default class QRCanvas {
     const minSize = Math.min(options.width, options.height);
     const dotSize = Math.floor(minSize / count);
     const cornersSquareSize = dotSize * 7;
+    const cornersDotSize = dotSize * 3;
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
 
@@ -304,51 +304,23 @@ export default class QRCanvas {
       }
 
       canvasContext.fill("evenodd");
-    });
-  }
-
-  drawCornersDot(filter?: FilterFunction): void {
-    if (!this._qr) {
-      throw "QR code is not defined";
-    }
-
-    const canvasContext = this.context;
-
-    if (!canvasContext) {
-      throw "QR code is not defined";
-    }
-
-    const options = this._options;
-    const count = this._qr.getModuleCount();
-    const minSize = Math.min(options.width, options.height);
-    const dotSize = Math.floor(minSize / count);
-    const cornersDotSize = dotSize * 3;
-    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
-
-    [
-      [0, 0, 0],
-      [1, 0, Math.PI / 2],
-      [0, 1, -Math.PI / 2]
-    ].forEach(([column, row, rotation]) => {
-      if (filter && !filter(column, row)) {
-        return;
-      }
-      const x = xBeginning + dotSize * 2 + column * dotSize * (count - 7);
-      const y = yBeginning + dotSize * 2 + row * dotSize * (count - 7);
 
       if (options.cornersDotOptions?.type) {
         const cornersDot = new QRCornerDot({ context: canvasContext, type: options.cornersDotOptions?.type });
 
         canvasContext.beginPath();
-        cornersDot.draw(x, y, cornersDotSize, rotation);
+        cornersDot.draw(x + dotSize * 2, y + dotSize * 2, cornersDotSize, rotation);
       } else {
         const dot = new QRDot({ context: canvasContext, type: options.dotsOptions.type });
 
         canvasContext.beginPath();
 
-        for (let i = 0; i < 3; i++) {
-          for (let j = 0; j < 3; j++) {
+        for (let i = 0; i < dotMask.length; i++) {
+          for (let j = 0; j < dotMask[i].length; j++) {
+            if (!dotMask[i]?.[j]) {
+              continue;
+            }
+
             dot.draw(
               x + i * dotSize,
               y + j * dotSize,

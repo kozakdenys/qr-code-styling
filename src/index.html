@@ -13,6 +13,22 @@
             height: 500,
             data: "h",
             image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+            dotsOptions: {
+              type: "rounded"
+            },
+            cornersSquareOptions: {
+              gradient: {
+                type: "linear",
+                rotation: Math.PI * 0.2,
+                colorStops: [{
+                  offset: 0,
+                  color: 'blue'
+                }, {
+                  offset: 1,
+                  color: 'red'
+                }]
+              },
+            },
             imageOptions: {
               crossOrigin: "anonymous",
               margin: 30
