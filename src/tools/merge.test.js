@@ -25,7 +25,7 @@ describe("Test getMode function", () => {
     expect(mergeDeep(simpleObject, { str: "bar" })).toEqual({ str: "bar" });
   });
   it("Merge two objects with arrays", () => {
-    expect(mergeDeep(objectWithArray, { arr: [3, 4] })).toEqual({ arr: [1, 2, 3, 4] });
+    expect(mergeDeep(objectWithArray, { arr: [3, 4] })).toEqual({ arr: [3, 4] });
   });
   it("Merge two objects with nested objects", () => {
     expect(mergeDeep(nestedObject, { obj: { bar: "bar" } })).toEqual({ obj: { foo: "foo", bar: "bar" } });
@@ -34,7 +34,7 @@ describe("Test getMode function", () => {
     expect(mergeDeep(nestedObjectWithArray, nestedObject, { obj: { arr: [3, 4] } })).toEqual({
       obj: {
         foo: "foo",
-        arr: [1, 2, 3, 4]
+        arr: [3, 4]
       }
     });
   });

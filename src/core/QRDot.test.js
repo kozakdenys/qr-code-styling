@@ -17,6 +17,7 @@ describe("Test QRDot class", () => {
     canvasContext.fillStyle = "#fff";
     canvasContext.fillRect(0, 0, canvasSize, canvasSize);
     canvasContext.fillStyle = "#000";
+    canvasContext.beginPath();
   });
 
   afterEach(() => {
@@ -28,6 +29,7 @@ describe("Test QRDot class", () => {
     const imgFile = fs.readFileSync(path.resolve(__dirname, "../assets/test/simple_square_dot.png"), "base64");
     const dot = new QRDot({ context: canvasContext, type: "square" });
     dot.draw(dotSize / 2, dotSize / 2, dotSize, () => false);
+    canvasContext.fill("evenodd");
 
     expect(canvas.toDataURL()).toEqual(expect.stringContaining(imgFile));
   });
@@ -38,6 +40,7 @@ describe("Test QRDot class", () => {
     const dot = new QRDot({ context: canvasContext, type: "dots" });
     dot.draw(10, 30, dotSize, () => false);
     dot.draw(50, 30, dotSize, () => false);
+    canvasContext.fill("evenodd");
 
     expect(canvas.toDataURL()).toEqual(expect.stringContaining(imgFile));
   });
@@ -67,6 +70,7 @@ describe("Test QRDot class", () => {
         });
       }
     }
+    canvasContext.fill("evenodd");
 
     expect(canvas.toDataURL()).toEqual(expect.stringContaining(imgFile));
   });
