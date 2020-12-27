@@ -7,7 +7,7 @@ If you have issues / suggestions / notes / questions, please open an issue or co
 ### Examples
 <p float="left">
 <img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/facebook_example.png" width="240" />
-<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/instagram_example.png" width="240" />
+<img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/qr_code_example.png" width="240" />
 <img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/telegram_example.png" width="240" />
 </p>
 
