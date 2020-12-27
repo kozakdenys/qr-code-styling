@@ -19,6 +19,8 @@ export default class QRCodeStyling {
   _drawingPromise?: Promise<void>;
 
   constructor(options?: Partial<Options>) {
+    console.log(options);
+
     this._options = options ? sanitizeOptions(mergeDeep(defaultOptions, options) as Options) : defaultOptions;
     this.update();
   }
@@ -32,6 +34,7 @@ export default class QRCodeStyling {
   update(options?: Partial<Options>): void {
     QRCodeStyling._clearContainer(this._container);
     this._options = options ? sanitizeOptions(mergeDeep(this._options, options) as Options) : this._options;
+    console.log(this._options);
 
     if (!this._options.data) {
       return;

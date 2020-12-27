@@ -10,7 +10,7 @@ export default function mergeDeep(target: UnknownObject, ...sources: UnknownObje
     const sourceValue = source[key];
 
     if (Array.isArray(targetValue) && Array.isArray(sourceValue)) {
-      target[key] = targetValue.concat(sourceValue);
+      target[key] = sourceValue;
     } else if (isObject(targetValue) && isObject(sourceValue)) {
       target[key] = mergeDeep(Object.assign({}, targetValue), sourceValue);
     } else {

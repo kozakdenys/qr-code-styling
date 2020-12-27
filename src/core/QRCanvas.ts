@@ -337,8 +337,8 @@ export default class QRCanvas {
           context: canvasContext,
           options: gradientOptions,
           additionalRotation: rotation,
-          x,
-          y,
+          x: x + dotSize * 2,
+          y: y + dotSize * 2,
           size: cornersDotSize
         });
 
@@ -426,14 +426,7 @@ export default class QRCanvas {
     let gradient;
 
     if (options.type === gradientTypes.radial) {
-      gradient = context.createRadialGradient(
-        x + size / 2,
-        y + size / 2,
-        0,
-        x + size / 2,
-        y + size / 2,
-        Math.sqrt(size * size * 1.25)
-      );
+      gradient = context.createRadialGradient(x + size / 2, y + size / 2, 0, x + size / 2, y + size / 2, size / 2);
     } else {
       const rotation = ((options.rotation || 0) + additionalRotation) % (2 * Math.PI);
       const positiveRotation = (rotation + 2 * Math.PI) % (2 * Math.PI);
