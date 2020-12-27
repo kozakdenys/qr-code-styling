@@ -19,7 +19,7 @@ If you have issues / suggestions / notes / questions, please open an issue or co
 npm install qr-code-styling
 ```
 
-### Ussage
+### Usage
 
 ```HTML
 <!DOCTYPE html>
