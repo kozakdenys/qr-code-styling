@@ -57,6 +57,8 @@ npm install qr-code-styling
 </html>
 ```
 
+[**Usage with React**](https://codesandbox.io/s/qr-code-styling-react-example-l8rwl?file=/src/App.js)
+
 ### API Documentation
 
 #### QRCodeStyling instance
@@ -185,6 +187,7 @@ Property |Type                          |Default Value|Description
 ---------|------------------------------|-------------|-----------------------------------------------------
 name     |string                        |`'qr'`       |Name of the downloaded file
 extension|string (`'png' 'jpeg' 'webp'`)|`'png'`      |File extension
+
 
 ### License
 
