@@ -1,4 +1,4 @@
-import { Gradient, Options } from "../core/QROptions";
+import { Gradient, RequiredOptions } from "../core/QROptions";
 
 function sanitizeGradient(gradient: Gradient): Gradient {
   const newGradient = { ...gradient };
@@ -21,7 +21,7 @@ function sanitizeGradient(gradient: Gradient): Gradient {
   return newGradient;
 }
 
-export default function sanitizeOptions(options: Options): Options {
+export default function sanitizeOptions(options: RequiredOptions): RequiredOptions {
   const newOptions = { ...options };
 
   newOptions.width = Number(newOptions.width);

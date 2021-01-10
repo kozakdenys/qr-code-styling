@@ -1,4 +1,5 @@
 import modes from "../constants/modes";
+import { Mode } from "../types";
 
 export default function getMode(data: string): Mode {
   switch (true) {

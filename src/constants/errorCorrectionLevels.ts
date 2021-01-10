@@ -1,3 +1,5 @@
+import { ErrorCorrectionLevel } from "../types";
+
 interface ErrorCorrectionLevels {
   [key: string]: ErrorCorrectionLevel;
 }

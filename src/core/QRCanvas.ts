@@ -3,8 +3,9 @@ import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "./QRDot";
 import QRCornerSquare from "./QRCornerSquare";
 import QRCornerDot from "./QRCornerDot";
-import { Options, Gradient } from "./QROptions";
+import { RequiredOptions, Gradient } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
+import { QRCode } from "../types";
 
 type FilterFunction = (i: number, j: number) => boolean;
 
@@ -30,12 +31,12 @@ const dotMask = [
 
 export default class QRCanvas {
   _canvas: HTMLCanvasElement;
-  _options: Options;
+  _options: RequiredOptions;
   _qr?: QRCode;
   _image?: HTMLImageElement;
 
   //TODO don't pass all options to this class
-  constructor(options: Options) {
+  constructor(options: RequiredOptions) {
     this._canvas = document.createElement("canvas");
     this._canvas.width = options.width;
     this._canvas.height = options.height;

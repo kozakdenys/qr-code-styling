@@ -1,5 +1,14 @@
 import qrTypes from "../constants/qrTypes";
 import errorCorrectionLevels from "../constants/errorCorrectionLevels";
+import {
+  DotType,
+  GradientType,
+  CornerSquareType,
+  CornerDotType,
+  TypeNumber,
+  ErrorCorrectionLevel,
+  Mode
+} from "../types";
 
 export type Gradient = {
   type: GradientType;
@@ -11,23 +20,23 @@ export type Gradient = {
 };
 
 export type Options = {
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   data?: string;
   image?: string;
-  qrOptions: {
-    typeNumber: TypeNumber;
+  qrOptions?: {
+    typeNumber?: TypeNumber;
     mode?: Mode;
-    errorCorrectionLevel: ErrorCorrectionLevel;
+    errorCorrectionLevel?: ErrorCorrectionLevel;
   };
-  imageOptions: {
-    hideBackgroundDots: boolean;
-    imageSize: number;
-    margin: number;
+  imageOptions?: {
+    hideBackgroundDots?: boolean;
+    imageSize?: number;
     crossOrigin?: string;
+    margin?: number;
   };
-  dotsOptions: {
-    type: DotType;
+  dotsOptions?: {
+    type?: DotType;
     color?: string;
     gradient?: Gradient;
   };
@@ -41,17 +50,42 @@ export type Options = {
     color?: string;
     gradient?: Gradient;
   };
-  backgroundOptions: {
+  backgroundOptions?: {
     color?: string;
     gradient?: Gradient;
   };
 };
 
-const defaultOptions: Options = {
+export interface RequiredOptions extends Options {
+  width: number;
+  height: number;
+  data: string;
+  qrOptions: {
+    typeNumber: TypeNumber;
+    mode?: Mode;
+    errorCorrectionLevel: ErrorCorrectionLevel;
+  };
+  imageOptions: {
+    hideBackgroundDots: boolean;
+    imageSize: number;
+    crossOrigin?: string;
+    margin: number;
+  };
+  dotsOptions: {
+    type: DotType;
+    color: string;
+    gradient?: Gradient;
+  };
+  backgroundOptions: {
+    color: string;
+    gradient?: Gradient;
+  };
+}
+
+const defaultOptions: RequiredOptions = {
   width: 300,
   height: 300,
-  data: undefined,
-  image: undefined,
+  data: "",
   qrOptions: {
     typeNumber: qrTypes[0],
     mode: undefined,

@@ -1,3 +1,5 @@
+import { DotTypes } from "../types";
+
 export default {
   dots: "dots",
   rounded: "rounded",

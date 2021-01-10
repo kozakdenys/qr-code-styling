@@ -7,5 +7,5 @@ import errorCorrectionPercents from "./constants/errorCorrectionPercents";
 import modes from "./constants/modes";
 import qrTypes from "./constants/qrTypes";
 
-export default QRCodeStyling;
 export { dotTypes, cornerDotTypes, cornerSquareTypes, errorCorrectionLevels, errorCorrectionPercents, modes, qrTypes };
+export default QRCodeStyling;

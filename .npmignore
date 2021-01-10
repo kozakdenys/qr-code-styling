@@ -1,0 +1,12 @@
+coverage
+src
+.editorconfig
+.eslintignore
+.eslintrc.js
+.gitignore
+.prettierrc.js
+jest.config.js
+tsconfig.json
+webpack.config.build.js
+webpack.config.common.js
+webpack.config.dev-server.js

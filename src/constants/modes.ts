@@ -1,3 +1,5 @@
+import { Mode } from "../types";
+
 interface Modes {
   [key: string]: Mode;
 }

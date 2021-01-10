@@ -9,7 +9,7 @@ module.exports = {
   entry: srcPath + "/index.ts",
   output: {
     path: libPath,
-    filename: "qr-code-styling.js",
+    filename: "index.js",
     library: "QRCodeStyling",
     libraryTarget: "umd",
     libraryExport: "default"

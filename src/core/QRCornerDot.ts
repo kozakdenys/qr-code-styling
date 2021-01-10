@@ -1,4 +1,5 @@
 import cornerDotTypes from "../constants/cornerDotTypes";
+import { CornerDotType } from "../types";
 
 type DrawArgs = {
   x: number;
