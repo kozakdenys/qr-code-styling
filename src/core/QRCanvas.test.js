@@ -91,4 +91,16 @@ describe("Test QRCanvas class", () => {
       done();
     });
   });
+  it("Should draw a qr code with margin around canvas", () => {
+    const expectedQRCodeFile = fs.readFileSync(
+      path.resolve(__dirname, "../assets/test/simple_qr_with_margin_canvas.png"),
+      "base64"
+    );
+    const canvas = new QRCanvas({
+      ...defaultOptions,
+      margin: 20
+    });
+    canvas.drawQR(qr);
+    expect(canvas.getCanvas().toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));
+  });
 });

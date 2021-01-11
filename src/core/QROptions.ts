@@ -59,6 +59,7 @@ export type Options = {
 export interface RequiredOptions extends Options {
   width: number;
   height: number;
+  margin: number;
   data: string;
   qrOptions: {
     typeNumber: TypeNumber;
@@ -86,6 +87,7 @@ const defaultOptions: RequiredOptions = {
   width: 300,
   height: 300,
   data: "",
+  margin: 0,
   qrOptions: {
     typeNumber: qrTypes[0],
     mode: undefined,

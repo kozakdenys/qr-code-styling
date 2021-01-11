@@ -69,7 +69,7 @@ export default class QRCanvas {
 
   async drawQR(qr: QRCode): Promise<void> {
     const count = qr.getModuleCount();
-    const minSize = Math.min(this._options.width, this._options.height);
+    const minSize = Math.min(this._options.width, this._options.height) - this._options.margin / 2;
     const dotSize = Math.floor(minSize / count);
     let drawImageSize = {
       hideXDots: 0,
@@ -173,7 +173,7 @@ export default class QRCanvas {
       throw "The canvas is too small.";
     }
 
-    const minSize = Math.min(options.width, options.height);
+    const minSize = Math.min(options.width, options.height) - options.margin;
     const dotSize = Math.floor(minSize / count);
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
@@ -239,7 +239,7 @@ export default class QRCanvas {
     const options = this._options;
 
     const count = this._qr.getModuleCount();
-    const minSize = Math.min(options.width, options.height);
+    const minSize = Math.min(options.width, options.height) - options.margin;
     const dotSize = Math.floor(minSize / count);
     const cornersSquareSize = dotSize * 7;
     const cornersDotSize = dotSize * 3;
