@@ -1,6 +1,6 @@
 import { UnknownObject } from "../types";
 
-const isObject = (obj: object): boolean => !!obj && typeof obj === "object" && !Array.isArray(obj);
+const isObject = (obj: Record<string, unknown>): boolean => !!obj && typeof obj === "object" && !Array.isArray(obj);
 
 export default function mergeDeep(target: UnknownObject, ...sources: UnknownObject[]): UnknownObject {
   if (!sources.length) return target;

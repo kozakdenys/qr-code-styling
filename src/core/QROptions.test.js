@@ -10,13 +10,13 @@ describe("Test default QROptions", () => {
       "width",
       "height",
       "data",
-      "image",
+      "margin",
       "qrOptions",
       "imageOptions",
       "dotsOptions",
       "backgroundOptions"
     ];
-    it.each(optionsKeys)("The options should contain particular keys", key => {
+    it.each(optionsKeys)("The options should contain particular keys", (key) => {
       expect(Object.keys(QROptions)).toContain(key);
     });
   });
