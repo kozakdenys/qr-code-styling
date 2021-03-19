@@ -9,6 +9,10 @@ import { QRCode } from "../types";
 
 type FilterFunction = (i: number, j: number) => boolean;
 
+interface Canvas extends HTMLCanvasElement {
+  toBuffer?: (type: string) => Buffer;
+}
+
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
   [1, 0, 0, 0, 0, 0, 1],
@@ -30,14 +34,14 @@ const dotMask = [
 ];
 
 export default class QRCanvas {
-  _canvas: HTMLCanvasElement;
+  _canvas: Canvas;
   _options: RequiredOptions;
   _qr?: QRCode;
   _image?: HTMLImageElement;
 
   //TODO don't pass all options to this class
   constructor(options: RequiredOptions) {
-    this._canvas = document.createElement("canvas");
+    this._canvas = options.nodeCanvas?.createCanvas(options.width, options.height) ?? document.createElement("canvas");
     this._canvas.width = options.width;
     this._canvas.height = options.height;
     this._options = options;
@@ -55,7 +59,7 @@ export default class QRCanvas {
     return this._canvas.height;
   }
 
-  getCanvas(): HTMLCanvasElement {
+  getCanvas(): Canvas {
     return this._canvas;
   }
 
@@ -359,21 +363,37 @@ export default class QRCanvas {
   loadImage(): Promise<void> {
     return new Promise((resolve, reject) => {
       const options = this._options;
-      const image = new Image();
 
       if (!options.image) {
         return reject("Image is not defined");
       }
 
-      if (typeof options.imageOptions.crossOrigin === "string") {
-        image.crossOrigin = options.imageOptions.crossOrigin;
-      }
+      if (options.nodeCanvas) {
+        options.nodeCanvas
+          .loadImage(options.image)
+          .then((image: HTMLImageElement) => {
+            // fix blurry svg
+            if (/\.svg$/.test(options.image ?? "")) {
+              image.width = this._options.width;
+              image.height = this._options.height;
+            }
+            this._image = image;
+            resolve();
+          })
+          .catch(reject);
+      } else {
+        const image = new Image();
 
-      this._image = image;
-      image.onload = (): void => {
-        resolve();
-      };
-      image.src = options.image;
+        if (typeof options.imageOptions.crossOrigin === "string") {
+          image.crossOrigin = options.imageOptions.crossOrigin;
+        }
+
+        this._image = image;
+        image.onload = (): void => {
+          resolve();
+        };
+        image.src = options.image;
+      }
     });
   }
 

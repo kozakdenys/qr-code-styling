@@ -10,6 +10,7 @@ import qrcode from "qrcode-generator";
 type DownloadOptions = {
   name?: string;
   extension?: Extension;
+  buffer?: boolean;
 };
 
 export default class QRCodeStyling {
@@ -62,32 +63,46 @@ export default class QRCodeStyling {
     this._container = container;
   }
 
-  download(downloadOptions?: Partial<DownloadOptions> | string): void {
-    if (!this._drawingPromise) return;
-
-    this._drawingPromise.then(() => {
-      if (!this._canvas) return;
-
-      let extension = "png";
-      let name = "qr";
-
-      //TODO remove deprecated code in the v2
-      if (typeof downloadOptions === "string") {
-        extension = downloadOptions;
-        console.warn(
-          "Extension is deprecated as argument for 'download' method, please pass object { name: '...', extension: '...' } as argument"
-        );
-      } else if (typeof downloadOptions === "object" && downloadOptions !== null) {
-        if (downloadOptions.name) {
-          name = downloadOptions.name;
-        }
-        if (downloadOptions.extension) {
-          extension = downloadOptions.extension;
-        }
+  download(downloadOptions?: Partial<DownloadOptions> | string): Promise<string | Buffer> {
+    return new Promise((resolve, reject) => {
+      let buffer = false;
+      if (typeof downloadOptions === "object" && downloadOptions?.buffer) {
+        buffer = downloadOptions.buffer;
       }
+      if (!this._drawingPromise) return resolve(buffer ? Buffer.from([]) : "");
 
-      const data = this._canvas.getCanvas().toDataURL(`image/${extension}`);
-      downloadURI(data, `${name}.${extension}`);
+      this._drawingPromise
+        .then(() => {
+          if (!this._canvas) return resolve(buffer ? Buffer.from([]) : "");
+
+          let extension = "png";
+          let name = "qr";
+
+          //TODO remove deprecated code in the v2
+          if (typeof downloadOptions === "string") {
+            extension = downloadOptions;
+            console.warn(
+              "Extension is deprecated as argument for 'download' method, please pass object { name: '...', extension: '...' } as argument"
+            );
+          } else if (typeof downloadOptions === "object" && downloadOptions !== null) {
+            if (downloadOptions.name) {
+              name = downloadOptions.name;
+            }
+            if (downloadOptions.extension) {
+              extension = downloadOptions.extension;
+            }
+          }
+
+          let data;
+          if (this._options.nodeCanvas && buffer) {
+            data = this._canvas.getCanvas().toBuffer?.(`image/${extension}`) ?? Buffer.from([]);
+          } else {
+            data = this._canvas.getCanvas().toDataURL(`image/${extension}`);
+            if (!this._options.nodeCanvas) downloadURI(data, `${name}.${extension}`);
+          }
+          resolve(data);
+        })
+        .catch(reject);
     });
   }
 }

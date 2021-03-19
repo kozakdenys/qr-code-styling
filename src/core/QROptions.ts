@@ -24,6 +24,8 @@ export type Options = {
   height?: number;
   data?: string;
   image?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  nodeCanvas?: any;
   qrOptions?: {
     typeNumber?: TypeNumber;
     mode?: Mode;
@@ -61,6 +63,8 @@ export interface RequiredOptions extends Options {
   height: number;
   margin: number;
   data: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  nodeCanvas?: any;
   qrOptions: {
     typeNumber: TypeNumber;
     mode?: Mode;
@@ -88,6 +92,7 @@ const defaultOptions: RequiredOptions = {
   height: 300,
   data: "",
   margin: 0,
+  nodeCanvas: null,
   qrOptions: {
     typeNumber: qrTypes[0],
     mode: undefined,
