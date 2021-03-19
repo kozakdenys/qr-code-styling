@@ -83,6 +83,7 @@ dotsOptions            |object|             |Dots styling options
 cornersSquareOptions   |object|             |Square in the corners styling options
 cornersDotOptionsHelper|object|             |Dots in the corners styling options
 backgroundOptions      |object|             |QR background styling options
+nodeCanvas      |node-canvas|             |Only specify when running on a node server, please refer to node section below
 
 `options.qrOptions` structure
 
@@ -176,11 +177,13 @@ Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
 
-`QRCodeStyling.download(downloadOptions) => void`
+`QRCodeStyling.download(downloadOptions) => Promise`
 
 Param          |Type  |Description
 ---------------|------|------------
 downloadOptions|object|Options with extension and name of file (not required)
+
+Promise returned will resolve into the data URI of the QR code image.
 
 `downloadOptions` structure
 
@@ -188,7 +191,41 @@ Property |Type                          |Default Value|Description
 ---------|------------------------------|-------------|-----------------------------------------------------
 name     |string                        |`'qr'`       |Name of the downloaded file
 extension|string (`'png' 'jpeg' 'webp'`)|`'png'`      |File extension
+buffer|boolean|`false`      |Return a Buffer instead of a URI. Node server only.
+skipDownload|boolean|`false`      |Skip trying to trigger a client download of the file, just return the URI.
 
+### Node Support
+You can use this on a node server by passing through the node-canvas object. You can also request a Buffer from the download method and the `skipDownload` option will be forced `true`.
+
+```js
+const { QRCodeStyling } = require('qr-code-styling/lib/qr-code-styling.common.js');
+const nodeCanvas = require('canvas');
+const fs = require('fs');
+
+const qrCode = new QRCodeStyling({
+    nodeCanvas, // this is required
+    width: 300,
+    height: 300,
+    data: "https://www.facebook.com/",
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+    dotsOptions: {
+        color: "#4267b2",
+        type: "rounded"
+    },
+    backgroundOptions: {
+        color: "#e9ebee",
+    },
+    imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 20
+    }
+});
+
+qrCode.download({ buffer: true }).then((buffer) => {
+  fs.writeFileSync('test.png', buffer);
+});
+
+```
 
 ### License
 

@@ -11,6 +11,7 @@ type DownloadOptions = {
   name?: string;
   extension?: Extension;
   buffer?: boolean;
+  skipDownload?: boolean;
 };
 
 export default class QRCodeStyling {
@@ -77,6 +78,7 @@ export default class QRCodeStyling {
 
           let extension = "png";
           let name = "qr";
+          let skipDownload = false;
 
           //TODO remove deprecated code in the v2
           if (typeof downloadOptions === "string") {
@@ -91,6 +93,12 @@ export default class QRCodeStyling {
             if (downloadOptions.extension) {
               extension = downloadOptions.extension;
             }
+            if (downloadOptions.skipDownload) {
+              skipDownload = downloadOptions.skipDownload;
+            }
+          }
+          if (!this._options.nodeCanvas) {
+            skipDownload = true;
           }
 
           let data;
@@ -98,7 +106,7 @@ export default class QRCodeStyling {
             data = this._canvas.getCanvas().toBuffer?.(`image/${extension}`) ?? Buffer.from([]);
           } else {
             data = this._canvas.getCanvas().toDataURL(`image/${extension}`);
-            if (!this._options.nodeCanvas) downloadURI(data, `${name}.${extension}`);
+            if (!skipDownload) downloadURI(data, `${name}.${extension}`);
           }
           resolve(data);
         })
