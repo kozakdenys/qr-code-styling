@@ -373,7 +373,7 @@ export default class QRCanvas {
           .loadImage(options.image)
           .then((image: HTMLImageElement) => {
             // fix blurry svg
-            if (/\.svg$/.test(options.image ?? "")) {
+            if (/(\.svg$)|(^data:image\/svg)/.test(options.image ?? "")) {
               image.width = this._options.width;
               image.height = this._options.height;
             }
