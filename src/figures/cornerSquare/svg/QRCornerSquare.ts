@@ -68,15 +68,16 @@ export default class QRCornerSquare {
       ...args,
       draw: () => {
         this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute("fill-rule", "evenodd");
+        this._element.setAttribute("clip-rule", "evenodd");
         this._element.setAttribute(
           "d",
-          `M ${x} ${y + size / 2}` +
-            `a ${size / 2} ${size / 2}, 0, 1, 0, ${size} 0` +
-            `a ${size / 2} ${size / 2}, 0, 1, 0, ${-size} 0` +
-            `M ${x + dotSize} ${y + size / 2}` +
-            `a ${size / 2 - dotSize} ${size / 2 - dotSize}, 0, 1, 0, ${size - 2 * dotSize} 0` +
-            `a ${size / 2 - dotSize} ${size / 2 - dotSize}, 0, 1, 0, ${-size + 2 * dotSize} 0`
+          `M ${x + size / 2} ${y + size / 2}` + // M cx, cy // Move to center of ring
+            `m ${0} ${-size / 2}` + // m 0, -outerRadius // Move to top of ring
+            `a ${size / 2} ${size / 2} 0 1 0 1 0` + // a outerRadius, outerRadius, 0, 1, 0, 1, 0 // Draw outer arc, but don't close it
+            `z` + // Z // Close the outer shape
+            `m 0 ${dotSize}` + // m -1 outerRadius-innerRadius // Move to top point of inner radius
+            `a ${size / 2 - dotSize} ${size / 2 - dotSize} 0 1 1 -1 0` + // a innerRadius, innerRadius, 0, 1, 1, -1, 0 // Draw inner arc, but don't close it
+            `Z` // Z // Close the inner ring. Actually will still work without, but inner ring will have one unit missing in stroke
         );
       }
     });
@@ -90,7 +91,7 @@ export default class QRCornerSquare {
       ...args,
       draw: () => {
         this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute("fill-rule", "evenodd");
+        this._element.setAttribute("clip-rule", "evenodd");
         this._element.setAttribute(
           "d",
           `M ${x} ${y}` +
@@ -99,9 +100,9 @@ export default class QRCornerSquare {
             `v ${-size}` +
             `z` +
             `M ${x + dotSize} ${y + dotSize}` +
-            `v ${size - 2 * dotSize}` +
             `h ${size - 2 * dotSize}` +
-            `v ${-size + 2 * dotSize}` +
+            `v ${size - 2 * dotSize}` +
+            `h ${-size + 2 * dotSize}` +
             `z`
         );
       }
@@ -116,7 +117,7 @@ export default class QRCornerSquare {
       ...args,
       draw: () => {
         this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute("fill-rule", "evenodd");
+        this._element.setAttribute("clip-rule", "evenodd");
         this._element.setAttribute(
           "d",
           `M ${x} ${y + 2.5 * dotSize}` +
@@ -128,15 +129,15 @@ export default class QRCornerSquare {
             `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${-dotSize * 2.5} ${-dotSize * 2.5}` +
             `h ${-2 * dotSize}` +
             `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${-dotSize * 2.5} ${dotSize * 2.5}` +
-            `M ${x + dotSize} ${y + 2.5 * dotSize}` +
-            `v ${2 * dotSize}` +
-            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 0, ${dotSize * 1.5} ${dotSize * 1.5}` +
+            `M ${x + 2.5 * dotSize} ${y + dotSize}` +
             `h ${2 * dotSize}` +
-            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 0, ${dotSize * 1.5} ${-dotSize * 1.5}` +
-            `v ${-2 * dotSize}` +
-            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 0, ${-dotSize * 1.5} ${-dotSize * 1.5}` +
+            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 1, ${dotSize * 1.5} ${dotSize * 1.5}` +
+            `v ${2 * dotSize}` +
+            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 1, ${-dotSize * 1.5} ${dotSize * 1.5}` +
             `h ${-2 * dotSize}` +
-            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 0, ${-dotSize * 1.5} ${dotSize * 1.5}`
+            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 1, ${-dotSize * 1.5} ${-dotSize * 1.5}` +
+            `v ${-2 * dotSize}` +
+            `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 1, ${dotSize * 1.5} ${-dotSize * 1.5}`
         );
       }
     });
