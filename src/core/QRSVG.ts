@@ -1,8 +1,8 @@
 import calculateImageSize from "../tools/calculateImageSize";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
-import QRDot from "../figures/dot/canvas/QRDot";
-import QRCornerSquare from "../figures/cornerSquare/canvas/QRCornerSquare";
-import QRCornerDot from "../figures/cornerDot/canvas/QRCornerDot";
+import QRDot from "../figures/dot/svg/QRDot";
+import QRCornerSquare from "../figures/cornerSquare/svg/QRCornerSquare";
+import QRCornerDot from "../figures/cornerDot/svg/QRCornerDot";
 import { RequiredOptions, Gradient } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
 import { QRCode } from "../types";
@@ -29,42 +29,38 @@ const dotMask = [
   [0, 0, 0, 0, 0, 0, 0]
 ];
 
-export default class QRCanvas {
-  _canvas: HTMLCanvasElement;
+export default class QRSVG {
+  _element: SVGElement;
+  _defs: SVGElement;
   _options: RequiredOptions;
   _qr?: QRCode;
   _image?: HTMLImageElement;
 
   //TODO don't pass all options to this class
   constructor(options: RequiredOptions) {
-    this._canvas = document.createElement("canvas");
-    this._canvas.width = options.width;
-    this._canvas.height = options.height;
+    this._element = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this._element.setAttribute("width", String(options.width));
+    this._element.setAttribute("height", String(options.height));
+    this._defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    this._element.appendChild(this._defs);
+
     this._options = options;
   }
 
-  get context(): CanvasRenderingContext2D | null {
-    return this._canvas.getContext("2d");
-  }
-
   get width(): number {
-    return this._canvas.width;
+    return this._options.width;
   }
 
   get height(): number {
-    return this._canvas.height;
+    return this._options.height;
   }
 
-  getCanvas(): HTMLCanvasElement {
-    return this._canvas;
+  getElement(): SVGElement {
+    return this._element;
   }
 
   clear(): void {
-    const canvasContext = this.context;
-
-    if (canvasContext) {
-      canvasContext.clearRect(0, 0, this._canvas.width, this._canvas.height);
-    }
+    this._element?.parentNode?.replaceChild(this._element.cloneNode(false), this._element);
   }
 
   async drawQR(qr: QRCode): Promise<void> {
@@ -128,41 +124,48 @@ export default class QRCanvas {
   }
 
   drawBackground(): void {
-    const canvasContext = this.context;
+    const element = this._element;
     const options = this._options;
 
-    if (canvasContext) {
+    if (element) {
       if (options.backgroundOptions.gradient) {
         const gradientOptions = options.backgroundOptions.gradient;
+
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("width", "100%");
+        rect.setAttribute("height", "100%");
+        rect.setAttribute("fill", "url('#background-gradient')");
+
         const gradient = this._createGradient({
-          context: canvasContext,
           options: gradientOptions,
           additionalRotation: 0,
           x: 0,
           y: 0,
-          size: this._canvas.width > this._canvas.height ? this._canvas.width : this._canvas.height
+          size: options.width > options.height ? options.width : options.height,
+          name: "background-gradient"
         });
+
+        this._defs.appendChild(gradient);
 
         gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
-          gradient.addColorStop(offset, color);
+          const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+          stop.setAttribute("offset", `${100 * offset}%`);
+          stop.setAttribute("stop-color", color);
+          gradient.appendChild(stop);
         });
-
-        canvasContext.fillStyle = gradient;
+        this._element.appendChild(rect);
       } else if (options.backgroundOptions.color) {
-        canvasContext.fillStyle = options.backgroundOptions.color;
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("width", "100%");
+        rect.setAttribute("height", "100%");
+        rect.setAttribute("fill", options.backgroundOptions.color);
+        this._element.appendChild(rect);
       }
-      canvasContext.fillRect(0, 0, this._canvas.width, this._canvas.height);
     }
   }
 
   drawDots(filter?: FilterFunction): void {
     if (!this._qr) {
-      throw "QR code is not defined";
-    }
-
-    const canvasContext = this.context;
-
-    if (!canvasContext) {
       throw "QR code is not defined";
     }
 
@@ -177,18 +180,17 @@ export default class QRCanvas {
     const dotSize = Math.floor(minSize / count);
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
-    const dot = new QRDot({ context: canvasContext, type: options.dotsOptions.type });
-
-    canvasContext.beginPath();
+    const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
 
     for (let i = 0; i < count; i++) {
       for (let j = 0; j < count; j++) {
         if (filter && !filter(i, j)) {
           continue;
         }
-        if (!this._qr.isDark(i, j)) {
+        if (!this._qr?.isDark(i, j)) {
           continue;
         }
+
         dot.draw(
           xBeginning + i * dotSize,
           yBeginning + j * dotSize,
@@ -199,44 +201,52 @@ export default class QRCanvas {
             return !!this._qr && this._qr.isDark(i + xOffset, j + yOffset);
           }
         );
+
+        if (options.dotsOptions?.gradient) {
+          dot._element?.setAttribute("fill", "url('#dot-gradient')");
+        } else {
+          dot._element?.setAttribute("fill", options.dotsOptions.color);
+        }
+
+        if (dot._element) {
+          this._element.appendChild(dot._element);
+        }
       }
     }
 
-    if (options.dotsOptions.gradient) {
+    if (options.dotsOptions?.gradient) {
       const gradientOptions = options.dotsOptions.gradient;
       const gradient = this._createGradient({
-        context: canvasContext,
         options: gradientOptions,
         additionalRotation: 0,
         x: xBeginning,
         y: yBeginning,
-        size: count * dotSize
+        size: count * dotSize,
+        name: "dot-gradient"
       });
+
+      this._defs.appendChild(gradient);
 
       gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
-        gradient.addColorStop(offset, color);
+        const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        stop.setAttribute("offset", `${100 * offset}%`);
+        stop.setAttribute("stop-color", color);
+        gradient.appendChild(stop);
       });
-
-      canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
-    } else if (options.dotsOptions.color) {
-      canvasContext.fillStyle = canvasContext.strokeStyle = options.dotsOptions.color;
     }
-
-    canvasContext.fill("evenodd");
   }
 
-  drawCorners(filter?: FilterFunction): void {
+  drawCorners(): void {
     if (!this._qr) {
       throw "QR code is not defined";
     }
 
-    const canvasContext = this.context;
-
-    if (!canvasContext) {
-      throw "QR code is not defined";
-    }
-
+    const element = this._element;
     const options = this._options;
+
+    if (!element) {
+      throw "Element code is not defined";
+    }
 
     const count = this._qr.getModuleCount();
     const minSize = Math.min(options.width, options.height) - options.margin * 2;
@@ -251,22 +261,28 @@ export default class QRCanvas {
       [1, 0, Math.PI / 2],
       [0, 1, -Math.PI / 2]
     ].forEach(([column, row, rotation]) => {
-      if (filter && !filter(column, row)) {
-        return;
-      }
-
       const x = xBeginning + column * dotSize * (count - 7);
       const y = yBeginning + row * dotSize * (count - 7);
 
       if (options.cornersSquareOptions?.type) {
-        const cornersSquare = new QRCornerSquare({ context: canvasContext, type: options.cornersSquareOptions?.type });
+        const cornersSquare = new QRCornerSquare({ svg: this._element, type: options.cornersSquareOptions.type });
 
-        canvasContext.beginPath();
         cornersSquare.draw(x, y, cornersSquareSize, rotation);
-      } else {
-        const dot = new QRDot({ context: canvasContext, type: options.dotsOptions.type });
 
-        canvasContext.beginPath();
+        if (options.cornersSquareOptions?.gradient) {
+          cornersSquare._element?.setAttribute("fill", `url('#corner-square-gradient-${column}-${row}')`);
+        } else if (options.cornersSquareOptions?.color) {
+          cornersSquare._element?.setAttribute("fill", options.cornersSquareOptions.color);
+        } else if (options.dotsOptions?.gradient) {
+          cornersSquare._element?.setAttribute("fill", "url('#dot-gradient')");
+        } else {
+          cornersSquare._element?.setAttribute("fill", options.dotsOptions.color);
+        }
+        if (cornersSquare._element) {
+          this._element.appendChild(cornersSquare._element);
+        }
+      } else {
+        const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
 
         for (let i = 0; i < squareMask.length; i++) {
           for (let j = 0; j < squareMask[i].length; j++) {
@@ -280,6 +296,20 @@ export default class QRCanvas {
               dotSize,
               (xOffset: number, yOffset: number): boolean => !!squareMask[i + xOffset]?.[j + yOffset]
             );
+
+            if (options.cornersSquareOptions?.gradient) {
+              dot._element?.setAttribute("fill", `url('#corner-square-gradient-${column}-${row}')`);
+            } else if (options.cornersSquareOptions?.color) {
+              dot._element?.setAttribute("fill", options.cornersSquareOptions.color);
+            } else if (options.dotsOptions?.gradient) {
+              dot._element?.setAttribute("fill", "url('#dot-gradient')");
+            } else {
+              dot._element?.setAttribute("fill", options.dotsOptions.color);
+            }
+
+            if (dot._element) {
+              this._element.appendChild(dot._element);
+            }
           }
         }
       }
@@ -287,34 +317,47 @@ export default class QRCanvas {
       if (options.cornersSquareOptions?.gradient) {
         const gradientOptions = options.cornersSquareOptions.gradient;
         const gradient = this._createGradient({
-          context: canvasContext,
           options: gradientOptions,
           additionalRotation: rotation,
           x,
           y,
-          size: cornersSquareSize
+          size: cornersSquareSize,
+          name: `corner-square-gradient-${column}-${row}`
         });
+
+        this._defs.appendChild(gradient);
 
         gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
-          gradient.addColorStop(offset, color);
+          const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+          stop.setAttribute("offset", `${100 * offset}%`);
+          stop.setAttribute("stop-color", color);
+          gradient.appendChild(stop);
         });
-
-        canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
-      } else if (options.cornersSquareOptions?.color) {
-        canvasContext.fillStyle = canvasContext.strokeStyle = options.cornersSquareOptions.color;
       }
 
-      canvasContext.fill("evenodd");
-
       if (options.cornersDotOptions?.type) {
-        const cornersDot = new QRCornerDot({ context: canvasContext, type: options.cornersDotOptions?.type });
+        const cornersDot = new QRCornerDot({ svg: this._element, type: options.cornersDotOptions.type });
 
-        canvasContext.beginPath();
         cornersDot.draw(x + dotSize * 2, y + dotSize * 2, cornersDotSize, rotation);
-      } else {
-        const dot = new QRDot({ context: canvasContext, type: options.dotsOptions.type });
 
-        canvasContext.beginPath();
+        if (options.cornersDotOptions?.gradient) {
+          cornersDot._element?.setAttribute("fill", `url('#corner-dot-gradient-${column}-${row}')`);
+        } else if (options.cornersDotOptions?.color) {
+          cornersDot._element?.setAttribute("fill", options.cornersDotOptions.color);
+        } else if (options.cornersSquareOptions?.gradient) {
+          cornersDot._element?.setAttribute("fill", `url('#corner-square-gradient-${column}-${row}')`);
+        } else if (options.cornersSquareOptions?.color) {
+          cornersDot._element?.setAttribute("fill", options.cornersSquareOptions.color);
+        } else if (options.dotsOptions?.gradient) {
+          cornersDot._element?.setAttribute("fill", "url('#dot-gradient')");
+        } else {
+          cornersDot._element?.setAttribute("fill", options.dotsOptions.color);
+        }
+        if (cornersDot._element) {
+          this._element.appendChild(cornersDot._element);
+        }
+      } else {
+        const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
 
         for (let i = 0; i < dotMask.length; i++) {
           for (let j = 0; j < dotMask[i].length; j++) {
@@ -328,6 +371,24 @@ export default class QRCanvas {
               dotSize,
               (xOffset: number, yOffset: number): boolean => !!dotMask[i + xOffset]?.[j + yOffset]
             );
+
+            if (options.cornersDotOptions?.gradient) {
+              dot._element?.setAttribute("fill", `url('#corner-dot-gradient-${column}-${row}')`);
+            } else if (options.cornersDotOptions?.color) {
+              dot._element?.setAttribute("fill", options.cornersDotOptions.color);
+            } else if (options.cornersSquareOptions?.gradient) {
+              dot._element?.setAttribute("fill", `url('#corner-square-gradient-${column}-${row}')`);
+            } else if (options.cornersSquareOptions?.color) {
+              dot._element?.setAttribute("fill", options.cornersSquareOptions.color);
+            } else if (options.dotsOptions?.gradient) {
+              dot._element?.setAttribute("fill", "url('#dot-gradient')");
+            } else {
+              dot._element?.setAttribute("fill", options.dotsOptions.color);
+            }
+
+            if (dot._element) {
+              this._element.appendChild(dot._element);
+            }
           }
         }
       }
@@ -335,24 +396,23 @@ export default class QRCanvas {
       if (options.cornersDotOptions?.gradient) {
         const gradientOptions = options.cornersDotOptions.gradient;
         const gradient = this._createGradient({
-          context: canvasContext,
           options: gradientOptions,
           additionalRotation: rotation,
           x: x + dotSize * 2,
           y: y + dotSize * 2,
-          size: cornersDotSize
+          size: cornersDotSize,
+          name: `corner-dot-gradient-${column}-${row}`
         });
+
+        this._defs.appendChild(gradient);
 
         gradientOptions.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
-          gradient.addColorStop(offset, color);
+          const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+          stop.setAttribute("offset", `${100 * offset}%`);
+          stop.setAttribute("stop-color", color);
+          gradient.appendChild(stop);
         });
-
-        canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
-      } else if (options.cornersDotOptions?.color) {
-        canvasContext.fillStyle = canvasContext.strokeStyle = options.cornersDotOptions.color;
       }
-
-      canvasContext.fill("evenodd");
     });
   }
 
@@ -388,12 +448,6 @@ export default class QRCanvas {
     count: number;
     dotSize: number;
   }): void {
-    const canvasContext = this.context;
-
-    if (!canvasContext) {
-      throw "canvasContext is not defined";
-    }
-
     if (!this._image) {
       throw "image is not defined";
     }
@@ -406,28 +460,42 @@ export default class QRCanvas {
     const dw = width - options.imageOptions.margin * 2;
     const dh = height - options.imageOptions.margin * 2;
 
-    canvasContext.drawImage(this._image, dx, dy, dw < 0 ? 0 : dw, dh < 0 ? 0 : dh);
+    const image = document.createElementNS("http://www.w3.org/2000/svg", "image");
+    image.setAttribute("href", options.image || "");
+    image.setAttribute("x", String(dx));
+    image.setAttribute("y", String(dy));
+    image.setAttribute("width", `${dw}px`);
+    image.setAttribute("height", `${dh}px`);
+
+    this._element.appendChild(image);
   }
 
   _createGradient({
-    context,
     options,
     additionalRotation,
     x,
     y,
-    size
+    size,
+    name
   }: {
-    context: CanvasRenderingContext2D;
     options: Gradient;
     additionalRotation: number;
     x: number;
     y: number;
     size: number;
-  }): CanvasGradient {
+    name: string;
+  }): SVGElement {
     let gradient;
 
     if (options.type === gradientTypes.radial) {
-      gradient = context.createRadialGradient(x + size / 2, y + size / 2, 0, x + size / 2, y + size / 2, size / 2);
+      gradient = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
+      gradient.setAttribute("id", name);
+      gradient.setAttribute("gradientUnits", "userSpaceOnUse");
+      gradient.setAttribute("fx", String(x + size / 2));
+      gradient.setAttribute("fy", String(y + size / 2));
+      gradient.setAttribute("cx", String(x + size / 2));
+      gradient.setAttribute("cy", String(y + size / 2));
+      gradient.setAttribute("r", String(size / 2));
     } else {
       const rotation = ((options.rotation || 0) + additionalRotation) % (2 * Math.PI);
       const positiveRotation = (rotation + 2 * Math.PI) % (2 * Math.PI);
@@ -461,7 +529,13 @@ export default class QRCanvas {
         x1 = x1 - size / 2 / Math.tan(rotation);
       }
 
-      gradient = context.createLinearGradient(Math.round(x0), Math.round(y0), Math.round(x1), Math.round(y1));
+      gradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+      gradient.setAttribute("id", name);
+      gradient.setAttribute("gradientUnits", "userSpaceOnUse");
+      gradient.setAttribute("x1", String(Math.round(x0)));
+      gradient.setAttribute("y1", String(Math.round(y0)));
+      gradient.setAttribute("x2", String(Math.round(x1)));
+      gradient.setAttribute("y2", String(Math.round(y1)));
     }
 
     return gradient;

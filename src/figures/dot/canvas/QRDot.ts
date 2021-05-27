@@ -1,5 +1,5 @@
-import dotTypes from "../constants/dotTypes";
-import { DotType } from "../types";
+import dotTypes from "../../../constants/dotTypes";
+import { DotType } from "../../../types";
 
 type GetNeighbor = (x: number, y: number) => boolean;
 type DrawArgs = {

@@ -2,6 +2,9 @@ import getMode from "../tools/getMode";
 import mergeDeep from "../tools/merge";
 import downloadURI from "../tools/downloadURI";
 import QRCanvas from "./QRCanvas";
+import QRSVG from "./QRSVG";
+import drawTypes from "../constants/drawTypes";
+
 import defaultOptions, { Options, RequiredOptions } from "./QROptions";
 import sanitizeOptions from "../tools/sanitizeOptions";
 import { Extension, QRCode } from "../types";
@@ -16,6 +19,7 @@ export default class QRCodeStyling {
   _options: RequiredOptions;
   _container?: HTMLElement;
   _canvas?: QRCanvas;
+  _svg?: QRSVG;
   _qr?: QRCode;
   _drawingPromise?: Promise<void>;
 
@@ -41,8 +45,15 @@ export default class QRCodeStyling {
     this._qr = qrcode(this._options.qrOptions.typeNumber, this._options.qrOptions.errorCorrectionLevel);
     this._qr.addData(this._options.data, this._options.qrOptions.mode || getMode(this._options.data));
     this._qr.make();
-    this._canvas = new QRCanvas(this._options);
-    this._drawingPromise = this._canvas.drawQR(this._qr);
+
+    if (this._options.type === drawTypes.canvas) {
+      this._canvas = new QRCanvas(this._options);
+      this._drawingPromise = this._canvas.drawQR(this._qr);
+    } else {
+      this._svg = new QRSVG(this._options);
+      this._drawingPromise = this._svg.drawQR(this._qr);
+    }
+
     this.append(this._container);
   }
 
@@ -55,8 +66,14 @@ export default class QRCodeStyling {
       throw "Container should be a single DOM node";
     }
 
-    if (this._canvas) {
-      container.appendChild(this._canvas.getCanvas());
+    if (this._options.type === drawTypes.canvas) {
+      if (this._canvas) {
+        container.appendChild(this._canvas.getCanvas());
+      }
+    } else {
+      if (this._svg) {
+        container.appendChild(this._svg.getElement());
+      }
     }
 
     this._container = container;
@@ -66,8 +83,6 @@ export default class QRCodeStyling {
     if (!this._drawingPromise) return;
 
     this._drawingPromise.then(() => {
-      if (!this._canvas) return;
-
       let extension = "png";
       let name = "qr";
 
@@ -86,8 +101,22 @@ export default class QRCodeStyling {
         }
       }
 
-      const data = this._canvas.getCanvas().toDataURL(`image/${extension}`);
-      downloadURI(data, `${name}.${extension}`);
+      if (this._options.type === drawTypes.canvas) {
+        if (!this._canvas) return;
+
+        const data = this._canvas.getCanvas().toDataURL(`image/${extension}`);
+        downloadURI(data, `${name}.${extension}`);
+      } else {
+        if (!this._svg) return;
+
+        //get svg source.
+        const serializer = new XMLSerializer();
+        let source = serializer.serializeToString(this._svg.getElement());
+
+        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+        const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+        downloadURI(url, `${name}.svg`);
+      }
     });
   }
 }
