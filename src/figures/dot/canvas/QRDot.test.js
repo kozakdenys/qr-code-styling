@@ -26,7 +26,7 @@ describe("Test QRDot class", () => {
 
   it("Should draw simple square dot", () => {
     const dotSize = 50;
-    const imgFile = fs.readFileSync(path.resolve(__dirname, "../assets/test/simple_square_dot.png"), "base64");
+    const imgFile = fs.readFileSync(path.resolve(__dirname, "../../../assets/test/simple_square_dot.png"), "base64");
     const dot = new QRDot({ context: canvasContext, type: "square" });
     dot.draw(dotSize / 2, dotSize / 2, dotSize, () => false);
     canvasContext.fill("evenodd");
@@ -36,7 +36,7 @@ describe("Test QRDot class", () => {
 
   it("Should draw simple dots", () => {
     const dotSize = 40;
-    const imgFile = fs.readFileSync(path.resolve(__dirname, "../assets/test/simple_dots.png"), "base64");
+    const imgFile = fs.readFileSync(path.resolve(__dirname, "../../../assets/test/simple_dots.png"), "base64");
     const dot = new QRDot({ context: canvasContext, type: "dots" });
     dot.draw(10, 30, dotSize, () => false);
     dot.draw(50, 30, dotSize, () => false);
@@ -53,7 +53,7 @@ describe("Test QRDot class", () => {
       [0, 1, 0, 1, 1],
       [0, 0, 1, 0, 0],
     ];
-    const imgFile = fs.readFileSync(path.resolve(__dirname, "../assets/test/rounded_dots.png"), "base64");
+    const imgFile = fs.readFileSync(path.resolve(__dirname, "../../../assets/test/rounded_dots.png"), "base64");
     const dot = new QRDot({ context: canvasContext, type: "rounded" });
 
     for (let y = 0; y < matrix.length; y++) {
