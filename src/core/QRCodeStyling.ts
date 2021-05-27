@@ -21,7 +21,8 @@ export default class QRCodeStyling {
   _canvas?: QRCanvas;
   _svg?: QRSVG;
   _qr?: QRCode;
-  _drawingPromise?: Promise<void>;
+  _canvasDrawingPromise?: Promise<void>;
+  _svgDrawingPromise?: Promise<void>;
 
   constructor(options?: Partial<Options>) {
     this._options = options ? sanitizeOptions(mergeDeep(defaultOptions, options) as RequiredOptions) : defaultOptions;
@@ -48,10 +49,14 @@ export default class QRCodeStyling {
 
     if (this._options.type === drawTypes.canvas) {
       this._canvas = new QRCanvas(this._options);
-      this._drawingPromise = this._canvas.drawQR(this._qr);
+      this._canvasDrawingPromise = this._canvas.drawQR(this._qr);
+      this._svgDrawingPromise = undefined;
+      this._svg = undefined;
     } else {
       this._svg = new QRSVG(this._options);
-      this._drawingPromise = this._svg.drawQR(this._qr);
+      this._svgDrawingPromise = this._svg.drawQR(this._qr);
+      this._canvasDrawingPromise = undefined;
+      this._canvas = undefined;
     }
 
     this.append(this._container);
@@ -80,43 +85,60 @@ export default class QRCodeStyling {
   }
 
   download(downloadOptions?: Partial<DownloadOptions> | string): void {
-    if (!this._drawingPromise) return;
+    if (!this._qr) throw "QR code is empty";
+    let extension = "png";
+    let name = "qr";
 
-    this._drawingPromise.then(() => {
-      let extension = "png";
-      let name = "qr";
+    //TODO remove deprecated code in the v2
+    if (typeof downloadOptions === "string") {
+      extension = downloadOptions;
+      console.warn(
+        "Extension is deprecated as argument for 'download' method, please pass object { name: '...', extension: '...' } as argument"
+      );
+    } else if (typeof downloadOptions === "object" && downloadOptions !== null) {
+      if (downloadOptions.name) {
+        name = downloadOptions.name;
+      }
+      if (downloadOptions.extension) {
+        extension = downloadOptions.extension;
+      }
+    }
 
-      //TODO remove deprecated code in the v2
-      if (typeof downloadOptions === "string") {
-        extension = downloadOptions;
-        console.warn(
-          "Extension is deprecated as argument for 'download' method, please pass object { name: '...', extension: '...' } as argument"
-        );
-      } else if (typeof downloadOptions === "object" && downloadOptions !== null) {
-        if (downloadOptions.name) {
-          name = downloadOptions.name;
-        }
-        if (downloadOptions.extension) {
-          extension = downloadOptions.extension;
-        }
+    if (extension.toLowerCase() === "svg") {
+      let promise, svg: QRSVG;
+
+      if (this._svg && this._svgDrawingPromise) {
+        svg = this._svg;
+        promise = this._svgDrawingPromise;
+      } else {
+        svg = new QRSVG(this._options);
+        promise = svg.drawQR(this._qr);
       }
 
-      if (this._options.type === drawTypes.canvas) {
-        if (!this._canvas) return;
-
-        const data = this._canvas.getCanvas().toDataURL(`image/${extension}`);
-        downloadURI(data, `${name}.${extension}`);
-      } else {
-        if (!this._svg) return;
-
+      promise?.then(() => {
         //get svg source.
         const serializer = new XMLSerializer();
-        let source = serializer.serializeToString(this._svg.getElement());
+        let source = serializer.serializeToString(svg.getElement());
 
         source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
         const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
         downloadURI(url, `${name}.svg`);
+      });
+    } else {
+      let promise, canvas: QRCanvas;
+
+      if (this._canvas && this._canvasDrawingPromise) {
+        canvas = this._canvas;
+        promise = this._canvasDrawingPromise;
+      } else {
+        canvas = new QRCanvas(this._options);
+        promise = canvas.drawQR(this._qr);
       }
-    });
+
+      promise?.then(() => {
+        const data = canvas.getCanvas().toDataURL(`image/${extension}`);
+        downloadURI(data, `${name}.${extension}`);
+      });
+    }
   }
 }

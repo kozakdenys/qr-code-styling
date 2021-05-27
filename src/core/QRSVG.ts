@@ -63,7 +63,11 @@ export default class QRSVG {
   }
 
   clear(): void {
-    this._element?.parentNode?.replaceChild(this._element.cloneNode(false), this._element);
+    const oldElement = this._element;
+    this._element = oldElement.cloneNode(false) as SVGElement;
+    oldElement?.parentNode?.replaceChild(this._element, oldElement);
+    this._defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    this._element.appendChild(this._defs);
   }
 
   async drawQR(qr: QRCode): Promise<void> {
@@ -80,6 +84,7 @@ export default class QRSVG {
     this._qr = qr;
 
     if (this._options.image) {
+      //We need it to get image size
       await this.loadImage();
       if (!this._image) return;
       const { imageOptions, qrOptions } = this._options;
@@ -371,10 +376,6 @@ export default class QRSVG {
     count: number;
     dotSize: number;
   }): void {
-    if (!this._image) {
-      throw "image is not defined";
-    }
-
     const options = this._options;
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
