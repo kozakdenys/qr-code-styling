@@ -7,7 +7,7 @@ import drawTypes from "../constants/drawTypes";
 
 import defaultOptions, { RequiredOptions } from "./QROptions";
 import sanitizeOptions from "../tools/sanitizeOptions";
-import { QRCode, Options, DownloadOptions } from "../types";
+import { Extension, QRCode, Options, DownloadOptions } from "../types";
 import qrcode from "qrcode-generator";
 
 export default class QRCodeStyling {
@@ -27,6 +27,40 @@ export default class QRCodeStyling {
   static _clearContainer(container?: HTMLElement): void {
     if (container) {
       container.innerHTML = "";
+    }
+  }
+
+  async _getQRStylingElement(extension: Extension = "png"): Promise<QRCanvas | QRSVG> {
+    if (!this._qr) throw "QR code is empty";
+
+    if (extension.toLowerCase() === "svg") {
+      let promise, svg: QRSVG;
+
+      if (this._svg && this._svgDrawingPromise) {
+        svg = this._svg;
+        promise = this._svgDrawingPromise;
+      } else {
+        svg = new QRSVG(this._options);
+        promise = svg.drawQR(this._qr);
+      }
+
+      await promise;
+
+      return svg;
+    } else {
+      let promise, canvas: QRCanvas;
+
+      if (this._canvas && this._canvasDrawingPromise) {
+        canvas = this._canvas;
+        promise = this._canvasDrawingPromise;
+      } else {
+        canvas = new QRCanvas(this._options);
+        promise = canvas.drawQR(this._qr);
+      }
+
+      await promise;
+
+      return canvas;
     }
   }
 
@@ -79,14 +113,30 @@ export default class QRCodeStyling {
     this._container = container;
   }
 
-  download(downloadOptions?: Partial<DownloadOptions> | string): void {
+  async getRawData(extension: Extension = "png"): Promise<Blob | null> {
     if (!this._qr) throw "QR code is empty";
-    let extension = "png";
+    const element = await this._getQRStylingElement(extension);
+
+    if (extension.toLowerCase() === "svg") {
+      const serializer = new XMLSerializer();
+      const source = serializer.serializeToString(((element as unknown) as QRSVG).getElement());
+
+      return new Blob(['<?xml version="1.0" standalone="no"?>\r\n' + source], { type: "image/svg+xml" });
+    } else {
+      return new Promise((resolve) =>
+        ((element as unknown) as QRCanvas).getCanvas().toBlob(resolve, `image/${extension}`, 1)
+      );
+    }
+  }
+
+  async download(downloadOptions?: Partial<DownloadOptions> | string): Promise<void> {
+    if (!this._qr) throw "QR code is empty";
+    let extension = "png" as Extension;
     let name = "qr";
 
     //TODO remove deprecated code in the v2
     if (typeof downloadOptions === "string") {
-      extension = downloadOptions;
+      extension = downloadOptions as Extension;
       console.warn(
         "Extension is deprecated as argument for 'download' method, please pass object { name: '...', extension: '...' } as argument"
       );
@@ -99,41 +149,18 @@ export default class QRCodeStyling {
       }
     }
 
+    const element = await this._getQRStylingElement(extension);
+
     if (extension.toLowerCase() === "svg") {
-      let promise, svg: QRSVG;
+      const serializer = new XMLSerializer();
+      let source = serializer.serializeToString(((element as unknown) as QRSVG).getElement());
 
-      if (this._svg && this._svgDrawingPromise) {
-        svg = this._svg;
-        promise = this._svgDrawingPromise;
-      } else {
-        svg = new QRSVG(this._options);
-        promise = svg.drawQR(this._qr);
-      }
-
-      promise?.then(() => {
-        //get svg source.
-        const serializer = new XMLSerializer();
-        let source = serializer.serializeToString(svg.getElement());
-
-        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-        const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
-        downloadURI(url, `${name}.svg`);
-      });
+      source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+      const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+      downloadURI(url, `${name}.svg`);
     } else {
-      let promise, canvas: QRCanvas;
-
-      if (this._canvas && this._canvasDrawingPromise) {
-        canvas = this._canvas;
-        promise = this._canvasDrawingPromise;
-      } else {
-        canvas = new QRCanvas(this._options);
-        promise = canvas.drawQR(this._qr);
-      }
-
-      promise?.then(() => {
-        const data = canvas.getCanvas().toDataURL(`image/${extension}`);
-        downloadURI(data, `${name}.${extension}`);
-      });
+      const url = ((element as unknown) as QRCanvas).getCanvas().toDataURL(`image/${extension}`);
+      downloadURI(url, `${name}.${extension}`);
     }
   }
 }

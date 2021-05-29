@@ -27,7 +27,7 @@ npm install qr-code-styling
 <head>
     <meta charset="UTF-8">
     <title>QR Code Styling</title>
-    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.4.4/lib/qr-code-styling.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 </head>
 <body>
 <div id="canvas"></div>
@@ -186,13 +186,19 @@ Param    |Type       |Description
 ---------|-----------|-----------
 container|DOM element|This container will be used for appending of the QR code
 
+`QRCodeStyling.getRawData(extension) => Promise<Blob>`
+
+Param    |Type                                |Default Value|Description
+---------|------------------------------------|-------------|------------
+extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |Blob type
+
 `QRCodeStyling.update(options) => void`
 
 Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
 
-`QRCodeStyling.download(downloadOptions) => void`
+`QRCodeStyling.download(downloadOptions) => Promise<void>`
 
 Param          |Type  |Description
 ---------------|------|------------
