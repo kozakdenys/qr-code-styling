@@ -71,12 +71,11 @@ export default class QRCornerSquare {
         this._element.setAttribute("clip-rule", "evenodd");
         this._element.setAttribute(
           "d",
-          `M ${x + size / 2} ${y + size / 2}` + // M cx, cy // Move to center of ring
-            `m ${0} ${-size / 2}` + // m 0, -outerRadius // Move to top of ring
-            `a ${size / 2} ${size / 2} 0 1 0 1 0` + // a outerRadius, outerRadius, 0, 1, 0, 1, 0 // Draw outer arc, but don't close it
+          `M ${x + size / 2} ${y}` + // M cx, y //  Move to top of ring
+            `a ${size / 2} ${size / 2} 0 1 0 0.1 0` + // a outerRadius, outerRadius, 0, 1, 0, 1, 0 // Draw outer arc, but don't close it
             `z` + // Z // Close the outer shape
             `m 0 ${dotSize}` + // m -1 outerRadius-innerRadius // Move to top point of inner radius
-            `a ${size / 2 - dotSize} ${size / 2 - dotSize} 0 1 1 -1 0` + // a innerRadius, innerRadius, 0, 1, 1, -1, 0 // Draw inner arc, but don't close it
+            `a ${size / 2 - dotSize} ${size / 2 - dotSize} 0 1 1 -0.1 0` + // a innerRadius, innerRadius, 0, 1, 1, -1, 0 // Draw inner arc, but don't close it
             `Z` // Z // Close the inner ring. Actually will still work without, but inner ring will have one unit missing in stroke
         );
       }
