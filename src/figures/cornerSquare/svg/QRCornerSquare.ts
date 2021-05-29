@@ -1,27 +1,5 @@
 import cornerSquareTypes from "../../../constants/cornerSquareTypes";
-import { CornerSquareType } from "../../../types";
-
-type DrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  rotation: number;
-};
-
-type BasicFigureDrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  rotation: number;
-};
-
-type RotateFigureArgs = {
-  x: number;
-  y: number;
-  size: number;
-  rotation: number;
-  draw: () => void;
-};
+import { CornerSquareType, DrawArgs, BasicFigureDrawArgs, RotateFigureArgs } from "../../../types";
 
 export default class QRCornerSquare {
   _element?: SVGElement;
@@ -52,7 +30,7 @@ export default class QRCornerSquare {
     drawFunction.call(this, { x, y, size, rotation });
   }
 
-  _rotateFigure({ x, y, size, rotation, draw }: RotateFigureArgs): void {
+  _rotateFigure({ x, y, size, rotation = 0, draw }: RotateFigureArgs): void {
     const cx = x + size / 2;
     const cy = y + size / 2;
 

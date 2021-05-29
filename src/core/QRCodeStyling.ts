@@ -5,15 +5,10 @@ import QRCanvas from "./QRCanvas";
 import QRSVG from "./QRSVG";
 import drawTypes from "../constants/drawTypes";
 
-import defaultOptions, { Options, RequiredOptions } from "./QROptions";
+import defaultOptions, { RequiredOptions } from "./QROptions";
 import sanitizeOptions from "../tools/sanitizeOptions";
-import { Extension, QRCode } from "../types";
+import { QRCode, Options, DownloadOptions } from "../types";
 import qrcode from "qrcode-generator";
-
-type DownloadOptions = {
-  name?: string;
-  extension?: Extension;
-};
 
 export default class QRCodeStyling {
   _options: RequiredOptions;

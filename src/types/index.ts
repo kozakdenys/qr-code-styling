@@ -10,6 +10,15 @@ export type Extension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
 
+export type Gradient = {
+  type: GradientType;
+  rotation?: number;
+  colorStops: {
+    offset: number;
+    color: string;
+  }[];
+};
+
 export interface DotTypes {
   [key: string]: DotType;
 }
@@ -88,3 +97,86 @@ export interface QRCode {
   createASCII(cellSize?: number, margin?: number): string;
   renderTo2dContext(context: CanvasRenderingContext2D, cellSize?: number): void;
 }
+
+export type Options = {
+  type?: DrawType;
+  width?: number;
+  height?: number;
+  margin?: number;
+  data?: string;
+  image?: string;
+  qrOptions?: {
+    typeNumber?: TypeNumber;
+    mode?: Mode;
+    errorCorrectionLevel?: ErrorCorrectionLevel;
+  };
+  imageOptions?: {
+    hideBackgroundDots?: boolean;
+    imageSize?: number;
+    crossOrigin?: string;
+    margin?: number;
+  };
+  dotsOptions?: {
+    type?: DotType;
+    color?: string;
+    gradient?: Gradient;
+  };
+  cornersSquareOptions?: {
+    type?: CornerSquareType;
+    color?: string;
+    gradient?: Gradient;
+  };
+  cornersDotOptions?: {
+    type?: CornerDotType;
+    color?: string;
+    gradient?: Gradient;
+  };
+  backgroundOptions?: {
+    color?: string;
+    gradient?: Gradient;
+  };
+};
+
+export type FilterFunction = (i: number, j: number) => boolean;
+
+export type DownloadOptions = {
+  name?: string;
+  extension?: Extension;
+};
+
+export type DrawArgs = {
+  x: number;
+  y: number;
+  size: number;
+  rotation?: number;
+  getNeighbor?: GetNeighbor;
+};
+
+export type BasicFigureDrawArgs = {
+  x: number;
+  y: number;
+  size: number;
+  rotation?: number;
+};
+
+export type RotateFigureArgs = {
+  x: number;
+  y: number;
+  size: number;
+  rotation?: number;
+  draw: () => void;
+};
+
+export type DrawArgsCanvas = DrawArgs & {
+  context: CanvasRenderingContext2D;
+};
+
+export type BasicFigureDrawArgsCanvas = BasicFigureDrawArgs & {
+  context: CanvasRenderingContext2D;
+};
+
+export type RotateFigureArgsCanvas = RotateFigureArgs & {
+  context: CanvasRenderingContext2D;
+};
+
+export type GetNeighbor = (x: number, y: number) => boolean;

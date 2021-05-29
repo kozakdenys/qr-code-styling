@@ -1,27 +1,5 @@
 import cornerDotTypes from "../../../constants/cornerDotTypes";
-import { CornerDotType } from "../../../types";
-
-type DrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  rotation: number;
-};
-
-type BasicFigureDrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  rotation: number;
-};
-
-type RotateFigureArgs = {
-  x: number;
-  y: number;
-  size: number;
-  rotation: number;
-  draw: () => void;
-};
+import { CornerDotType, RotateFigureArgs, BasicFigureDrawArgs, DrawArgs } from "../../../types";
 
 export default class QRCornerDot {
   _element?: SVGElement;
@@ -49,7 +27,7 @@ export default class QRCornerDot {
     drawFunction.call(this, { x, y, size, rotation });
   }
 
-  _rotateFigure({ x, y, size, rotation, draw }: RotateFigureArgs): void {
+  _rotateFigure({ x, y, size, rotation = 0, draw }: RotateFigureArgs): void {
     const cx = x + size / 2;
     const cy = y + size / 2;
 

@@ -3,11 +3,9 @@ import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "../figures/dot/svg/QRDot";
 import QRCornerSquare from "../figures/cornerSquare/svg/QRCornerSquare";
 import QRCornerDot from "../figures/cornerDot/svg/QRCornerDot";
-import { RequiredOptions, Gradient } from "./QROptions";
+import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
-import { QRCode } from "../types";
-
-type FilterFunction = (i: number, j: number) => boolean;
+import { QRCode, FilterFunction, Gradient } from "../types";
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],

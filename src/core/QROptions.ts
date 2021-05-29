@@ -1,64 +1,7 @@
 import qrTypes from "../constants/qrTypes";
 import drawTypes from "../constants/drawTypes";
 import errorCorrectionLevels from "../constants/errorCorrectionLevels";
-import {
-  DotType,
-  GradientType,
-  CornerSquareType,
-  CornerDotType,
-  TypeNumber,
-  ErrorCorrectionLevel,
-  Mode,
-  DrawType
-} from "../types";
-
-export type Gradient = {
-  type: GradientType;
-  rotation?: number;
-  colorStops: {
-    offset: number;
-    color: string;
-  }[];
-};
-
-export type Options = {
-  type?: DrawType;
-  width?: number;
-  height?: number;
-  margin?: number;
-  data?: string;
-  image?: string;
-  qrOptions?: {
-    typeNumber?: TypeNumber;
-    mode?: Mode;
-    errorCorrectionLevel?: ErrorCorrectionLevel;
-  };
-  imageOptions?: {
-    hideBackgroundDots?: boolean;
-    imageSize?: number;
-    crossOrigin?: string;
-    margin?: number;
-  };
-  dotsOptions?: {
-    type?: DotType;
-    color?: string;
-    gradient?: Gradient;
-  };
-  cornersSquareOptions?: {
-    type?: CornerSquareType;
-    color?: string;
-    gradient?: Gradient;
-  };
-  cornersDotOptions?: {
-    type?: CornerDotType;
-    color?: string;
-    gradient?: Gradient;
-  };
-  backgroundOptions?: {
-    color?: string;
-    gradient?: Gradient;
-  };
-};
+import { DotType, Options, TypeNumber, ErrorCorrectionLevel, Mode, DrawType, Gradient } from "../types";
 
 export interface RequiredOptions extends Options {
   type: DrawType;
