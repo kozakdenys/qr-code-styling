@@ -27,7 +27,7 @@ npm install qr-code-styling
 <head>
     <meta charset="UTF-8">
     <title>QR Code Styling</title>
-    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.4.3/lib/qr-code-styling.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.4.4/lib/qr-code-styling.js"></script>
 </head>
 <body>
 <div id="canvas"></div>
@@ -58,8 +58,21 @@ npm install qr-code-styling
 </body>
 </html>
 ```
+---
 
-[**Usage with React**](https://codesandbox.io/s/qr-code-styling-react-example-l8rwl?file=/src/App.js)
+[**React example (Codesandbox)**](https://codesandbox.io/s/qr-code-styling-react-example-l8rwl?file=/src/App.js)
+
+[**Angular example (Codesandbox)**](https://codesandbox.io/s/agitated-panini-tpgb2?file=/src/app/app.component.ts)
+
+---
+
+[**React example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/react)
+
+[**Angular example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/angular)
+
+[**Vue example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/vue)
+
+---
 
 ### API Documentation
 
