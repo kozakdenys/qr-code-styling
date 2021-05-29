@@ -300,8 +300,8 @@ export default class QRSVG {
         this._cornersDotClipPath = cornersDotClipPath;
 
         this._createColor({
-          options: options.cornersSquareOptions?.gradient,
-          color: options.cornersSquareOptions?.color,
+          options: options.cornersDotOptions?.gradient,
+          color: options.cornersDotOptions?.color,
           additionalRotation: rotation,
           x: x + dotSize * 2,
           y: y + dotSize * 2,
