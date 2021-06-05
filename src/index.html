@@ -6,9 +6,10 @@
     </head>
     <body>
         <div id="canvas"></div>
-        <div id="canvas2"></div>
         <script type="text/javascript">
             const options = {
+              shape: "circle",
+              type: 'svg',
               width: 500,
               height: 500,
               data: "h",
@@ -40,16 +41,9 @@
                 margin: 30
               }
             };
-          const qrCode = new QRCodeStyling(options);
-          const qrCode2 = new QRCodeStyling({
-            ...options,
-            type: 'svg',
-          });
+            const qrCode = new QRCodeStyling(options);
 
             qrCode.append(document.getElementById("canvas"));
-            qrCode2.append(document.getElementById("canvas2"));
-
-            // qrCode2.download()
         </script>
     </body>
 </html>

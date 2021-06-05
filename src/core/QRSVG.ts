@@ -5,6 +5,7 @@ import QRCornerSquare from "../figures/cornerSquare/svg/QRCornerSquare";
 import QRCornerDot from "../figures/cornerDot/svg/QRCornerDot";
 import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
+import shapeTypes from "../constants/shapeTypes";
 import { QRCode, FilterFunction, Gradient } from "../types";
 
 const squareMask = [
@@ -71,7 +72,8 @@ export default class QRSVG {
   async drawQR(qr: QRCode): Promise<void> {
     const count = qr.getModuleCount();
     const minSize = Math.min(this._options.width, this._options.height) - this._options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
+    const realQRSize = this._options.shape === shapeTypes.circle ? minSize / Math.sqrt(2) : minSize;
+    const dotSize = Math.floor(realQRSize / count);
     let drawImageSize = {
       hideXDots: 0,
       hideYDots: 0,
@@ -165,7 +167,8 @@ export default class QRSVG {
     }
 
     const minSize = Math.min(options.width, options.height) - options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
+    const realQRSize = options.shape === shapeTypes.circle ? minSize / Math.sqrt(2) : minSize;
+    const dotSize = Math.floor(realQRSize / count);
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
     const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
@@ -178,10 +181,10 @@ export default class QRSVG {
       options: options.dotsOptions?.gradient,
       color: options.dotsOptions.color,
       additionalRotation: 0,
-      x: xBeginning,
-      y: yBeginning,
-      height: count * dotSize,
-      width: count * dotSize,
+      x: 0,
+      y: 0,
+      height: options.height,
+      width: options.width,
       name: "dot-color"
     });
 
@@ -210,6 +213,59 @@ export default class QRSVG {
         }
       }
     }
+
+    if (options.shape === shapeTypes.circle) {
+      const additionalDots = Math.floor((minSize / dotSize - count) / 2);
+      const fakeCount = count + additionalDots * 2;
+      const xFakeBegining = xBeginning - additionalDots * dotSize;
+      const yFakeBegining = yBeginning - additionalDots * dotSize;
+      const fakeMatrix: number[][] = [];
+
+      for (let i = 0; i < fakeCount; i++) {
+        fakeMatrix[i] = [];
+        for (let j = 0; j < fakeCount; j++) {
+          if (
+            i >= additionalDots - 1 &&
+            i <= fakeCount - additionalDots &&
+            j >= additionalDots - 1 &&
+            j <= fakeCount - additionalDots
+          ) {
+            fakeMatrix[i][j] = 0;
+            continue;
+          }
+
+          if (
+            Math.sqrt((i - fakeCount / 2) * (i - fakeCount / 2) + (j - fakeCount / 2) * (j - fakeCount / 2)) >
+            fakeCount / 2
+          ) {
+            fakeMatrix[i][j] = 0;
+            continue;
+          }
+
+          fakeMatrix[i][j] = Math.round(Math.random());
+        }
+      }
+
+      console.log(fakeMatrix);
+
+      for (let i = 0; i < fakeCount; i++) {
+        for (let j = 0; j < fakeCount; j++) {
+          if (!fakeMatrix[i][j]) continue;
+
+          dot.draw(
+            xFakeBegining + i * dotSize,
+            yFakeBegining + j * dotSize,
+            dotSize,
+            (xOffset: number, yOffset: number): boolean => {
+              return !!fakeMatrix[i + xOffset]?.[j + yOffset];
+            }
+          );
+          if (dot._element && this._dotsClipPath) {
+            this._dotsClipPath.appendChild(dot._element);
+          }
+        }
+      }
+    }
   }
 
   drawCorners(): void {
@@ -226,7 +282,8 @@ export default class QRSVG {
 
     const count = this._qr.getModuleCount();
     const minSize = Math.min(options.width, options.height) - options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
+    const realQRSize = options.shape === shapeTypes.circle ? minSize / Math.sqrt(2) : minSize;
+    const dotSize = Math.floor(realQRSize / count);
     const cornersSquareSize = dotSize * 7;
     const cornersDotSize = dotSize * 3;
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
