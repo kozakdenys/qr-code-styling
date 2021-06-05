@@ -1,5 +1,6 @@
 import calculateImageSize from "../tools/calculateImageSize";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
+import backgroundShapeTypes from "../constants/backgroundShapeTypes";
 import QRDot from "../figures/dot/svg/QRDot";
 import QRCornerSquare from "../figures/cornerSquare/svg/QRCornerSquare";
 import QRCornerDot from "../figures/cornerDot/svg/QRCornerDot";
@@ -31,6 +32,7 @@ const dotMask = [
 export default class QRSVG {
   _element: SVGElement;
   _defs: SVGElement;
+  _backgroundClipPath?: SVGElement;
   _dotsClipPath?: SVGElement;
   _cornersSquareClipPath?: SVGElement;
   _cornersDotClipPath?: SVGElement;
@@ -151,6 +153,19 @@ export default class QRSVG {
           name: "background-color"
         });
       }
+
+      if (options.backgroundOptions?.shape === backgroundShapeTypes.circle) {
+        const element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        this._backgroundClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+        this._backgroundClipPath.setAttribute("id", "clip-path-background-color");
+        this._defs.appendChild(this._backgroundClipPath);
+
+        element.setAttribute("cx", String(options.width / 2));
+        element.setAttribute("cy", String(options.height / 2));
+        element.setAttribute("r", String(Math.min(options.width, options.height) / 2));
+
+        this._backgroundClipPath.appendChild(element);
+      }
     }
   }
 
@@ -217,9 +232,10 @@ export default class QRSVG {
     if (options.shape === shapeTypes.circle) {
       const additionalDots = Math.floor((minSize / dotSize - count) / 2);
       const fakeCount = count + additionalDots * 2;
-      const xFakeBegining = xBeginning - additionalDots * dotSize;
-      const yFakeBegining = yBeginning - additionalDots * dotSize;
+      const xFakeBeginning = xBeginning - additionalDots * dotSize;
+      const yFakeBeginning = yBeginning - additionalDots * dotSize;
       const fakeMatrix: number[][] = [];
+      const center = Math.floor(fakeCount / 2);
 
       for (let i = 0; i < fakeCount; i++) {
         fakeMatrix[i] = [];
@@ -234,27 +250,28 @@ export default class QRSVG {
             continue;
           }
 
-          if (
-            Math.sqrt((i - fakeCount / 2) * (i - fakeCount / 2) + (j - fakeCount / 2) * (j - fakeCount / 2)) >
-            fakeCount / 2
-          ) {
+          if (Math.sqrt((i - center) * (i - center) + (j - center) * (j - center)) > center) {
             fakeMatrix[i][j] = 0;
             continue;
           }
 
-          fakeMatrix[i][j] = Math.round(Math.random());
+          //Get random dots from QR code to show it outside of QR code
+          fakeMatrix[i][j] = this._qr.isDark(
+            j - 2 * additionalDots < 0 ? j : j >= count ? j - 2 * additionalDots : j - additionalDots,
+            i - 2 * additionalDots < 0 ? i : i >= count ? i - 2 * additionalDots : i - additionalDots
+          )
+            ? 1
+            : 0;
         }
       }
-
-      console.log(fakeMatrix);
 
       for (let i = 0; i < fakeCount; i++) {
         for (let j = 0; j < fakeCount; j++) {
           if (!fakeMatrix[i][j]) continue;
 
           dot.draw(
-            xFakeBegining + i * dotSize,
-            yFakeBegining + j * dotSize,
+            xFakeBeginning + i * dotSize,
+            yFakeBeginning + j * dotSize,
             dotSize,
             (xOffset: number, yOffset: number): boolean => {
               return !!fakeMatrix[i + xOffset]?.[j + yOffset];
