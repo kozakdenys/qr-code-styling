@@ -109,6 +109,7 @@ export interface QRCode {
 }
 
 export type Options = {
+  experimental?: boolean;
   type?: DrawType;
   shape?: ShapeType;
   width?: number;
@@ -147,6 +148,8 @@ export type Options = {
     color?: string;
     gradient?: Gradient;
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  extensionOptions?: any;
 };
 
 export type FilterFunction = (i: number, j: number) => boolean;
@@ -192,3 +195,4 @@ export type RotateFigureArgsCanvas = RotateFigureArgs & {
 };
 
 export type GetNeighbor = (x: number, y: number) => boolean;
+export type ExtensionFunction = ({ options, svg }: { options: Options; svg: SVGElement }) => void;

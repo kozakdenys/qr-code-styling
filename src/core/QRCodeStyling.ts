@@ -7,7 +7,7 @@ import drawTypes from "../constants/drawTypes";
 
 import defaultOptions, { RequiredOptions } from "./QROptions";
 import sanitizeOptions from "../tools/sanitizeOptions";
-import { Extension, QRCode, Options, DownloadOptions } from "../types";
+import { Extension, QRCode, Options, DownloadOptions, ExtensionFunction } from "../types";
 import qrcode from "qrcode-generator";
 
 export default class QRCodeStyling {
@@ -16,6 +16,7 @@ export default class QRCodeStyling {
   _canvas?: QRCanvas;
   _svg?: QRSVG;
   _qr?: QRCode;
+  _extension?: ExtensionFunction;
   _canvasDrawingPromise?: Promise<void>;
   _svgDrawingPromise?: Promise<void>;
 
@@ -64,7 +65,7 @@ export default class QRCodeStyling {
     }
   }
 
-  update(options?: Partial<Options>): void {
+  async update(options?: Partial<Options>): Promise<void> {
     QRCodeStyling._clearContainer(this._container);
     this._options = options ? sanitizeOptions(mergeDeep(this._options, options) as RequiredOptions) : this._options;
 
@@ -89,6 +90,11 @@ export default class QRCodeStyling {
     }
 
     this.append(this._container);
+
+    if (this._extension && this._svg) {
+      await this._svgDrawingPromise;
+      this._extension({ options: this._options, svg: this._svg.getElement() });
+    }
   }
 
   append(container?: HTMLElement): void {
@@ -111,6 +117,21 @@ export default class QRCodeStyling {
     }
 
     this._container = container;
+  }
+
+  //Experimental function
+  applyExtension(extension: ExtensionFunction): void {
+    if (!this._options.experimental) {
+      console.warn('This is experimental function. Pass "experimental: true" to the options if you want to use it.');
+      return;
+    }
+
+    if (!extension) {
+      throw "Extension function should be defined.";
+    }
+
+    this._extension = extension;
+    this.update();
   }
 
   async getRawData(extension: Extension = "png"): Promise<Blob | null> {
