@@ -1,19 +1,8 @@
 import qrTypes from "../constants/qrTypes";
 import drawTypes from "../constants/drawTypes";
 import shapeTypes from "../constants/shapeTypes";
-import backgroundShapeTypes from "../constants/backgroundShapeTypes";
 import errorCorrectionLevels from "../constants/errorCorrectionLevels";
-import {
-  BackgroundShape,
-  ShapeType,
-  DotType,
-  Options,
-  TypeNumber,
-  ErrorCorrectionLevel,
-  Mode,
-  DrawType,
-  Gradient
-} from "../types";
+import { ShapeType, DotType, Options, TypeNumber, ErrorCorrectionLevel, Mode, DrawType, Gradient } from "../types";
 
 export interface RequiredOptions extends Options {
   experimental: boolean;
@@ -40,7 +29,7 @@ export interface RequiredOptions extends Options {
     gradient?: Gradient;
   };
   backgroundOptions: {
-    shape: BackgroundShape;
+    round: number;
     color: string;
     gradient?: Gradient;
   };
@@ -70,7 +59,7 @@ const defaultOptions: RequiredOptions = {
     color: "#000"
   },
   backgroundOptions: {
-    shape: backgroundShapeTypes.square,
+    round: 0,
     color: "#fff"
   }
 };

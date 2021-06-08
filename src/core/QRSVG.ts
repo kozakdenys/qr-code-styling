@@ -1,6 +1,5 @@
 import calculateImageSize from "../tools/calculateImageSize";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
-import backgroundShapeTypes from "../constants/backgroundShapeTypes";
 import QRDot from "../figures/dot/svg/QRDot";
 import QRCornerSquare from "../figures/cornerSquare/svg/QRCornerSquare";
 import QRCornerDot from "../figures/cornerDot/svg/QRCornerDot";
@@ -154,15 +153,18 @@ export default class QRSVG {
         });
       }
 
-      if (options.backgroundOptions?.shape === backgroundShapeTypes.circle) {
-        const element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      if (options.backgroundOptions?.round) {
+        const size = Math.min(options.width, options.height);
+        const element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this._backgroundClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
         this._backgroundClipPath.setAttribute("id", "clip-path-background-color");
         this._defs.appendChild(this._backgroundClipPath);
 
-        element.setAttribute("cx", String(options.width / 2));
-        element.setAttribute("cy", String(options.height / 2));
-        element.setAttribute("r", String(Math.min(options.width, options.height) / 2));
+        element.setAttribute("x", String((options.width - size) / 2));
+        element.setAttribute("y", String((options.height - size) / 2));
+        element.setAttribute("width", String(size));
+        element.setAttribute("height", String(size));
+        element.setAttribute("rx", String((size / 2) * options.backgroundOptions.round));
 
         this._backgroundClipPath.appendChild(element);
       }
