@@ -62,14 +62,6 @@ export default class QRSVG {
     return this._element;
   }
 
-  clear(): void {
-    const oldElement = this._element;
-    this._element = oldElement.cloneNode(false) as SVGElement;
-    oldElement?.parentNode?.replaceChild(this._element, oldElement);
-    this._defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    this._element.appendChild(this._defs);
-  }
-
   async drawQR(qr: QRCode): Promise<void> {
     const count = qr.getModuleCount();
     const minSize = Math.min(this._options.width, this._options.height) - this._options.margin * 2;
@@ -101,7 +93,6 @@ export default class QRSVG {
       });
     }
 
-    this.clear();
     this.drawBackground();
     this.drawDots((i: number, j: number): boolean => {
       if (this._options.imageOptions.hideBackgroundDots) {
