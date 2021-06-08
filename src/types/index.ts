@@ -177,17 +177,5 @@ export type RotateFigureArgs = {
   draw: () => void;
 };
 
-export type DrawArgsCanvas = DrawArgs & {
-  context: CanvasRenderingContext2D;
-};
-
-export type BasicFigureDrawArgsCanvas = BasicFigureDrawArgs & {
-  context: CanvasRenderingContext2D;
-};
-
-export type RotateFigureArgsCanvas = RotateFigureArgs & {
-  context: CanvasRenderingContext2D;
-};
-
 export type GetNeighbor = (x: number, y: number) => boolean;
 export type ExtensionFunction = ({ options, svg }: { options: Options; svg: SVGElement }) => void;
