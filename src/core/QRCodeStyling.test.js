@@ -33,8 +33,8 @@ describe("Test QRCodeStyling class", () => {
     qrCode.append(container);
     //TODO remove setTimout
     setTimeout(() => {
-      expect(qrCode._canvas.getCanvas().toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));
+      expect(qrCode._canvas.toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));
       done();
-    });
+    }, 1000);
   });
 });

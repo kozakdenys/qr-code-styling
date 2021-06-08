@@ -1,4 +1,5 @@
 import calculateImageSize from "../tools/calculateImageSize";
+import toDataUrl from "../tools/toDataUrl";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "../figures/dot/QRDot";
 import QRCornerSquare from "../figures/cornerSquare/QRCornerSquare";
@@ -119,7 +120,7 @@ export default class QRSVG {
     this.drawCorners();
 
     if (this._options.image) {
-      this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
+      await this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
     }
   }
 
@@ -430,7 +431,7 @@ export default class QRSVG {
     });
   }
 
-  drawImage({
+  async drawImage({
     width,
     height,
     count,
@@ -440,7 +441,7 @@ export default class QRSVG {
     height: number;
     count: number;
     dotSize: number;
-  }): void {
+  }): Promise<void> {
     const options = this._options;
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
@@ -450,11 +451,14 @@ export default class QRSVG {
     const dh = height - options.imageOptions.margin * 2;
 
     const image = document.createElementNS("http://www.w3.org/2000/svg", "image");
-    image.setAttribute("href", options.image || "");
     image.setAttribute("x", String(dx));
     image.setAttribute("y", String(dy));
     image.setAttribute("width", `${dw}px`);
     image.setAttribute("height", `${dh}px`);
+
+    const imageUrl = await toDataUrl(options.image || "");
+
+    image.setAttribute("href", imageUrl || "");
 
     this._element.appendChild(image);
   }
