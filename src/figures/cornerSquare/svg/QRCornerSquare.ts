@@ -1,14 +1,16 @@
 import cornerSquareTypes from "../../../constants/cornerSquareTypes";
-import { CornerSquareType, DrawArgs, BasicFigureDrawArgs, RotateFigureArgs } from "../../../types";
+import { CornerSquareType, DrawArgs, BasicFigureDrawArgs, RotateFigureArgs, Window } from "../../../types";
 
 export default class QRCornerSquare {
   _element?: SVGElement;
   _svg: SVGElement;
   _type: CornerSquareType;
+  _window: Window;
 
-  constructor({ svg, type }: { svg: SVGElement; type: CornerSquareType }) {
+  constructor({ svg, type, window }: { svg: SVGElement; type: CornerSquareType; window: Window }) {
     this._svg = svg;
     this._type = type;
+    this._window = window;
   }
 
   draw(x: number, y: number, size: number, rotation: number): void {
@@ -45,7 +47,7 @@ export default class QRCornerSquare {
     this._rotateFigure({
       ...args,
       draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
         this._element.setAttribute("clip-rule", "evenodd");
         this._element.setAttribute(
           "d",
@@ -67,7 +69,7 @@ export default class QRCornerSquare {
     this._rotateFigure({
       ...args,
       draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
         this._element.setAttribute("clip-rule", "evenodd");
         this._element.setAttribute(
           "d",
@@ -93,7 +95,7 @@ export default class QRCornerSquare {
     this._rotateFigure({
       ...args,
       draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
         this._element.setAttribute("clip-rule", "evenodd");
         this._element.setAttribute(
           "d",

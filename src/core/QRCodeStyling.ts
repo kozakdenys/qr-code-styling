@@ -113,24 +113,35 @@ export default class QRCodeStyling {
     this._container = container;
   }
 
-  async getRawData(extension: Extension = "png"): Promise<Blob | null> {
+  async getRawData(extension: Extension = "png"): Promise<Blob | Buffer | null> {
     if (!this._qr) throw "QR code is empty";
     const element = await this._getQRStylingElement(extension);
 
     if (extension.toLowerCase() === "svg") {
-      const serializer = new XMLSerializer();
+      const serializer = new ((element as unknown) as QRSVG)._window.XMLSerializer();
       const source = serializer.serializeToString(((element as unknown) as QRSVG).getElement());
+      const svgString = `<?xml version="1.0" standalone="no"?>\r\n${source}`;
 
-      return new Blob(['<?xml version="1.0" standalone="no"?>\r\n' + source], { type: "image/svg+xml" });
+      if (typeof Blob !== "undefined" && !this._options.jsdom) {
+        return new Blob([svgString], { type: "image/svg+xml" });
+      } else {
+        return Buffer.from(svgString);
+      }
     } else {
-      return new Promise((resolve) =>
-        ((element as unknown) as QRCanvas).getCanvas().toBlob(resolve, `image/${extension}`, 1)
-      );
+      return new Promise((resolve) => {
+        const canvas = ((element as unknown) as QRCanvas).getCanvas();
+        if (canvas.toBuffer) {
+          resolve(canvas.toBuffer(`image/${extension}`));
+        } else {
+          canvas.toBlob(resolve, `image/${extension}`, 1);
+        }
+      });
     }
   }
 
   async download(downloadOptions?: Partial<DownloadOptions> | string): Promise<void> {
     if (!this._qr) throw "QR code is empty";
+    if (typeof Blob === "undefined") throw "Cannot download in Node.js, call getRawData instead.";
     let extension = "png" as Extension;
     let name = "qr";
 

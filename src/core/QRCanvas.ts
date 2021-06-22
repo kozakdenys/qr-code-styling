@@ -5,11 +5,7 @@ import QRCornerSquare from "../figures/cornerSquare/canvas/QRCornerSquare";
 import QRCornerDot from "../figures/cornerDot/canvas/QRCornerDot";
 import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
-import { QRCode, Gradient, FilterFunction } from "../types";
-
-interface Canvas extends HTMLCanvasElement {
-  toBuffer?: (type: string) => Buffer;
-}
+import { QRCode, Gradient, FilterFunction, Canvas } from "../types";
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -39,7 +35,11 @@ export default class QRCanvas {
 
   //TODO don't pass all options to this class
   constructor(options: RequiredOptions) {
-    this._canvas = options.nodeCanvas?.createCanvas(options.width, options.height) ?? document.createElement("canvas");
+    if (options.nodeCanvas?.createCanvas) {
+      this._canvas = options.nodeCanvas.createCanvas(options.width, options.height);
+    } else {
+      this._canvas = document.createElement("canvas");
+    }
     this._canvas.width = options.width;
     this._canvas.height = options.height;
     this._options = options;
@@ -366,7 +366,7 @@ export default class QRCanvas {
         return reject("Image is not defined");
       }
 
-      if (options.nodeCanvas) {
+      if (options.nodeCanvas?.loadImage) {
         options.nodeCanvas
           .loadImage(options.image)
           .then((image: HTMLImageElement) => {

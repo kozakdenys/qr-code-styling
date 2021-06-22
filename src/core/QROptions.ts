@@ -9,14 +9,13 @@ export interface RequiredOptions extends Options {
   height: number;
   margin: number;
   data: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nodeCanvas?: any;
   qrOptions: {
     typeNumber: TypeNumber;
     mode?: Mode;
     errorCorrectionLevel: ErrorCorrectionLevel;
   };
   imageOptions: {
+    saveAsBlob: boolean;
     hideBackgroundDots: boolean;
     imageSize: number;
     crossOrigin?: string;
@@ -39,13 +38,13 @@ const defaultOptions: RequiredOptions = {
   height: 300,
   data: "",
   margin: 0,
-  nodeCanvas: null,
   qrOptions: {
     typeNumber: qrTypes[0],
     mode: undefined,
     errorCorrectionLevel: errorCorrectionLevels.Q
   },
   imageOptions: {
+    saveAsBlob: false,
     hideBackgroundDots: true,
     imageSize: 0.4,
     crossOrigin: undefined,

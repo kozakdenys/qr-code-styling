@@ -99,7 +99,8 @@ dotsOptions            |object                   |             |Dots styling opt
 cornersSquareOptions   |object                   |             |Square in the corners styling options
 cornersDotOptionsHelper|object                   |             |Dots in the corners styling options
 backgroundOptions      |object                   |             |QR background styling options
-nodeCanvas             |node-canvas              |             |Only specify when running on a node server, please refer to node section below
+nodeCanvas             |node-canvas              |             |Only specify when running on a node server for canvas type, please refer to node section below
+jsDom                  |jsdom                    |             |Only specify when running on a node server for svg type, please refer to node section below
 
 `options.qrOptions` structure
 
@@ -117,6 +118,9 @@ hideBackgroundDots|boolean                                |`true`       |Hide al
 imageSize         |number                                 |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
 margin            |number                                 |`0`          |Margin of the image in px
 crossOrigin       |string(`'anonymous' 'use-credentials'`)|             |Set "anonymous" if you want to download QR code from other origins.
+saveAsBlob        |boolean                                |`false`      |Saves image as base64 blob in svg type, see bellow
+
+When QR type is svg, the image may not load in certain applications as it is saved as a url, and some svg applications will not render url images for security reasons. Setting `saveAsBlob` to true will instead save the image as a blob, allowing it to render correctly in more places, but will also increase the file size.
 
 `options.dotsOptions` structure
 
@@ -191,7 +195,7 @@ container|DOM element|This container will be used for appending of the QR code
 
 Param    |Type                                |Default Value|Description
 ---------|------------------------------------|-------------|------------
-extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |Blob type
+extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |Blob type on browser, Buffer type on Node
 
 `QRCodeStyling.update(options) => void`
 
@@ -215,16 +219,17 @@ name     |string                              |`'qr'`       |Name of the downloa
 extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |File extension
 
 ### Node Support
-You can use this on a node server by passing through the node-canvas object.
-You can also request a Buffer from the download method and the `skipDownload` option will be forced `true`.
+You can use this on a node server by passing through the node-canvas or jsdom object depending if your creating a non-svg or svg respectively. You must pass both if using `imageOptions.saveAsBlob`.
+
+Calling `getRawData` in node will return a Buffer instead of a Blob.
 
 ```js
-const { QRCodeStyling } = require('qr-code-styling/lib/qr-code-styling.common.js');
-const nodeCanvas = require('canvas');
-const fs = require('fs');
+const { QRCodeStyling } = require("qr-code-styling/lib/qr-code-styling.common.js");
+const nodeCanvas = require("canvas");
+const { JSDOM } = require("jsdom");
+const fs = require("fs");
 
-const qrCode = new QRCodeStyling({
-    nodeCanvas, // this is required
+const options = {
     width: 300,
     height: 300,
     data: "https://www.facebook.com/",
@@ -240,10 +245,45 @@ const qrCode = new QRCodeStyling({
         crossOrigin: "anonymous",
         margin: 20
     }
+}
+
+// For canvas type
+const qrCodeImage = new QRCodeStyling({
+    nodeCanvas, // this is required
+    ...options
 });
 
-qrCode.download({ buffer: true }).then((buffer) => {
-  fs.writeFileSync('test.png', buffer);
+qrCodeImage.getRawData("png").then((buffer) => {
+  fs.writeFileSync("test.png", buffer);
+});
+
+// For svg type
+const qrCodeSvg = new QRCodeStyling({
+    jsdom: JSDOM, // this is required
+    type: "svg",
+    ...options
+});
+
+qrCodeSvg.getRawData("svg").then((buffer) => {
+  fs.writeFileSync("test.svg", buffer);
+});
+
+// For svg type with the inner-image saved as a blob
+// (inner-image will render in more places but file will be larger)
+const qrCodeSvgWithBlobImage = new QRCodeStyling({
+    jsdom: JSDOM, // this is required
+    nodeCanvas, // this is required
+    type: "svg",
+    ...options,
+    imageOptions: {
+        saveAsBlob: true,
+        crossOrigin: "anonymous",
+        margin: 20
+    }
+});
+
+qrCodeSvgWithBlobImage.getRawData("svg").then((buffer) => {
+  fs.writeFileSync("test_blob.svg", buffer);
 });
 
 ```
