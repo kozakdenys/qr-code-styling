@@ -10,6 +10,34 @@ export type Extension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
 
+export interface Canvas extends HTMLCanvasElement {
+  toBuffer?: (type: string) => Buffer;
+  createCanvas?: (width: number, height: number) => Canvas;
+  loadImage?: (image: string) => Promise<HTMLImageElement>;
+}
+
+export interface Window {
+  Image: typeof HTMLImageElement;
+  XMLSerializer: typeof XMLSerializer;
+  document: Document;
+}
+declare const window: Window;
+
+interface JsDomOptions {
+  resources: string;
+}
+export class JSDom {
+  window: Window;
+  _options: JsDomOptions;
+  _input: string;
+
+  constructor(input: string, options: JsDomOptions) {
+    this._options = options;
+    this._input = input;
+    this.window = window;
+  }
+}
+
 export type Gradient = {
   type: GradientType;
   rotation?: number;
@@ -105,12 +133,15 @@ export type Options = {
   margin?: number;
   data?: string;
   image?: string;
+  nodeCanvas?: Canvas;
+  jsdom?: typeof JSDom;
   qrOptions?: {
     typeNumber?: TypeNumber;
     mode?: Mode;
     errorCorrectionLevel?: ErrorCorrectionLevel;
   };
   imageOptions?: {
+    saveAsBlob?: boolean;
     hideBackgroundDots?: boolean;
     imageSize?: number;
     crossOrigin?: string;

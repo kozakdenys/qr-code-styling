@@ -1,14 +1,16 @@
 import cornerDotTypes from "../../../constants/cornerDotTypes";
-import { CornerDotType, RotateFigureArgs, BasicFigureDrawArgs, DrawArgs } from "../../../types";
+import { CornerDotType, RotateFigureArgs, BasicFigureDrawArgs, DrawArgs, Window } from "../../../types";
 
 export default class QRCornerDot {
   _element?: SVGElement;
   _svg: SVGElement;
   _type: CornerDotType;
+  _window: Window;
 
-  constructor({ svg, type }: { svg: SVGElement; type: CornerDotType }) {
+  constructor({ svg, type, window }: { svg: SVGElement; type: CornerDotType; window: Window }) {
     this._svg = svg;
     this._type = type;
+    this._window = window;
   }
 
   draw(x: number, y: number, size: number, rotation: number): void {
@@ -41,7 +43,7 @@ export default class QRCornerDot {
     this._rotateFigure({
       ...args,
       draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "circle");
         this._element.setAttribute("cx", String(x + size / 2));
         this._element.setAttribute("cy", String(y + size / 2));
         this._element.setAttribute("r", String(size / 2));
@@ -55,7 +57,7 @@ export default class QRCornerDot {
     this._rotateFigure({
       ...args,
       draw: () => {
-        this._element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this._element.setAttribute("x", String(x));
         this._element.setAttribute("y", String(y));
         this._element.setAttribute("width", String(size));
