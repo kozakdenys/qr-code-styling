@@ -1,13 +1,11 @@
 import calculateImageSize from "../tools/calculateImageSize";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
-import QRDot from "./QRDot";
-import QRCornerSquare from "./QRCornerSquare";
-import QRCornerDot from "./QRCornerDot";
-import { RequiredOptions, Gradient } from "./QROptions";
+import QRDot from "../figures/dot/canvas/QRDot";
+import QRCornerSquare from "../figures/cornerSquare/canvas/QRCornerSquare";
+import QRCornerDot from "../figures/cornerDot/canvas/QRCornerDot";
+import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
-import { QRCode } from "../types";
-
-type FilterFunction = (i: number, j: number) => boolean;
+import { QRCode, Gradient, FilterFunction } from "../types";
 
 interface Canvas extends HTMLCanvasElement {
   toBuffer?: (type: string) => Buffer;

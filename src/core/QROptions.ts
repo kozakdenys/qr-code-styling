@@ -1,64 +1,10 @@
 import qrTypes from "../constants/qrTypes";
+import drawTypes from "../constants/drawTypes";
 import errorCorrectionLevels from "../constants/errorCorrectionLevels";
-import {
-  DotType,
-  GradientType,
-  CornerSquareType,
-  CornerDotType,
-  TypeNumber,
-  ErrorCorrectionLevel,
-  Mode
-} from "../types";
-
-export type Gradient = {
-  type: GradientType;
-  rotation?: number;
-  colorStops: {
-    offset: number;
-    color: string;
-  }[];
-};
-
-export type Options = {
-  width?: number;
-  height?: number;
-  data?: string;
-  image?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nodeCanvas?: any;
-  qrOptions?: {
-    typeNumber?: TypeNumber;
-    mode?: Mode;
-    errorCorrectionLevel?: ErrorCorrectionLevel;
-  };
-  imageOptions?: {
-    hideBackgroundDots?: boolean;
-    imageSize?: number;
-    crossOrigin?: string;
-    margin?: number;
-  };
-  dotsOptions?: {
-    type?: DotType;
-    color?: string;
-    gradient?: Gradient;
-  };
-  cornersSquareOptions?: {
-    type?: CornerSquareType;
-    color?: string;
-    gradient?: Gradient;
-  };
-  cornersDotOptions?: {
-    type?: CornerDotType;
-    color?: string;
-    gradient?: Gradient;
-  };
-  backgroundOptions?: {
-    color?: string;
-    gradient?: Gradient;
-  };
-};
+import { DotType, Options, TypeNumber, ErrorCorrectionLevel, Mode, DrawType, Gradient } from "../types";
 
 export interface RequiredOptions extends Options {
+  type: DrawType;
   width: number;
   height: number;
   margin: number;
@@ -88,6 +34,7 @@ export interface RequiredOptions extends Options {
 }
 
 const defaultOptions: RequiredOptions = {
+  type: drawTypes.canvas,
   width: 300,
   height: 300,
   data: "",

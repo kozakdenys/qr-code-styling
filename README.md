@@ -27,7 +27,7 @@ npm install qr-code-styling
 <head>
     <meta charset="UTF-8">
     <title>QR Code Styling</title>
-    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.3.3/lib/qr-code-styling.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 </head>
 <body>
 <div id="canvas"></div>
@@ -36,6 +36,7 @@ npm install qr-code-styling
     const qrCode = new QRCodeStyling({
         width: 300,
         height: 300,
+        type: "svg",
         data: "https://www.facebook.com/",
         image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
         dotsOptions: {
@@ -52,12 +53,26 @@ npm install qr-code-styling
     });
 
     qrCode.append(document.getElementById("canvas"));
+    qrCode.download({ name: "qr", extension: "svg" });
 </script>
 </body>
 </html>
 ```
+---
 
-[**Usage with React**](https://codesandbox.io/s/qr-code-styling-react-example-l8rwl?file=/src/App.js)
+[**React example (Codesandbox)**](https://codesandbox.io/s/qr-code-styling-react-example-l8rwl?file=/src/App.js)
+
+[**Angular example (Codesandbox)**](https://codesandbox.io/s/agitated-panini-tpgb2?file=/src/app/app.component.ts)
+
+---
+
+[**React example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/react)
+
+[**Angular example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/angular)
+
+[**Vue example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/vue)
+
+---
 
 ### API Documentation
 
@@ -70,20 +85,21 @@ options|object|Init object
 
 `options` structure
 
-Property               |Type  |Default Value|Description
------------------------|------|-------------|-----------------------------------------------------
-width                  |number|`300`        |Size of canvas
-height                 |number|`300`        |Size of canvas
-data                   |string|             |The date will be encoded to the QR code
-image                  |string|             |The image will be copied to the center of the QR code
-margin                 |number|`0`          |Margin around canvas
-qrOptions              |object|             |Options will be passed to `qrcode-generator` lib
-imageOptions           |object|             |Specific image options, details see below
-dotsOptions            |object|             |Dots styling options
-cornersSquareOptions   |object|             |Square in the corners styling options
-cornersDotOptionsHelper|object|             |Dots in the corners styling options
-backgroundOptions      |object|             |QR background styling options
-nodeCanvas      |node-canvas|             |Only specify when running on a node server, please refer to node section below
+Property               |Type                     |Default Value|Description
+-----------------------|-------------------------|-------------|-----------------------------------------------------
+width                  |number                   |`300`        |Size of canvas
+height                 |number                   |`300`        |Size of canvas
+type                   |string (`'canvas' 'svg'`)|`canvas`     |The type of the element that will be rendered
+data                   |string                   |             |The date will be encoded to the QR code
+image                  |string                   |             |The image will be copied to the center of the QR code
+margin                 |number                   |`0`          |Margin around canvas
+qrOptions              |object                   |             |Options will be passed to `qrcode-generator` lib
+imageOptions           |object                   |             |Specific image options, details see below
+dotsOptions            |object                   |             |Dots styling options
+cornersSquareOptions   |object                   |             |Square in the corners styling options
+cornersDotOptionsHelper|object                   |             |Dots in the corners styling options
+backgroundOptions      |object                   |             |QR background styling options
+nodeCanvas             |node-canvas              |             |Only specify when running on a node server, please refer to node section below
 
 `options.qrOptions` structure
 
@@ -171,13 +187,19 @@ Param    |Type       |Description
 ---------|-----------|-----------
 container|DOM element|This container will be used for appending of the QR code
 
+`QRCodeStyling.getRawData(extension) => Promise<Blob>`
+
+Param    |Type                                |Default Value|Description
+---------|------------------------------------|-------------|------------
+extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |Blob type
+
 `QRCodeStyling.update(options) => void`
 
 Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
 
-`QRCodeStyling.download(downloadOptions) => Promise`
+`QRCodeStyling.download(downloadOptions) => Promise<void>`
 
 Param          |Type  |Description
 ---------------|------|------------
@@ -187,15 +209,14 @@ Promise returned will resolve into the data URI of the QR code image.
 
 `downloadOptions` structure
 
-Property |Type                          |Default Value|Description
----------|------------------------------|-------------|-----------------------------------------------------
-name     |string                        |`'qr'`       |Name of the downloaded file
-extension|string (`'png' 'jpeg' 'webp'`)|`'png'`      |File extension
-buffer|boolean|`false`      |Return a Buffer instead of a URI. Node server only.
-skipDownload|boolean|`false`      |Skip trying to trigger a client download of the file, just return the URI.
+Property |Type                                |Default Value|Description
+---------|------------------------------------|-------------|-----------------------------------------------------
+name     |string                              |`'qr'`       |Name of the downloaded file
+extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |File extension
 
 ### Node Support
-You can use this on a node server by passing through the node-canvas object. You can also request a Buffer from the download method and the `skipDownload` option will be forced `true`.
+You can use this on a node server by passing through the node-canvas object.
+You can also request a Buffer from the download method and the `skipDownload` option will be forced `true`.
 
 ```js
 const { QRCodeStyling } = require('qr-code-styling/lib/qr-code-styling.common.js');

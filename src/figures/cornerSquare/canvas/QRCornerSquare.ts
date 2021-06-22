@@ -1,30 +1,5 @@
-import cornerSquareTypes from "../constants/cornerSquareTypes";
-import { CornerSquareType } from "../types";
-
-type DrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-};
-
-type BasicFigureDrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-};
-
-type RotateFigureArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-  draw: () => void;
-};
+import cornerSquareTypes from "../../../constants/cornerSquareTypes";
+import { CornerSquareType, RotateFigureArgsCanvas, BasicFigureDrawArgsCanvas, DrawArgsCanvas } from "../../../types";
 
 export default class QRCornerSquare {
   _context: CanvasRenderingContext2D;
@@ -55,7 +30,7 @@ export default class QRCornerSquare {
     drawFunction.call(this, { x, y, size, context, rotation });
   }
 
-  _rotateFigure({ x, y, size, context, rotation, draw }: RotateFigureArgs): void {
+  _rotateFigure({ x, y, size, context, rotation = 0, draw }: RotateFigureArgsCanvas): void {
     const cx = x + size / 2;
     const cy = y + size / 2;
 
@@ -67,7 +42,7 @@ export default class QRCornerSquare {
     context.translate(-cx, -cy);
   }
 
-  _basicDot(args: BasicFigureDrawArgs): void {
+  _basicDot(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
     const dotSize = size / 7;
 
@@ -80,7 +55,7 @@ export default class QRCornerSquare {
     });
   }
 
-  _basicSquare(args: BasicFigureDrawArgs): void {
+  _basicSquare(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
     const dotSize = size / 7;
 
@@ -93,7 +68,7 @@ export default class QRCornerSquare {
     });
   }
 
-  _basicExtraRounded(args: BasicFigureDrawArgs): void {
+  _basicExtraRounded(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
     const dotSize = size / 7;
 
@@ -121,15 +96,15 @@ export default class QRCornerSquare {
     });
   }
 
-  _drawDot({ x, y, size, context, rotation }: DrawArgs): void {
+  _drawDot({ x, y, size, context, rotation }: DrawArgsCanvas): void {
     this._basicDot({ x, y, size, context, rotation });
   }
 
-  _drawSquare({ x, y, size, context, rotation }: DrawArgs): void {
+  _drawSquare({ x, y, size, context, rotation }: DrawArgsCanvas): void {
     this._basicSquare({ x, y, size, context, rotation });
   }
 
-  _drawExtraRounded({ x, y, size, context, rotation }: DrawArgs): void {
+  _drawExtraRounded({ x, y, size, context, rotation }: DrawArgsCanvas): void {
     this._basicExtraRounded({ x, y, size, context, rotation });
   }
 }

@@ -1,30 +1,5 @@
-import cornerDotTypes from "../constants/cornerDotTypes";
-import { CornerDotType } from "../types";
-
-type DrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-};
-
-type BasicFigureDrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-};
-
-type RotateFigureArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-  draw: () => void;
-};
+import cornerDotTypes from "../../../constants/cornerDotTypes";
+import { CornerDotType, RotateFigureArgsCanvas, BasicFigureDrawArgsCanvas, DrawArgsCanvas } from "../../../types";
 
 export default class QRCornerDot {
   _context: CanvasRenderingContext2D;
@@ -52,7 +27,7 @@ export default class QRCornerDot {
     drawFunction.call(this, { x, y, size, context, rotation });
   }
 
-  _rotateFigure({ x, y, size, context, rotation, draw }: RotateFigureArgs): void {
+  _rotateFigure({ x, y, size, context, rotation = 0, draw }: RotateFigureArgsCanvas): void {
     const cx = x + size / 2;
     const cy = y + size / 2;
 
@@ -64,7 +39,7 @@ export default class QRCornerDot {
     context.translate(-cx, -cy);
   }
 
-  _basicDot(args: BasicFigureDrawArgs): void {
+  _basicDot(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -75,7 +50,7 @@ export default class QRCornerDot {
     });
   }
 
-  _basicSquare(args: BasicFigureDrawArgs): void {
+  _basicSquare(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -86,11 +61,11 @@ export default class QRCornerDot {
     });
   }
 
-  _drawDot({ x, y, size, context, rotation }: DrawArgs): void {
+  _drawDot({ x, y, size, context, rotation }: DrawArgsCanvas): void {
     this._basicDot({ x, y, size, context, rotation });
   }
 
-  _drawSquare({ x, y, size, context, rotation }: DrawArgs): void {
+  _drawSquare({ x, y, size, context, rotation }: DrawArgsCanvas): void {
     this._basicSquare({ x, y, size, context, rotation });
   }
 }

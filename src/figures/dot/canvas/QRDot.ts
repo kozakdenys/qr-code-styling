@@ -1,31 +1,11 @@
-import dotTypes from "../constants/dotTypes";
-import { DotType } from "../types";
-
-type GetNeighbor = (x: number, y: number) => boolean;
-type DrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  getNeighbor: GetNeighbor;
-};
-
-type BasicFigureDrawArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-};
-
-type RotateFigureArgs = {
-  x: number;
-  y: number;
-  size: number;
-  context: CanvasRenderingContext2D;
-  rotation: number;
-  draw: () => void;
-};
+import dotTypes from "../../../constants/dotTypes";
+import {
+  DotType,
+  GetNeighbor,
+  RotateFigureArgsCanvas,
+  BasicFigureDrawArgsCanvas,
+  DrawArgsCanvas
+} from "../../../types";
 
 export default class QRDot {
   _context: CanvasRenderingContext2D;
@@ -65,7 +45,7 @@ export default class QRDot {
     drawFunction.call(this, { x, y, size, context, getNeighbor });
   }
 
-  _rotateFigure({ x, y, size, context, rotation, draw }: RotateFigureArgs): void {
+  _rotateFigure({ x, y, size, context, rotation = 0, draw }: RotateFigureArgsCanvas): void {
     const cx = x + size / 2;
     const cy = y + size / 2;
 
@@ -77,7 +57,7 @@ export default class QRDot {
     context.translate(-cx, -cy);
   }
 
-  _basicDot(args: BasicFigureDrawArgs): void {
+  _basicDot(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -88,7 +68,7 @@ export default class QRDot {
     });
   }
 
-  _basicSquare(args: BasicFigureDrawArgs): void {
+  _basicSquare(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -100,7 +80,7 @@ export default class QRDot {
   }
 
   //if rotation === 0 - right side is rounded
-  _basicSideRounded(args: BasicFigureDrawArgs): void {
+  _basicSideRounded(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -115,7 +95,7 @@ export default class QRDot {
   }
 
   //if rotation === 0 - top right corner is rounded
-  _basicCornerRounded(args: BasicFigureDrawArgs): void {
+  _basicCornerRounded(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -131,7 +111,7 @@ export default class QRDot {
   }
 
   //if rotation === 0 - top right corner is rounded
-  _basicCornerExtraRounded(args: BasicFigureDrawArgs): void {
+  _basicCornerExtraRounded(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -144,7 +124,7 @@ export default class QRDot {
     });
   }
 
-  _basicCornersRounded(args: BasicFigureDrawArgs): void {
+  _basicCornersRounded(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -160,7 +140,7 @@ export default class QRDot {
     });
   }
 
-  _basicCornersExtraRounded(args: BasicFigureDrawArgs): void {
+  _basicCornersExtraRounded(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
 
     this._rotateFigure({
@@ -172,19 +152,19 @@ export default class QRDot {
     });
   }
 
-  _drawDot({ x, y, size, context }: DrawArgs): void {
+  _drawDot({ x, y, size, context }: DrawArgsCanvas): void {
     this._basicDot({ x, y, size, context, rotation: 0 });
   }
 
-  _drawSquare({ x, y, size, context }: DrawArgs): void {
+  _drawSquare({ x, y, size, context }: DrawArgsCanvas): void {
     this._basicSquare({ x, y, size, context, rotation: 0 });
   }
 
-  _drawRounded({ x, y, size, context, getNeighbor }: DrawArgs): void {
-    const leftNeighbor = +getNeighbor(-1, 0);
-    const rightNeighbor = +getNeighbor(1, 0);
-    const topNeighbor = +getNeighbor(0, -1);
-    const bottomNeighbor = +getNeighbor(0, 1);
+  _drawRounded({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
 
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
@@ -229,11 +209,11 @@ export default class QRDot {
     }
   }
 
-  _drawExtraRounded({ x, y, size, context, getNeighbor }: DrawArgs): void {
-    const leftNeighbor = +getNeighbor(-1, 0);
-    const rightNeighbor = +getNeighbor(1, 0);
-    const topNeighbor = +getNeighbor(0, -1);
-    const bottomNeighbor = +getNeighbor(0, 1);
+  _drawExtraRounded({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
 
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
@@ -278,11 +258,11 @@ export default class QRDot {
     }
   }
 
-  _drawClassy({ x, y, size, context, getNeighbor }: DrawArgs): void {
-    const leftNeighbor = +getNeighbor(-1, 0);
-    const rightNeighbor = +getNeighbor(1, 0);
-    const topNeighbor = +getNeighbor(0, -1);
-    const bottomNeighbor = +getNeighbor(0, 1);
+  _drawClassy({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
 
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
@@ -304,11 +284,11 @@ export default class QRDot {
     this._basicSquare({ x, y, size, context, rotation: 0 });
   }
 
-  _drawClassyRounded({ x, y, size, context, getNeighbor }: DrawArgs): void {
-    const leftNeighbor = +getNeighbor(-1, 0);
-    const rightNeighbor = +getNeighbor(1, 0);
-    const topNeighbor = +getNeighbor(0, -1);
-    const bottomNeighbor = +getNeighbor(0, 1);
+  _drawClassyRounded({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
 
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
