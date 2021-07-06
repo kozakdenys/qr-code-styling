@@ -6,7 +6,7 @@ export interface UnknownObject {
 export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 export type CornerDotType = "dot" | "square";
 export type CornerSquareType = "dot" | "square" | "extra-rounded";
-export type Extension = "svg" | "png" | "jpeg" | "webp";
+export type FileExtension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
 export type ShapeType = "square" | "circle";
@@ -104,7 +104,6 @@ export interface QRCode {
 }
 
 export type Options = {
-  experimental?: boolean;
   type?: DrawType;
   shape?: ShapeType;
   width?: number;
@@ -143,15 +142,13 @@ export type Options = {
     color?: string;
     gradient?: Gradient;
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  extensionOptions?: any;
 };
 
 export type FilterFunction = (i: number, j: number) => boolean;
 
 export type DownloadOptions = {
   name?: string;
-  extension?: Extension;
+  extension?: FileExtension;
 };
 
 export type DrawArgs = {
@@ -178,4 +175,5 @@ export type RotateFigureArgs = {
 };
 
 export type GetNeighbor = (x: number, y: number) => boolean;
-export type ExtensionFunction = ({ options, svg }: { options: Options; svg: SVGElement }) => void;
+
+export type ExtensionFunction = (svg: SVGElement, options: Options) => void;

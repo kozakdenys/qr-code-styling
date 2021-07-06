@@ -6,7 +6,7 @@ import drawTypes from "../constants/drawTypes";
 
 import defaultOptions, { RequiredOptions } from "./QROptions";
 import sanitizeOptions from "../tools/sanitizeOptions";
-import { Extension, QRCode, Options, DownloadOptions, ExtensionFunction } from "../types";
+import { FileExtension, QRCode, Options, DownloadOptions, ExtensionFunction } from "../types";
 import qrcode from "qrcode-generator";
 
 export default class QRCodeStyling {
@@ -39,7 +39,7 @@ export default class QRCodeStyling {
     this._svg = qrSVG.getElement();
     this._svgDrawingPromise = qrSVG.drawQR(this._qr).then(() => {
       if (!this._svg) return;
-      this._extension?.({ options: this._options, svg: qrSVG.getElement() });
+      this._extension?.(qrSVG.getElement(), this._options);
     });
   }
 
@@ -73,7 +73,7 @@ export default class QRCodeStyling {
     });
   }
 
-  async _getElement(extension: Extension = "png"): Promise<SVGElement | HTMLCanvasElement | undefined> {
+  async _getElement(extension: FileExtension = "png"): Promise<SVGElement | HTMLCanvasElement | undefined> {
     if (!this._qr) throw "QR code is empty";
 
     if (extension.toLowerCase() === "svg") {
@@ -134,13 +134,7 @@ export default class QRCodeStyling {
     this._container = container;
   }
 
-  //Experimental function
   applyExtension(extension: ExtensionFunction): void {
-    if (!this._options.experimental) {
-      console.warn('This is experimental function. Pass "experimental: true" to the options if you want to use it.');
-      return;
-    }
-
     if (!extension) {
       throw "Extension function should be defined.";
     }
@@ -149,7 +143,12 @@ export default class QRCodeStyling {
     this.update();
   }
 
-  async getRawData(extension: Extension = "png"): Promise<Blob | null> {
+  deleteExtension(): void {
+    this._extension = undefined;
+    this.update();
+  }
+
+  async getRawData(extension: FileExtension = "png"): Promise<Blob | null> {
     if (!this._qr) throw "QR code is empty";
     const element = await this._getElement(extension);
 
@@ -169,12 +168,12 @@ export default class QRCodeStyling {
 
   async download(downloadOptions?: Partial<DownloadOptions> | string): Promise<void> {
     if (!this._qr) throw "QR code is empty";
-    let extension = "png" as Extension;
+    let extension = "png" as FileExtension;
     let name = "qr";
 
     //TODO remove deprecated code in the v2
     if (typeof downloadOptions === "string") {
-      extension = downloadOptions as Extension;
+      extension = downloadOptions as FileExtension;
       console.warn(
         "Extension is deprecated as argument for 'download' method, please pass object { name: '...', extension: '...' } as argument"
       );

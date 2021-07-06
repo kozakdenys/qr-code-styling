@@ -198,6 +198,38 @@ Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
 
+`QRCodeStyling.applyExtension(extension) => void`
+
+Param    |Type                  |Description
+---------|----------------------|------------------------------------------------------------------------------------------
+extension|(svg, options) => void|Extension is a function that takes svg and previously applied options and modifies an svg
+
+`applyExtension` example
+
+```JS
+const extension = (svg, options) => {
+    const { width, height } = options;
+    const size = Math.min(width, height);
+    const border = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const borderAttributes = {
+        "fill": "none",
+        "x": (width - size + 40) / 2,
+        "y": (height - size + 40) / 2,
+        "width": size - 40,
+        "height": size - 40,
+        "stroke": 'black',
+        "stroke-width": 40,
+        "rx": 100,
+    };
+    Object.keys(borderAttributes).forEach(attribute => {
+      border.setAttribute(attribute, borderAttributes[attribute]);
+    });
+    svg.appendChild(border);
+};
+```
+
+`QRCodeStyling.deleteExtension() => void`
+
 `QRCodeStyling.download(downloadOptions) => Promise<void>`
 
 Param          |Type  |Description

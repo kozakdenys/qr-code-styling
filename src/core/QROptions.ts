@@ -5,7 +5,6 @@ import errorCorrectionLevels from "../constants/errorCorrectionLevels";
 import { ShapeType, DotType, Options, TypeNumber, ErrorCorrectionLevel, Mode, DrawType, Gradient } from "../types";
 
 export interface RequiredOptions extends Options {
-  experimental: boolean;
   type: DrawType;
   shape: ShapeType;
   width: number;
@@ -36,7 +35,6 @@ export interface RequiredOptions extends Options {
 }
 
 const defaultOptions: RequiredOptions = {
-  experimental: false,
   type: drawTypes.canvas,
   shape: shapeTypes.square,
   width: 300,
