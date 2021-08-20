@@ -9,9 +9,6 @@ module.exports = (env, argv) => {
     config.watch = true;
   }
 
-  if (argv.mode === "production") {
-    config.devtool = "source-map";
-  }
 
   return config;
 };

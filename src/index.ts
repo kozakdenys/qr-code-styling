@@ -7,7 +7,6 @@ import errorCorrectionPercents from "./constants/errorCorrectionPercents";
 import modes from "./constants/modes";
 import qrTypes from "./constants/qrTypes";
 import drawTypes from "./constants/drawTypes";
-
 export * from "./types";
 
 export {

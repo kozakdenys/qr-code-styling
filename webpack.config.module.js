@@ -1,20 +1,33 @@
 const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
-
+const TerserPlugin = require('terser-webpack-plugin');
 const rootPath = path.resolve(__dirname, './')
 const srcPath = path.resolve(rootPath, 'src')
-const libPath = path.resolve(rootPath, 'libs')
+const libPath = path.resolve(rootPath, 'lib')
 
 module.exports = {
-  entry: srcPath + '/index.ts',
+  entry:  srcPath + '/index.ts',
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          ecma: 5
+        },
+      }),
+    ],
+  },
+  devtool: "source-map",
   output: {
     path: libPath,
     library: {
       // do not specify a `name` here
       type: 'module'
     },
-    filename: 'qr-code-styling.module.js'
+    filename: 'qr-code-styling.js',
+    environment: {
+      arrowFunction: false
+    }
   },
   experiments: {
     outputModule: true
@@ -23,12 +36,18 @@ module.exports = {
     rules: [
       {
         test: /\.ts$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/
-      }
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+      
     ]
   },
-  plugins: [new CleanWebpackPlugin(), new ESLintPlugin({ fix: true })],
+ 
   resolve: {
     extensions: ['.ts', '.js']
   }
