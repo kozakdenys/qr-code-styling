@@ -33,10 +33,10 @@
     "webpack-merge": "^5.7.3"
   },
   "scripts": {
-    "build": "webpack --mode=production --config webpack.config.build.js",
-    "build:dev": "webpack --mode=development --config webpack.config.build.js",
     "test": "jest",
-    "start": "webpack serve --open --config webpack.config.dev-server.js"
+    "start": "webpack serve --open --config webpack.config.dev-server.js",
+    "build:": "webpack --mode=production --config webpack.config.module.js",
+    "build:dev": "webpack --mode=development --config webpack.config.module.js"
   },
   "repository": {
     "type": "git",
