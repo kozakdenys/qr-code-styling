@@ -36,6 +36,7 @@ export default class QRSVG {
   _options: RequiredOptions;
   _qr?: QRCode;
   _image?: HTMLImageElement;
+  _size: number;
 
   //TODO don't pass all options to this class
   constructor(options: RequiredOptions) {
@@ -46,6 +47,7 @@ export default class QRSVG {
     this._element.appendChild(this._defs);
 
     this._options = options;
+    this._size = Math.min(this._options.width, this._options.height);
   }
 
   get width(): number {
@@ -70,8 +72,8 @@ export default class QRSVG {
 
   async drawQR(qr: QRCode): Promise<void> {
     const count = qr.getModuleCount();
-    const minSize = Math.min(this._options.width, this._options.height) - this._options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
+    const minSize = this._size - this._options.margin * 2;
+    const dotSize = Math.floor(minSize / count * 100) / 100;
     let drawImageSize = {
       hideXDots: 0,
       hideYDots: 0,
@@ -164,10 +166,10 @@ export default class QRSVG {
       throw "The canvas is too small.";
     }
 
-    const minSize = Math.min(options.width, options.height) - options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
-    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+    const minSize = this._size - options.margin * 2;
+    const dotSize = Math.floor(minSize / count * 100) / 100;
+    const xBeginning = Math.floor((options.width - count * dotSize) / 2 * 100) / 100;
+    const yBeginning = Math.floor((options.height - count * dotSize) / 2 * 100) / 100;
     const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
 
     this._dotsClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
@@ -225,12 +227,12 @@ export default class QRSVG {
     }
 
     const count = this._qr.getModuleCount();
-    const minSize = Math.min(options.width, options.height) - options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
+    const minSize = this._size - options.margin * 2;
+    const dotSize = Math.floor(minSize / count * 100) / 100;
     const cornersSquareSize = dotSize * 7;
     const cornersDotSize = dotSize * 3;
-    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+    const xBeginning = Math.floor((options.width - count * dotSize) / 2 * 100) / 100;
+    const yBeginning = Math.floor((options.height - count * dotSize) / 2 * 100) / 100;
 
     [
       [0, 0, 0],
@@ -375,8 +377,8 @@ export default class QRSVG {
     dotSize: number;
   }): void {
     const options = this._options;
-    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+    const xBeginning = Math.floor((options.width - count * dotSize) / 2 * 100) / 100;
+    const yBeginning = Math.floor((options.height - count * dotSize) / 2 * 100) / 100;
     const dx = xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2;
     const dy = yBeginning + options.imageOptions.margin + (count * dotSize - height) / 2;
     const dw = width - options.imageOptions.margin * 2;
@@ -466,10 +468,10 @@ export default class QRSVG {
         gradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
         gradient.setAttribute("id", name);
         gradient.setAttribute("gradientUnits", "userSpaceOnUse");
-        gradient.setAttribute("x1", String(Math.round(x0)));
-        gradient.setAttribute("y1", String(Math.round(y0)));
-        gradient.setAttribute("x2", String(Math.round(x1)));
-        gradient.setAttribute("y2", String(Math.round(y1)));
+        gradient.setAttribute("x1", String(Math.round(x0 * 100) / 100));
+        gradient.setAttribute("y1", String(Math.round(y0 * 100) / 100));
+        gradient.setAttribute("x2", String(Math.round(x1 * 100) / 100));
+        gradient.setAttribute("y2", String(Math.round(y1 * 100) / 100));
       }
 
       options.colorStops.forEach(({ offset, color }: { offset: number; color: string }) => {
