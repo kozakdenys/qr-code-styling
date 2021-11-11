@@ -27,7 +27,7 @@ npm install qr-code-styling
 <head>
     <meta charset="UTF-8">
     <title>QR Code Styling</title>
-    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.1/lib/qr-code-styling.js"></script>
 </head>
 <body>
 <div id="canvas"></div>
