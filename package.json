@@ -1,5 +1,5 @@
 {
-  "name": "qr-code-styling",
+  "name": "@solana/qr-code-styling",
   "version": "1.6.0-rc.1",
   "description": "Add a style and an image to your QR code",
   "main": "lib/qr-code-styling.js",
