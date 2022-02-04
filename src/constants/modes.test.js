@@ -5,7 +5,7 @@ describe("Modes", () => {
     expect(typeof modes).toBe("object");
   });
 
-  it.each(Object.values(modes))("Values should be strings", value => {
+  it.each(Object.values(modes))("Values should be strings", (value) => {
     expect(typeof value).toBe("string");
   });
 });

@@ -32,7 +32,7 @@ describe("Test QRCanvas class", () => {
     canvas.drawQR(qr);
     expect(canvas.getCanvas().toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));
   });
-  it("Should draw a qr code with image", done => {
+  it("Should draw a qr code with image", (done) => {
     const expectedQRCodeFile = fs.readFileSync(
       path.resolve(__dirname, "../assets/test/simple_qr_with_image.png"),
       "base64"
@@ -49,7 +49,7 @@ describe("Test QRCanvas class", () => {
       done();
     });
   });
-  it("Should draw a qr code with image margin", done => {
+  it("Should draw a qr code with image margin", (done) => {
     const expectedQRCodeFile = fs.readFileSync(
       path.resolve(__dirname, "../assets/test/simple_qr_with_image_margin.png"),
       "base64"
@@ -70,7 +70,7 @@ describe("Test QRCanvas class", () => {
       done();
     });
   });
-  it("Should draw a qr code with image without dots hiding", done => {
+  it("Should draw a qr code with image without dots hiding", (done) => {
     const expectedQRCodeFile = fs.readFileSync(
       path.resolve(__dirname, "../assets/test/simple_qr_with_image.png"),
       "base64"

@@ -51,7 +51,7 @@ describe("Test QRDot class", () => {
       [0, 0, 0, 0, 0],
       [1, 1, 0, 1, 1],
       [0, 1, 0, 1, 1],
-      [0, 0, 1, 0, 0],
+      [0, 0, 1, 0, 0]
     ];
     const imgFile = fs.readFileSync(path.resolve(__dirname, "../../../assets/test/rounded_dots.png"), "base64");
     const dot = new QRDot({ context: canvasContext, type: "rounded" });

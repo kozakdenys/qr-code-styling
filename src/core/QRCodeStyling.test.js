@@ -7,7 +7,7 @@ describe("Test QRCodeStyling class", () => {
     global.document.body.innerHTML = "<div id='container'></div>";
   });
 
-  it("The README example should work correctly", done => {
+  it("The README example should work correctly", (done) => {
     const expectedQRCodeFile = fs.readFileSync(
       path.resolve(__dirname, "../assets/test/image_from_readme.png"),
       "base64"

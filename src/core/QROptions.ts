@@ -16,6 +16,8 @@ export interface RequiredOptions extends Options {
   };
   imageOptions: {
     hideBackgroundDots: boolean;
+    hideShape?: "square" | "radial";
+    hideManualSize?: number;
     imageSize: number;
     crossOrigin?: string;
     margin: number;

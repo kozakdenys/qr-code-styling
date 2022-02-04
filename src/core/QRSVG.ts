@@ -27,6 +27,24 @@ const dotMask = [
   [0, 0, 0, 0, 0, 0, 0]
 ];
 
+const truncateFloatToPlaces = (value: number, places: number) =>
+  Math.floor(value * Math.pow(10, places)) / Math.pow(10, places);
+
+const measureQr = (options: RequiredOptions, count: number) => {
+  const { width, height, margin } = options;
+  const minSize = Math.min(width, height) - margin * 2;
+  const dotSize = truncateFloatToPlaces(minSize / count, 1);
+  const xBeginning = truncateFloatToPlaces((options.width - count * dotSize) / 2, 1);
+  const yBeginning = truncateFloatToPlaces((options.height - count * dotSize) / 2, 1);
+  return {
+    count,
+    minSize,
+    dotSize,
+    xBeginning,
+    yBeginning
+  };
+};
+
 export default class QRSVG {
   _element: SVGElement;
   _defs: SVGElement;
@@ -70,8 +88,7 @@ export default class QRSVG {
 
   async drawQR(qr: QRCode): Promise<void> {
     const count = qr.getModuleCount();
-    const minSize = Math.min(this._options.width, this._options.height) - this._options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
+    const { dotSize } = measureQr(this._options, count);
     let drawImageSize = {
       hideXDots: 0,
       hideYDots: 0,
@@ -102,13 +119,21 @@ export default class QRSVG {
     this.drawBackground();
     this.drawDots((i: number, j: number): boolean => {
       if (this._options.imageOptions.hideBackgroundDots) {
-        if (
-          i >= (count - drawImageSize.hideXDots) / 2 &&
-          i < (count + drawImageSize.hideXDots) / 2 &&
-          j >= (count - drawImageSize.hideYDots) / 2 &&
-          j < (count + drawImageSize.hideYDots) / 2
-        ) {
-          return false;
+        if (this._options.imageOptions.hideShape === "radial") {
+          const r = (drawImageSize.hideXDots || this._options?.imageOptions?.hideManualSize || 0) * 0.7;
+          const center = count / 2;
+          const d = Math.pow(r, 2) - (Math.pow(center - i, 2) + Math.pow(center - j, 2));
+          // console.log({ r, d, i, j });
+          if (d > 0) return false;
+        } else {
+          if (
+            i >= (count - drawImageSize.hideXDots) / 2 &&
+            i < (count + drawImageSize.hideXDots) / 2 &&
+            j >= (count - drawImageSize.hideYDots) / 2 &&
+            j < (count + drawImageSize.hideYDots) / 2
+          ) {
+            return false;
+          }
         }
       }
 
@@ -164,10 +189,8 @@ export default class QRSVG {
       throw "The canvas is too small.";
     }
 
-    const minSize = Math.min(options.width, options.height) - options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
-    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+    const { dotSize, xBeginning, yBeginning } = measureQr(options, count);
+
     const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
 
     this._dotsClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
@@ -225,12 +248,9 @@ export default class QRSVG {
     }
 
     const count = this._qr.getModuleCount();
-    const minSize = Math.min(options.width, options.height) - options.margin * 2;
-    const dotSize = Math.floor(minSize / count);
+    const { dotSize, xBeginning, yBeginning } = measureQr(options, count);
     const cornersSquareSize = dotSize * 7;
     const cornersDotSize = dotSize * 3;
-    const xBeginning = Math.floor((options.width - count * dotSize) / 2);
-    const yBeginning = Math.floor((options.height - count * dotSize) / 2);
 
     [
       [0, 0, 0],
