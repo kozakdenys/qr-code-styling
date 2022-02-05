@@ -1,6 +1,6 @@
 {
   "name": "@solana/qr-code-styling",
-  "version": "1.6.0-rc.1",
+  "version": "1.6.0-beta.0",
   "publishConfig": {
     "access": "public"
   },
