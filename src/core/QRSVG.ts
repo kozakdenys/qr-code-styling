@@ -184,6 +184,8 @@ export default class QRSVG {
 
     this._dotsClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
     this._dotsClipPath.setAttribute("id", "clip-path-dot-color");
+    this._dotsClipPath.style.transformOrigin = "center";
+    this._dotsClipPath.style.transform = "rotate(90deg) scale(1, -1)";
     this._defs.appendChild(this._dotsClipPath);
 
     this._createColor({
