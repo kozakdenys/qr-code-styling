@@ -58,8 +58,10 @@ export default class QRSVG {
   //TODO don't pass all options to this class
   constructor(options: RequiredOptions) {
     this._element = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this._element.setAttribute("width", String(options.width));
-    this._element.setAttribute("height", String(options.height));
+    // this._element.setAttribute("width", String(options.width));
+    // this._element.setAttribute("height", String(options.height));
+    this._element.setAttribute("viewBox", `0 0 ${String(options.width)} ${String(options.height)}`);
+
     this._defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     this._element.appendChild(this._defs);
 
