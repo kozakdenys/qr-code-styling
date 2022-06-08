@@ -1,8 +1,8 @@
 {
-  "name": "qr-code-styling",
+  "name": "qrqoder.ts",
   "version": "1.5.0",
   "description": "Add a style and an image to your QR code",
-  "main": "lib/qr-code-styling.js",
+  "main": "lib/qrqoder.js",
   "types": "lib/index.d.ts",
   "files": [
     "lib"
