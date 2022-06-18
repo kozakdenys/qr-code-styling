@@ -97,7 +97,7 @@ qrOptions              |object                   |             |Options will be 
 imageOptions           |object                   |             |Specific image options, details see below
 dotsOptions            |object                   |             |Dots styling options
 cornersSquareOptions   |object                   |             |Square in the corners styling options
-cornersDotOptionsHelper|object                   |             |Dots in the corners styling options
+cornersDotOptions      |object                   |             |Dots in the corners styling options
 backgroundOptions      |object                   |             |QR background styling options
 
 `options.qrOptions` structure
