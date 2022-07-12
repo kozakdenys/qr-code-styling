@@ -195,8 +195,8 @@ export default class QRSVG {
         }
 
         dot.draw(
-          xBeginning + i * dotSize,
           yBeginning + j * dotSize,
+          xBeginning + i * dotSize,
           dotSize,
           (xOffset: number, yOffset: number): boolean => {
             if (i + xOffset < 0 || j + yOffset < 0 || i + xOffset >= count || j + yOffset >= count) return false;
