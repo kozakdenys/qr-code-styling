@@ -1,5 +1,5 @@
 {
-  "name": "pp-qr-code-styling",
+  "name": "pp-qr-code",
   "version": "0.1.0",
   "description": "Add a style and an image to your QR code",
   "main": "lib/qr-code-styling.js",
