@@ -1,0 +1,239 @@
+From 404d5db162464eae6b301ecca2c0a0b895af5597 Mon Sep 17 00:00:00 2001
+From: Henk van Maanen <36051232+HenkVanMaanen@users.noreply.github.com>
+Date: Thu, 14 Jul 2022 11:57:37 +0200
+Subject: [PATCH] fix svg credits to @iamdangavin
+
+---
+ src/core/QRSVG.ts | 102 +++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 78 insertions(+), 24 deletions(-)
+
+diff --git a/src/core/QRSVG.ts b/src/core/QRSVG.ts
+index 93656a0..3ce04d7 100644
+--- a/src/core/QRSVG.ts
++++ b/src/core/QRSVG.ts
+@@ -29,10 +29,15 @@ const dotMask = [
+ 
+ export default class QRSVG {
+   _element: SVGElement;
++  _style: SVGStyleElement;
+   _defs: SVGElement;
+   _dotsClipPath?: SVGElement;
+   _cornersSquareClipPath?: SVGElement;
+   _cornersDotClipPath?: SVGElement;
++  _dots?: SVGElement;
++  _cornerSquares?: SVGElement;
++  _corners?: SVGElement;
++  _cornerDots?: SVGElement;
+   _options: RequiredOptions;
+   _qr?: QRCode;
+   _image?: HTMLImageElement;
+@@ -43,7 +48,7 @@ export default class QRSVG {
+     this._element.setAttribute("width", String(options.width));
+     this._element.setAttribute("height", String(options.height));
+     this._defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+-    this._element.appendChild(this._defs);
++    this._style = document.createElementNS("http://www.w3.org/2000/svg", "style");
+ 
+     this._options = options;
+   }
+@@ -65,6 +70,8 @@ export default class QRSVG {
+     this._element = oldElement.cloneNode(false) as SVGElement;
+     oldElement?.parentNode?.replaceChild(this._element, oldElement);
+     this._defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
++    this._style = document.createElementNS("http://www.w3.org/2000/svg", "style");
++    this._element.appendChild(this._style);
+     this._element.appendChild(this._defs);
+   }
+ 
+@@ -98,6 +105,9 @@ export default class QRSVG {
+       });
+     }
+ 
++    this._element.appendChild(this._style);
++    this._element.appendChild(this._defs);
++
+     this.clear();
+     this.drawBackground();
+     this.drawDots((i: number, j: number): boolean => {
+@@ -137,7 +147,7 @@ export default class QRSVG {
+       const gradientOptions = options.backgroundOptions?.gradient;
+       const color = options.backgroundOptions?.color;
+ 
+-      if (gradientOptions || color) {
++      if (gradientOptions) {
+         this._createColor({
+           options: gradientOptions,
+           color: color,
+@@ -148,6 +158,11 @@ export default class QRSVG {
+           width: options.width,
+           name: "background-color"
+         });
++      } else if (options.backgroundOptions?.color) {
++        this._createStyle({
++          color: color,
++          name: "background-color"
++        });
+       }
+     }
+   }
+@@ -170,20 +185,29 @@ export default class QRSVG {
+     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
+     const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
+ 
+-    this._dotsClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+-    this._dotsClipPath.setAttribute("id", "clip-path-dot-color");
+-    this._defs.appendChild(this._dotsClipPath);
+-
+-    this._createColor({
+-      options: options.dotsOptions?.gradient,
+-      color: options.dotsOptions.color,
+-      additionalRotation: 0,
+-      x: xBeginning,
+-      y: yBeginning,
+-      height: count * dotSize,
+-      width: count * dotSize,
+-      name: "dot-color"
+-    });
++    if (options.dotsOptions?.gradient) {
++      this._dotsClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
++      this._dotsClipPath.setAttribute("id", "clip-path-dot-color");
++      this._defs.appendChild(this._dotsClipPath);
++      this._createColor({
++        options: options.dotsOptions?.gradient,
++        color: options.dotsOptions.color,
++        additionalRotation: 0,
++        x: xBeginning,
++        y: yBeginning,
++        height: count * dotSize,
++        width: count * dotSize,
++        name: "dot-color"
++      });
++    } else if (options.dotsOptions.color) {
++      this._dots = document.createElementNS("http://www.w3.org/2000/svg", "g");
++      this._dots.setAttribute("class", "dot-color");
++      this._element.appendChild(this._dots);
++      this._createStyle({
++        color: options.dotsOptions.color,
++        name: "dot-color"
++      });
++    }
+ 
+     for (let i = 0; i < count; i++) {
+       for (let j = 0; j < count; j++) {
+@@ -207,6 +231,8 @@ export default class QRSVG {
+ 
+         if (dot._element && this._dotsClipPath) {
+           this._dotsClipPath.appendChild(dot._element);
++        } else if (dot._element && this._dots) {
++          this._dots.appendChild(dot._element);
+         }
+       }
+     }
+@@ -242,7 +268,7 @@ export default class QRSVG {
+       let cornersSquareClipPath = this._dotsClipPath;
+       let cornersDotClipPath = this._dotsClipPath;
+ 
+-      if (options.cornersSquareOptions?.gradient || options.cornersSquareOptions?.color) {
++      if (options.cornersSquareOptions?.gradient) {
+         cornersSquareClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+         cornersSquareClipPath.setAttribute("id", `clip-path-corners-square-color-${column}-${row}`);
+         this._defs.appendChild(cornersSquareClipPath);
+@@ -258,6 +284,14 @@ export default class QRSVG {
+           width: cornersSquareSize,
+           name: `corners-square-color-${column}-${row}`
+         });
++      } else {
++        this._cornerSquares = document.createElementNS("http://www.w3.org/2000/svg", "g");
++        this._cornerSquares.setAttribute("class", `corners-square-color-${column}-${row}`);
++        this._element.appendChild(this._cornerSquares);
++        this._createStyle({
++          color: options.cornersSquareOptions?.color,
++          name: `corners-square-color-${column}-${row}`
++        });
+       }
+ 
+       if (options.cornersSquareOptions?.type) {
+@@ -265,8 +299,10 @@ export default class QRSVG {
+ 
+         cornersSquare.draw(x, y, cornersSquareSize, rotation);
+ 
+-        if (cornersSquare._element && cornersSquareClipPath) {
++        if (options.cornersSquareOptions?.gradient && cornersSquare._element && cornersSquareClipPath) {
+           cornersSquareClipPath.appendChild(cornersSquare._element);
++        } else if (cornersSquare._element && this._cornerSquares) {
++          this._cornerSquares.appendChild(cornersSquare._element);
+         }
+       } else {
+         const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
+@@ -284,14 +320,16 @@ export default class QRSVG {
+               (xOffset: number, yOffset: number): boolean => !!squareMask[i + xOffset]?.[j + yOffset]
+             );
+ 
+-            if (dot._element && cornersSquareClipPath) {
+-              cornersSquareClipPath.appendChild(dot._element);
++            if (dot._element && this._cornersSquareClipPath) {
++              this._cornersSquareClipPath.appendChild(dot._element);
++            } else if (dot._element && this._cornerSquares) {
++              this._cornerSquares.appendChild(dot._element);
+             }
+           }
+         }
+       }
+ 
+-      if (options.cornersDotOptions?.gradient || options.cornersDotOptions?.color) {
++      if (options.cornersDotOptions?.gradient) {
+         cornersDotClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+         cornersDotClipPath.setAttribute("id", `clip-path-corners-dot-color-${column}-${row}`);
+         this._defs.appendChild(cornersDotClipPath);
+@@ -307,6 +345,14 @@ export default class QRSVG {
+           width: cornersDotSize,
+           name: `corners-dot-color-${column}-${row}`
+         });
++      } else {
++        this._cornerDots = document.createElementNS("http://www.w3.org/2000/svg", "g");
++        this._cornerDots.setAttribute("class", `corners-dot-color-${column}-${row}`);
++        this._element.appendChild(this._cornerDots);
++        this._createStyle({
++          color: options.cornersDotOptions?.color,
++          name: `corners-dot-color-${column}-${row}`
++        });
+       }
+ 
+       if (options.cornersDotOptions?.type) {
+@@ -314,8 +360,10 @@ export default class QRSVG {
+ 
+         cornersDot.draw(x + dotSize * 2, y + dotSize * 2, cornersDotSize, rotation);
+ 
+-        if (cornersDot._element && cornersDotClipPath) {
++        if (options.cornersDotOptions?.gradient && cornersDot._element && cornersDotClipPath) {
+           cornersDotClipPath.appendChild(cornersDot._element);
++        } else if (cornersDot._element && this._cornerDots) {
++          this._cornerDots.appendChild(cornersDot._element);
+         }
+       } else {
+         const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
+@@ -333,8 +381,10 @@ export default class QRSVG {
+               (xOffset: number, yOffset: number): boolean => !!dotMask[i + xOffset]?.[j + yOffset]
+             );
+ 
+-            if (dot._element && cornersDotClipPath) {
+-              cornersDotClipPath.appendChild(dot._element);
++            if (dot._element && this._cornersDotClipPath) {
++              this._cornersDotClipPath.appendChild(dot._element);
++            } else if (dot._element && this._cornerDots) {
++              this._cornerDots.appendChild(dot._element);
+             }
+           }
+         }
+@@ -487,4 +537,8 @@ export default class QRSVG {
+ 
+     this._element.appendChild(rect);
+   }
++
++  _createStyle({ color, name }: { color?: string; name: string }): void {
++    this._style.innerHTML += `.${name}{ fill: ${color}; }`;
++  }
+ }
+-- 
+2.30.2
+

@@ -1,9 +1,6 @@
 # IDEA
 .idea
 
-# Lib folder
-/lib
-
 # npm modules
 /node_modules
 
