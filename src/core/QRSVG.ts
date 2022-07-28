@@ -47,6 +47,7 @@ export default class QRSVG {
     this._element = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     this._element.setAttribute("width", String(options.width));
     this._element.setAttribute("height", String(options.height));
+    this._element.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
     this._defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     this._style = document.createElementNS("http://www.w3.org/2000/svg", "style");
 
@@ -135,7 +136,7 @@ export default class QRSVG {
     this.drawCorners();
 
     if (this._options.image) {
-      this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
+      await this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
     }
   }
 
@@ -413,7 +414,7 @@ export default class QRSVG {
     });
   }
 
-  drawImage({
+  async drawImage({
     width,
     height,
     count,
@@ -423,7 +424,7 @@ export default class QRSVG {
     height: number;
     count: number;
     dotSize: number;
-  }): void {
+  }): Promise<void> {
     const options = this._options;
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
@@ -433,13 +434,46 @@ export default class QRSVG {
     const dh = height - options.imageOptions.margin * 2;
 
     const image = document.createElementNS("http://www.w3.org/2000/svg", "image");
-    image.setAttribute("href", options.image || "");
+
+    const base64Image = await this._getBase64Image(options.image || "");
+
+    image.setAttribute("href", base64Image);
+    image.setAttribute("xlink:href", base64Image);
     image.setAttribute("x", String(dx));
     image.setAttribute("y", String(dy));
     image.setAttribute("width", `${dw}px`);
     image.setAttribute("height", `${dh}px`);
 
     this._element.appendChild(image);
+  }
+
+  async _getImageBlob(url: string): Promise<Blob> {
+    const resp = await fetch(url);
+    return resp.blob();
+  }
+
+  // convert a blob to base64
+  _blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const dataUrl = reader.result;
+        resolve(dataUrl as string);
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async _getBase64Image(url: string): Promise<string> {
+    if (url === "") {
+      return new Promise((resolve) => {
+        resolve("");
+      });
+    }
+
+    const blob = await this._getImageBlob(url);
+    const base64 = await this._blobToBase64(blob);
+    return base64;
   }
 
   _createColor({
