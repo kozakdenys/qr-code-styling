@@ -161,10 +161,10 @@ export default class QRDot {
   }
 
   _drawRounded({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
-    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
-    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
-    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
-    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+    const leftNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
 
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
@@ -210,10 +210,10 @@ export default class QRDot {
   }
 
   _drawExtraRounded({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
-    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
-    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
-    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
-    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+    const leftNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
 
     const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
 
