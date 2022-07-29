@@ -40,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kozakdenys/qr-code-styling.git"
+    "url": "git+https://github.com/PlasticPrintersMN/pp-qr-code-styling"
   },
   "keywords": [
     "qr",
@@ -58,10 +58,10 @@
     "logo",
     "design"
   ],
-  "author": "Denys Kozak <kozak.denys.dev@gmail.com>",
+  "author": "updates by Nick Stull <stull.nicholas@gmail.com> original package by Denys Kozak <kozak.denys.dev@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kozakdenys/qr-code-styling/issues"
+    "url": "https://github.com/PlasticPrintersMN/pp-qr-code-styling"
   },
   "homepage": "https://qr-code-styling.com"
 }
