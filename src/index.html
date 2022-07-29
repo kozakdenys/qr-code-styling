@@ -11,29 +11,27 @@
             const options = {
               width: 500,
               height: 500,
-              data: "h",
-              image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+              qrOptions: {
+                  typeNumber:"0",
+                  mode:"Byte",
+                  errorCorrectionLevel:"M"
+              },
+              data: "https://lqr.ai/zyis2u",
+              image: "",
               dotsOptions: {
                 type: "extra-rounded",
-                gradient: {
-                  type: "linear", //radial,
-                  rotation: Math.PI/2,
-                  colorStops: [{ offset: 0, color: 'blue' }, { offset: 0.5, color: 'red' }, { offset: 1, color: 'green' }]
-                },
+                color: "#000000",
+                gradient: null
               },
               cornersSquareOptions: {
-                type: "rounded",
-                gradient: {
-                  type: "linear",
-                  rotation: Math.PI * 0.2,
-                  colorStops: [{
-                    offset: 0,
-                    color: 'blue'
-                  }, {
-                    offset: 1,
-                    color: 'red'
-                  }]
-                },
+                type: "extra-rounded",
+                color: "#000000",
+                gradient: null
+              },
+              cornersDotOptions: {
+                  type: 'rounded',
+                  color: '#000000',
+                  gradient: null
               },
               imageOptions: {
                 crossOrigin: "anonymous",
@@ -41,10 +39,12 @@
               }
             };
           const qrCode = new QRCodeStyling(options);
-          const qrCode2 = new QRCodeStyling({
+          const qrCode2 = new QRCodeStyling(
+            {
             ...options,
             type: 'svg',
-          });
+          }
+          );
 
             qrCode.append(document.getElementById("canvas"));
             qrCode2.append(document.getElementById("canvas2"));
