@@ -64,7 +64,7 @@ export default function calculateImageSize({
   return {
     height: imageSize.y,
     width: imageSize.x,
-    hideYDots: hideDots.y,
-    hideXDots: hideDots.x
+    hideYDots: hideDots.x,
+    hideXDots: hideDots.y
   };
 }
