@@ -1,6 +1,6 @@
 {
   "name": "qr-code-styling",
-  "version": "1.6.0-rc.1",
+  "version": "1.6.0-rc.2",
   "description": "Add a style and an image to your QR code",
   "main": "lib/qr-code-styling.js",
   "types": "lib/index.d.ts",
@@ -36,7 +36,8 @@
     "build": "webpack --mode=production --config webpack.config.build.js",
     "build:dev": "webpack --mode=development --config webpack.config.build.js",
     "test": "jest",
-    "start": "webpack serve --open --config webpack.config.dev-server.js"
+    "start": "webpack serve --open --config webpack.config.dev-server.js",
+    "lint-fix": "eslint --cache --fix \"src/**/*.{ts,tsx}\""
   },
   "repository": {
     "type": "git",

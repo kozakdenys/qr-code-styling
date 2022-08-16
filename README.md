@@ -102,11 +102,12 @@ backgroundOptions      |object                   |             |QR background st
 
 `options.qrOptions` structure
 
-Property            |Type                                              |Default Value
---------------------|--------------------------------------------------|-------------
-typeNumber          |number (`0 - 40`)                                 |`0`
-mode                |string (`'Numeric' 'Alphanumeric' 'Byte' 'Kanji'`)|
-errorCorrectionLevel|string (`'L' 'M' 'Q' 'H'`)                        |`'Q'`
+Property              |Type                                              |Default Value
+----------------------|--------------------------------------------------|-------------
+typeNumber            |number (`0 - 40`)                                 |`0`
+mode                  |string (`'Numeric' 'Alphanumeric' 'Byte' 'Kanji'`)|
+errorCorrectionLevel  |string (`'L' 'M' 'Q' 'H'`)                        |`'Q'`
+byteModeStringEncoding|string (`'default' 'UTF-8' 'SJIS'`)               |`'default'`
 
 `options.imageOptions` structure
 
