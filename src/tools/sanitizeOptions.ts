@@ -1,4 +1,5 @@
 import { RequiredOptions } from "../core/QROptions";
+import byteModeStringEncodings from "../constants/byteModeStringEncodings";
 import { Gradient } from "../types";
 
 function sanitizeGradient(gradient: Gradient): Gradient {
@@ -71,6 +72,14 @@ export default function sanitizeOptions(options: RequiredOptions): RequiredOptio
     if (newOptions.backgroundOptions.gradient) {
       newOptions.backgroundOptions.gradient = sanitizeGradient(newOptions.backgroundOptions.gradient);
     }
+  }
+
+  if (
+    newOptions.qrOptions &&
+    newOptions.qrOptions.byteModeStringEncoding &&
+    !byteModeStringEncodings.includes(newOptions.qrOptions.byteModeStringEncoding)
+  ) {
+    delete newOptions.qrOptions.byteModeStringEncoding;
   }
 
   return newOptions;

@@ -9,6 +9,7 @@ import qrTypes from "./constants/qrTypes";
 import drawTypes from "./constants/drawTypes";
 import shapeTypes from "./constants/shapeTypes";
 import gradientTypes from "./constants/gradientTypes";
+import byteModeStringEncodings from "./constants/byteModeStringEncodings";
 
 export * from "./types";
 
@@ -22,7 +23,8 @@ export {
   qrTypes,
   drawTypes,
   shapeTypes,
-  gradientTypes
+  gradientTypes,
+  byteModeStringEncodings
 };
 
 export default QRCodeStyling;
