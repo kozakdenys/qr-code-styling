@@ -219,16 +219,20 @@ export default class QRSVG {
           continue;
         }
 
-        dot.draw(
-          yBeginning + j * dotSize,
-          xBeginning + i * dotSize,
-          dotSize,
-          (xOffset: number, yOffset: number): boolean => {
+        const x = this._options.useLegacyDotRotation ? xBeginning + i * dotSize : yBeginning + j * dotSize;
+        const y = this._options.useLegacyDotRotation ? yBeginning + j * dotSize : xBeginning + i * dotSize;
+
+        dot.draw(x, y, dotSize, (xOffset: number, yOffset: number): boolean => {
+          if (this._options.useLegacyDotRotation) {
             if (i + xOffset < 0 || j + yOffset < 0 || i + xOffset >= count || j + yOffset >= count) return false;
             if (filter && !filter(i + xOffset, j + yOffset)) return false;
             return !!this._qr && this._qr.isDark(i + xOffset, j + yOffset);
+          } else {
+            if (j + xOffset < 0 || i + yOffset < 0 || j + xOffset >= count || i + yOffset >= count) return false;
+            if (filter && !filter(j + xOffset, i + yOffset)) return false;
+            return !!this._qr && this._qr.isDark(i + yOffset, j + xOffset);
           }
-        );
+        });
 
         if (dot._element && this._dotsClipPath) {
           this._dotsClipPath.appendChild(dot._element);

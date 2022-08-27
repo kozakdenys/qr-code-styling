@@ -25,6 +25,7 @@ export interface RequiredOptions extends Options {
         color: string;
         gradient?: Gradient;
     };
+    useLegacyDotRotation: boolean;
 }
 declare const defaultOptions: RequiredOptions;
 export default defaultOptions;
