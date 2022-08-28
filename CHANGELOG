@@ -1,0 +1,32 @@
+# Version 1.0.0 - 27.08.2022
+
+This is the first release of the package with various bug fixes and dependencies updates from the original repo.
+This package can be installed by running.
+
+`npm install styled-qr-code` or `yarn add styled-qr-code`
+
+## Breaking change
+
+- removed the deprecated method signature `download(extension: string)`. Now only `download({name: 'qr', extension: 'png')` is supported
+- The orientation of the generated qr code has been fixed to generate qr codes compatible with all known scanners see [#49](https://github.com/kozakdenys/qr-code-styling/issues/105) [#105 QR code is not valid by some scanners](https://github.com/kozakdenys/qr-code-styling/issues/105).
+  An configuration option `useLegacyDotRotation` has been added to restore the previous behavior.
+- images options `crossOrigin` are now set to anonymous by default
+
+## Feat
+
+- added optional quality parameter to get getRawData to control the size and quality of the returned image
+- added convenience method `toDataUrl` to return a base64 encoded string of the qr code instead of making a detour via a blob
+- improved typescript types
+
+- updated lockfile to v2 [1d91c08fabe430911f68e15cc108c5f015b5329c](1d91c08fabe430911f68e15cc108c5f015b5329c)
+- fix svg: [1d91c08fabe430911f68e15cc108c5f015b5329c](1d91c08fabe430911f68e15cc108c5f015b5329c)
+- svg now includes images as base64 link: [78070cf808e0b60bb2f6ac310083688f1c27cf99](78070cf808e0b60bb2f6ac310083688f1c27cf99)
+- images are now correctly cropped [f400491fe13c5969b8a9d8c1e2e7c90b7067c5a59](f400491fe13c5969b8a9d8c1e2e7c90b7067c5a5)
+
+## Dependencies
+
+Updated multiple dependencies and resolved security vulnerabilities. For a full list see: [https://github.com/KilianB/styled-qr-code/commit/535017b1e8dba2eb66666e42eb61e15f8a9866b9#diff-7ae45ad102eab3b6d7e7896acd08c427a9b25b346470d7bc6507b6481575d519](package diff)
+
+## Misc
+
+- update example to include legacy and new qr code generation codes
