@@ -33,8 +33,8 @@ export interface RequiredOptions extends Options {
 
 const defaultOptions: RequiredOptions = {
   type: drawTypes.canvas,
-  width: 300,
-  height: 300,
+  width: 512,
+  height: 512,
   data: "",
   margin: 0,
   qrOptions: {
@@ -53,7 +53,7 @@ const defaultOptions: RequiredOptions = {
     color: "#000"
   },
   backgroundOptions: {
-    color: "#fff"
+    color: "#FFFFFF00"
   }
 };
 

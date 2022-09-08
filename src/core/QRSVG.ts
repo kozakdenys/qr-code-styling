@@ -573,6 +573,22 @@ export default class QRSVG {
   }
 
   _createStyle({ color, name }: { color?: string; name: string }): void {
-    this._style.innerHTML += `.${name}{ fill: ${color}; }`;
+    if (color === undefined) {
+      return;
+    }
+
+    console.log(color, name);
+
+    if (color[0] !== "#" || (color.length !== 7 && color.length !== 9)) {
+      console.error("unsupported color format. At the moment only Hex color codes are supported.");
+      return;
+    }
+
+    let opacity = 1.0;
+    if (color.length === 9) {
+      opacity = parseInt(color.substring(7, 9), 16) / 255.0;
+    }
+
+    this._style.innerHTML += `.${name}{ fill: ${color.substring(0, 7)}; fill-opacity: ${opacity} }`;
   }
 }
