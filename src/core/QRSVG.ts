@@ -577,8 +577,6 @@ export default class QRSVG {
       return;
     }
 
-    console.log(color, name);
-
     if (color[0] !== "#" || (color.length !== 7 && color.length !== 9)) {
       console.error("unsupported color format. At the moment only Hex color codes are supported.");
       return;
