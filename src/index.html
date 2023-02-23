@@ -6,6 +6,8 @@
     </head>
     <body>
         <div id="canvas"></div>
+        <div id="canvas2"></div>
+
         <script type="text/javascript">
             const options = {
               shape: "circle",
@@ -44,6 +46,16 @@
             const qrCode = new QRCodeStyling(options);
 
             qrCode.append(document.getElementById("canvas"));
+
+            const options2 = {
+              type: 'svg',
+              width: 300,
+              height: 300,
+              data: "i",
+            };
+            const qrCode2 = new QRCodeStyling(options2);
+
+            qrCode2.append(document.getElementById("canvas2"));
         </script>
     </body>
 </html>

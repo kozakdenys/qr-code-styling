@@ -243,6 +243,9 @@ Property |Type                                |Default Value|Description
 name     |string                              |`'qr'`       |Name of the downloaded file
 extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |File extension
 
+### Building this repo
+
+If you get an error running `npm install` referring to `node-pre-gyp`, this is caused by an attempt to compile the [`canvas` dependency](https://github.com/Automattic/node-canvas#compiling). See Compiling instructions in the README. For example on MacOS you need to install dependencies: `brew install pkg-config cairo pango libpng jpeg giflib librsvg pixman`.
 
 ### License
 
