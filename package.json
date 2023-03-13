@@ -13,7 +13,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
-    "canvas": "^2.6.1",
+    "canvas": "^2.11.0",
     "clean-webpack-plugin": "^3.0.0",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
