@@ -7,6 +7,7 @@ const libPath = path.resolve(rootPath, "lib");
 
 module.exports = {
   entry: srcPath + "/index.ts",
+  target: ["web", "es5"],
   output: {
     path: libPath,
     filename: "qr-code-styling.js",
