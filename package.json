@@ -11,7 +11,7 @@
     "lib"
   ],
   "engines": {
-    "node": ">=16, <17"
+    "node": "16.x"
   },
   "dependencies": {
     "qrcode-generator": "^1.4.3"
