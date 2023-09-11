@@ -19,6 +19,9 @@ export default class QRDot {
       case dotTypes.dots:
         drawFunction = this._drawDot;
         break;
+      case dotTypes.randomDots:
+        drawFunction = this._drawRandomDot;
+        break;
       case dotTypes.classy:
         drawFunction = this._drawClassy;
         break;
@@ -160,6 +163,11 @@ export default class QRDot {
 
   _drawDot({ x, y, size }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation: 0 });
+  }
+
+  _drawRandomDot({ x, y, size }: DrawArgs): void {
+    const randomFactor = Math.random() * (1 - 0.6) + 0.6;
+    this._basicDot({ x, y, size: size * randomFactor, rotation: 0 });
   }
 
   _drawSquare({ x, y, size }: DrawArgs): void {

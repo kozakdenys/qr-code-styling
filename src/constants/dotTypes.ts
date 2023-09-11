@@ -2,6 +2,7 @@ import { DotTypes } from "../types";
 
 export default {
   dots: "dots",
+  randomDots: "random-dots",
   rounded: "rounded",
   verticalLines: "vertical-lines",
   classy: "classy",
