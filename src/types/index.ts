@@ -12,7 +12,7 @@ export type DotType =
   | "classy-rounded"
   | "square"
   | "extra-rounded";
-export type CornerDotType = "dot" | "square";
+export type CornerDotType = "dot" | "square" | "heart";
 export type CornerSquareType = "dot" | "square" | "extra-rounded";
 export type FileExtension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
