@@ -34,6 +34,9 @@ export default class QRDot {
       case dotTypes.verticalLines:
         drawFunction = this._drawVerticalLines;
         break;
+      case dotTypes.horizontalLines:
+        drawFunction = this._drawHorizontalLines;
+        break;
       case dotTypes.extraRounded:
         drawFunction = this._drawExtraRounded;
         break;
@@ -257,6 +260,42 @@ export default class QRDot {
       return;
     }
   }
+
+  _drawHorizontalLines({ x, y, size, getNeighbor }: DrawArgs): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    if (
+      neighborsCount === 0 ||
+      (topNeighbor && !(leftNeighbor || rightNeighbor)) ||
+      (bottomNeighbor && !(leftNeighbor || rightNeighbor))
+    ) {
+      this._basicDot({ x, y, size, rotation: 0 });
+      return;
+    }
+
+    if (leftNeighbor && rightNeighbor) {
+      this._basicSquare({ x, y, size, rotation: 0 });
+      return;
+    }
+
+    if (leftNeighbor && !rightNeighbor) {
+      const rotation = 0;
+      this._basicSideRounded({ x, y, size, rotation });
+      return;
+    }
+
+    if (rightNeighbor && !leftNeighbor) {
+      const rotation = Math.PI;
+      this._basicSideRounded({ x, y, size, rotation });
+      return;
+    }
+  }
+
   _drawExtraRounded({ x, y, size, getNeighbor }: DrawArgs): void {
     const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
     const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;

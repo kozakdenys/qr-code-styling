@@ -8,6 +8,7 @@ export type DotType =
   | "random-dots"
   | "rounded"
   | "vertical-lines"
+  | "horizontal-lines"
   | "classy"
   | "classy-rounded"
   | "square"

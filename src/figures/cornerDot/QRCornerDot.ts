@@ -1,7 +1,6 @@
 import cornerDotTypes from "../../constants/cornerDotTypes";
 import { CornerDotType, RotateFigureArgs, BasicFigureDrawArgs, DrawArgs } from "../../types";
-
-import { createHeartSVG } from "../../../shapes/createHeartSVG";
+import { createHeartSVG } from "../../shapes/createHeartSVG";
 
 export default class QRCornerDot {
   _element?: SVGElement;
