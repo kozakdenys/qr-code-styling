@@ -3,8 +3,17 @@ export interface UnknownObject {
   [key: string]: any;
 }
 
-export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
-export type CornerDotType = "dot" | "square";
+export type DotType =
+  | "dots"
+  | "random-dots"
+  | "rounded"
+  | "vertical-lines"
+  | "horizontal-lines"
+  | "classy"
+  | "classy-rounded"
+  | "square"
+  | "extra-rounded";
+export type CornerDotType = "dot" | "square"; //| "heart";
 export type CornerSquareType = "dot" | "square" | "extra-rounded";
 export type Extension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";

@@ -45,7 +45,7 @@ const defaultOptions: RequiredOptions = {
   imageOptions: {
     hideBackgroundDots: true,
     imageSize: 0.4,
-    crossOrigin: undefined,
+    crossOrigin: "anonymous",
     margin: 0
   },
   dotsOptions: {

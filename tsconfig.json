@@ -3,7 +3,7 @@
         "outDir": "./lib/",
         "sourceMap": true,
         "module": "es6",
-        "target": "es5",
+        "target": "ES2017",
         "allowJs": true,
         "moduleResolution": "node",
         "declaration": true,

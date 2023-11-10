@@ -25,6 +25,9 @@ export default class QRDot {
       case dotTypes.dots:
         drawFunction = this._drawDot;
         break;
+      case dotTypes.randomDots:
+        drawFunction = this._drawRandomDot;
+        break;
       case dotTypes.classy:
         drawFunction = this._drawClassy;
         break;
@@ -33,6 +36,12 @@ export default class QRDot {
         break;
       case dotTypes.rounded:
         drawFunction = this._drawRounded;
+        break;
+      case dotTypes.verticalLines:
+        drawFunction = this._drawVerticalLines;
+        break;
+      case dotTypes.horizontalLines:
+        drawFunction = this._drawHorizontalLines;
         break;
       case dotTypes.extraRounded:
         drawFunction = this._drawExtraRounded;
@@ -63,6 +72,7 @@ export default class QRDot {
     this._rotateFigure({
       ...args,
       draw: () => {
+        context.moveTo(0, 0);
         context.arc(0, 0, size / 2, 0, Math.PI * 2);
       }
     });
@@ -74,6 +84,7 @@ export default class QRDot {
     this._rotateFigure({
       ...args,
       draw: () => {
+        context.moveTo(0, 0);
         context.rect(-size / 2, -size / 2, size, size);
       }
     });
@@ -86,6 +97,7 @@ export default class QRDot {
     this._rotateFigure({
       ...args,
       draw: () => {
+        context.moveTo(0, 0);
         context.arc(0, 0, size / 2, -Math.PI / 2, Math.PI / 2);
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
@@ -101,6 +113,7 @@ export default class QRDot {
     this._rotateFigure({
       ...args,
       draw: () => {
+        context.moveTo(0, 0);
         context.arc(0, 0, size / 2, -Math.PI / 2, 0);
         context.lineTo(size / 2, size / 2);
         context.lineTo(-size / 2, size / 2);
@@ -117,6 +130,7 @@ export default class QRDot {
     this._rotateFigure({
       ...args,
       draw: () => {
+        context.moveTo(0, 0);
         context.arc(-size / 2, size / 2, size, -Math.PI / 2, 0);
         context.lineTo(-size / 2, size / 2);
         context.lineTo(-size / 2, -size / 2);
@@ -130,6 +144,7 @@ export default class QRDot {
     this._rotateFigure({
       ...args,
       draw: () => {
+        context.moveTo(0, 0);
         context.arc(0, 0, size / 2, -Math.PI / 2, 0);
         context.lineTo(size / 2, size / 2);
         context.lineTo(0, size / 2);
@@ -146,6 +161,7 @@ export default class QRDot {
     this._rotateFigure({
       ...args,
       draw: () => {
+        context.moveTo(0, 0);
         context.arc(-size / 2, size / 2, size, -Math.PI / 2, 0);
         context.arc(size / 2, -size / 2, size, Math.PI / 2, Math.PI);
       }
@@ -154,6 +170,11 @@ export default class QRDot {
 
   _drawDot({ x, y, size, context }: DrawArgsCanvas): void {
     this._basicDot({ x, y, size, context, rotation: 0 });
+  }
+
+  _drawRandomDot({ x, y, size, context }: DrawArgsCanvas): void {
+    const randomFactor = Math.random() * (1 - 0.6) + 0.6;
+    this._basicDot({ x, y, size: size * randomFactor, context, rotation: 0 });
   }
 
   _drawSquare({ x, y, size, context }: DrawArgsCanvas): void {
@@ -204,6 +225,76 @@ export default class QRDot {
         rotation = -Math.PI / 2;
       }
 
+      this._basicSideRounded({ x, y, size, context, rotation });
+      return;
+    }
+  }
+
+  _drawVerticalLines({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    if (
+      neighborsCount === 0 ||
+      (leftNeighbor && !(topNeighbor || bottomNeighbor)) ||
+      (rightNeighbor && !(topNeighbor || bottomNeighbor))
+    ) {
+      this._basicDot({ x, y, size, context, rotation: 0 });
+      return;
+    }
+
+    if (topNeighbor && bottomNeighbor) {
+      this._basicSquare({ x, y, size, context, rotation: 0 });
+      return;
+    }
+
+    if (topNeighbor && !bottomNeighbor) {
+      const rotation = Math.PI / 2;
+      this._basicSideRounded({ x, y, size, context, rotation });
+      return;
+    }
+
+    if (bottomNeighbor && !topNeighbor) {
+      const rotation = -Math.PI / 2;
+      this._basicSideRounded({ x, y, size, context, rotation });
+      return;
+    }
+  }
+
+  _drawHorizontalLines({ x, y, size, context, getNeighbor }: DrawArgsCanvas): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    if (
+      neighborsCount === 0 ||
+      (topNeighbor && !(leftNeighbor || rightNeighbor)) ||
+      (bottomNeighbor && !(leftNeighbor || rightNeighbor))
+    ) {
+      this._basicDot({ x, y, size, context, rotation: 0 });
+      return;
+    }
+
+    if (leftNeighbor && rightNeighbor) {
+      this._basicSquare({ x, y, size, context, rotation: 0 });
+      return;
+    }
+
+    if (leftNeighbor && !rightNeighbor) {
+      const rotation = 0;
+      this._basicSideRounded({ x, y, size, context, rotation });
+      return;
+    }
+
+    if (rightNeighbor && !leftNeighbor) {
+      const rotation = Math.PI;
       this._basicSideRounded({ x, y, size, context, rotation });
       return;
     }
