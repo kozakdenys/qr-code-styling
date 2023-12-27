@@ -31,6 +31,9 @@ export default class QRDot {
       case dotTypes.extraRounded:
         drawFunction = this._drawExtraRounded;
         break;
+      case dotTypes.diamond:
+        drawFunction = this._drawDiamond;
+        break;
       case dotTypes.square:
       default:
         drawFunction = this._drawSquare;
@@ -44,7 +47,14 @@ export default class QRDot {
     const cy = y + size / 2;
 
     draw();
-    this._element?.setAttribute("transform", `rotate(${(180 * rotation) / Math.PI},${cx},${cy})`);
+
+    let rotationAttr = `rotate(${(180 * rotation) / Math.PI},${cx},${cy})`;
+
+    if (this._type === "diamond") {
+      rotationAttr = `rotate(${rotation},${cx},${cy})`;
+    }
+
+    this._element?.setAttribute("transform", rotationAttr);
   }
 
   _basicDot(args: BasicFigureDrawArgs): void {
@@ -160,7 +170,16 @@ export default class QRDot {
   }
 
   _drawSquare({ x, y, size }: DrawArgs): void {
+    // console.log('draw sq')
     this._basicSquare({ x, y, size, rotation: 0 });
+  }
+
+  _drawDiamond({ x, y, size }: DrawArgs): void {
+    x = x + 4;
+    y = y + 4;
+    size = size - 8;
+
+    this._basicSquare({ x, y, size, rotation: 45 });
   }
 
   _drawRounded({ x, y, size, getNeighbor }: DrawArgs): void {
