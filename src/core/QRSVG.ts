@@ -264,8 +264,8 @@ export default class QRSVG {
           if (!fakeMatrix[i][j]) continue;
 
           dot.draw(
-            xFakeBeginning + i * dotSize,
             yFakeBeginning + j * dotSize,
+            xFakeBeginning + i * dotSize,
             dotSize,
             (xOffset: number, yOffset: number): boolean => {
               return !!fakeMatrix[i + xOffset]?.[j + yOffset];
