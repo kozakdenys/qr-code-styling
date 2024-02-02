@@ -1,15 +1,17 @@
-import cornerDotTypes from "../../../constants/cornerDotTypes";
-import { CornerDotType, RotateFigureArgs, BasicFigureDrawArgs, DrawArgs } from "../../../types";
-// import { createHeartSVG } from "../../../shapes/createHeartSVG";
+import cornerDotTypes from "../../constants/cornerDotTypes";
+import { CornerDotType, RotateFigureArgs, BasicFigureDrawArgs, DrawArgs } from "../../types";
+import { createHeartSVG } from "../../shapes/createHeartSVG";
 
 export default class QRCornerDot {
   _element?: SVGElement;
   _svg: SVGElement;
   _type: CornerDotType;
+  _color?: string;
 
-  constructor({ svg, type }: { svg: SVGElement; type: CornerDotType }) {
+  constructor({ svg, type, color }: { svg: SVGElement; type: CornerDotType; color?: string }) {
     this._svg = svg;
     this._type = type;
+    this._color = color;
   }
 
   draw(x: number, y: number, size: number, rotation: number): void {
@@ -20,9 +22,9 @@ export default class QRCornerDot {
       case cornerDotTypes.square:
         drawFunction = this._drawSquare;
         break;
-      // case cornerDotTypes.heart:
-      //   drawFunction = this._drawHeart;
-      //   break;
+      case cornerDotTypes.heart:
+        drawFunction = this._drawHeart;
+        break;
       case cornerDotTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -68,28 +70,28 @@ export default class QRCornerDot {
     });
   }
 
-  // _basicHeart(args: BasicFigureDrawArgs): void {
-  //   const { x, y, size } = args;
-  //   this._rotateFigure({
-  //     ...args,
-  //     draw: () => {
-  //       const xmlns = "http://www.w3.org/2000/svg";
+  _basicHeart(args: BasicFigureDrawArgs): void {
+    const { x, y, size } = args;
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        const xmlns = "http://www.w3.org/2000/svg";
 
-  //       // Note! We have to wrap the SVG with a foreignObject element in order to rotate it!!!
-  //       const foreignObject = document.createElementNS(xmlns, "foreignObject");
-  //       foreignObject.setAttribute("x", String(x));
-  //       foreignObject.setAttribute("y", String(y));
-  //       foreignObject.setAttribute("width", String(size));
-  //       foreignObject.setAttribute("height", String(size));
+        // Note! We have to wrap the SVG with a foreignObject element in order to rotate it!!!
+        const foreignObject = document.createElementNS(xmlns, "foreignObject");
+        foreignObject.setAttribute("x", String(x));
+        foreignObject.setAttribute("y", String(y));
+        foreignObject.setAttribute("width", String(size));
+        foreignObject.setAttribute("height", String(size));
 
-  //       const svg = createHeartSVG(size);
-  //       foreignObject.append(svg);
+        const svg = createHeartSVG(size, this._color ?? "black");
+        foreignObject.append(svg);
 
-  //       // IMPORTANT! For embedded SVG corners: Append to 'this._svg' - NOT to 'this._element' because the latter would be added to a clipPath
-  //       this._svg.appendChild(foreignObject);
-  //     }
-  //   });
-  // }
+        // IMPORTANT! For embedded SVG corners: Append to 'this._svg' - NOT to 'this._element' because the latter would be added to a clipPath
+        this._svg.appendChild(foreignObject);
+      }
+    });
+  }
 
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
@@ -99,13 +101,13 @@ export default class QRCornerDot {
     this._basicSquare({ x, y, size, rotation });
   }
 
-  // _drawHeart({ x, y, size, rotation }: DrawArgs): void {
-  //   const scaleFactor = 0.2;
-  //   this._basicHeart({
-  //     x: x - (scaleFactor * size) / 2,
-  //     y: y - (scaleFactor * size) / 2,
-  //     size: size * (1 + scaleFactor),
-  //     rotation
-  //   });
-  // }
+  _drawHeart({ x, y, size, rotation }: DrawArgs): void {
+    const scaleFactor = 0.2;
+    this._basicHeart({
+      x: x - (scaleFactor * size) / 2,
+      y: y - (scaleFactor * size) / 2,
+      size: size * (1 + scaleFactor),
+      rotation
+    });
+  }
 }
