@@ -5,10 +5,12 @@ export default class QRDot {
   _element?: SVGElement;
   _svg: SVGElement;
   _type: DotType;
+  _data?: string;
 
-  constructor({ svg, type }: { svg: SVGElement; type: DotType }) {
+  constructor({ svg, type, data }: { svg: SVGElement; type: DotType; data?: string }) {
     this._svg = svg;
     this._type = type;
+    this._data = data
   }
 
   draw(x: number, y: number, size: number, getNeighbor: GetNeighbor): void {
@@ -168,8 +170,33 @@ export default class QRDot {
     this._basicDot({ x, y, size, rotation: 0 });
   }
 
+  // _drawRandomDot({ x, y, size }: DrawArgs): void {
+  //   console.log('random dot', this._data)
+  //   const randomFactor = Math.random() * (1 - 0.6) + 0.6;
+  //   this._basicDot({ x, y, size: size * randomFactor, rotation: 0 });
+  // }
+
   _drawRandomDot({ x, y, size }: DrawArgs): void {
-    const randomFactor = Math.random() * (1 - 0.6) + 0.6;
+    console.log('random dot', this._data);
+
+    let randomFactor;
+    
+    if (!this._data) {
+      randomFactor = Math.random() * (1 - 0.6) + 0.6;
+    }else{
+      // Convert QR data to a consistent seed.
+      const seed = this._data.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      
+      // Seeded random function
+      const seededRandom = (seed: number): number => {
+        const x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+      };
+      
+      // Use seededRandom to generate a consistent randomFactor based on the QR data
+      randomFactor = seededRandom(seed + x + y) * (1 - 0.6) + 0.6;
+    }
+  
     this._basicDot({ x, y, size: size * randomFactor, rotation: 0 });
   }
 

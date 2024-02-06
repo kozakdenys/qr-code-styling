@@ -180,7 +180,7 @@ export default class QRSVG {
     const dotSize = Math.floor(realQRSize / count);
     const xBeginning = Math.floor((options.width - count * dotSize) / 2);
     const yBeginning = Math.floor((options.height - count * dotSize) / 2);
-    const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type });
+    const dot = new QRDot({ svg: this._element, type: options.dotsOptions.type, data: options.data });
 
     this._dotsClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
     this._dotsClipPath.setAttribute("id", "clip-path-dot-color");
