@@ -45,6 +45,7 @@ export default class QRSVG {
   //TODO don't pass all options to this class
   constructor(options: RequiredOptions) {
     this._element = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    this._element.id = btoa(Math.random().toString()).substring(10, 15);
     this._element.setAttribute("width", String(options.width));
     this._element.setAttribute("height", String(options.height));
     this._element.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -164,6 +165,12 @@ export default class QRSVG {
           color: color,
           name: "background-color"
         });
+
+        const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        bgRect.setAttribute("class", "background-color");
+        bgRect.setAttribute("width", String(this.width));
+        bgRect.setAttribute("height", String(this.height));
+        element.appendChild(bgRect);
       }
     }
   }
@@ -577,6 +584,6 @@ export default class QRSVG {
   }
 
   _createStyle({ color, name }: { color?: string; name: string }): void {
-    this._style.innerHTML += `.${name}{ fill: ${color}; }`;
+    this._style.innerHTML += `#${this._element.id} .${name}{ fill: ${color}; }`;
   }
 }

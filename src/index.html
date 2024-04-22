@@ -7,49 +7,58 @@
     <style>
       div {
         display: flex;
+        gap: 20px;
         justify-content: space-between;
         margin-bottom: 20px;
+      }
+      div > * {
+        flex-shrink: 0;
       }
     </style>
   </head>
 
   <body>
+    <h2>Canvas</h2>
+    <hr>
     <div id="container"></div>
+    <h2>SVG</h2>
     <hr />
     <div id="container2"></div>
+    <h2>Original dots</h2>
+    <hr />
+    <div id="container3"></div>
 
     <script type="text/javascript">
       //Test out dot options
-      const options = {
-        width: 300,
-        height: 300,
-        data: "https://google.com",
-        image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
-        dotsOptions: {
-          type: "square",
-          color: "#123ddd"
-        },
-        cornersSquareOptions: {
-          type: "square",
-          color: "#321ccc"
-        },
-        imageOptions: {
-          crossOrigin: "anonymous",
-          margin: 30
-        }
-      };
-
       const dotOptions = ["rounded", "dots", "classy", "classy-rounded", "square", "extra-rounded"];
       const color = ["#e8977d", "#d3e87d", "#7de88e", "#7ddbe8", "#867de8", "#e87de4", "#e87d7d"];
+      const background = ["#aff", "#fdf", "#fff", "#fff", "#fff", "#fff", "#fff"];
 
       const container = document.getElementById("container");
 
-      //Draw fixed version
-
+      // Draw fixed version
       dotOptions.forEach((dotOption, i) => {
-        options["dotsOptions"] = {
-          type: dotOptions[i],
-          color: color[i]
+        const options = {
+          width: 300,
+          height: 300,
+          data: "https://google.com",
+          image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+          dotsOptions: {
+            type: dotOptions[i],
+            color: color[i],
+          },
+          cornersSquareOptions: {
+            type: "square",
+            color: "#321ccc",
+          },
+          imageOptions: {
+            crossOrigin: "anonymous",
+            margin: 30,
+          },
+          backgroundOptions: {
+            color: background[i],
+            gradient: null,
+          },
         };
 
         const qrCode = new QRCodeStyling(options);
@@ -59,19 +68,69 @@
         // });
       });
 
-      //Draw original dots
-
       const container2 = document.getElementById("container2");
-      options["useLegacyDotRotation"] = true;
-
+      // Draw SVG
       dotOptions.forEach((dotOption, i) => {
-        options["dotsOptions"] = {
-          type: dotOptions[i],
-          color: color[i]
+        const options = {
+          type: 'svg',
+          width: 300,
+          height: 300,
+          data: "https://google.com",
+          image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+          dotsOptions: {
+            type: dotOptions[i],
+            color: color[i],
+          },
+          cornersSquareOptions: {
+            type: "square",
+            color: "#321ccc",
+          },
+          imageOptions: {
+            crossOrigin: "anonymous",
+            margin: 30,
+          },
+          backgroundOptions: {
+            color: background[i],
+            gradient: null,
+          },
         };
+
+        console.log(options)
 
         const qrCode = new QRCodeStyling(options);
         qrCode.append(container2);
+      });
+
+      const container3 = document.getElementById("container3");
+      // Draw original dots
+      dotOptions.forEach((dotOption, i) => {
+        const options = {
+          useLegacyDotRotation: true,
+          type: 'svg',
+          width: 300,
+          height: 300,
+          data: "https://google.com",
+          image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+          dotsOptions: {
+            type: dotOptions[i],
+            color: color[i],
+          },
+          cornersSquareOptions: {
+            type: "square",
+            color: "#321ccc",
+          },
+          imageOptions: {
+            crossOrigin: "anonymous",
+            margin: 30,
+          },
+          backgroundOptions: {
+            color: background[i],
+            gradient: null,
+          },
+        };
+
+        const qrCode = new QRCodeStyling(options);
+        qrCode.append(container3);
       });
     </script>
   </body>
