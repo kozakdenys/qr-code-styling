@@ -6,9 +6,10 @@ export interface UnknownObject {
 export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 export type CornerDotType = "dot" | "square";
 export type CornerSquareType = "dot" | "square" | "extra-rounded";
-export type Extension = "svg" | "png" | "jpeg" | "webp";
+export type FileExtension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
+export type ShapeType = "square" | "circle";
 
 export type Gradient = {
   type: GradientType;
@@ -37,6 +38,10 @@ export interface CornerSquareTypes {
 
 export interface DrawTypes {
   [key: string]: DrawType;
+}
+
+export interface ShapeTypes {
+  [key: string]: ShapeType;
 }
 
 export type TypeNumber =
@@ -100,6 +105,7 @@ export interface QRCode {
 
 export type Options = {
   type?: DrawType;
+  shape?: ShapeType;
   width?: number;
   height?: number;
   margin?: number;
@@ -132,6 +138,7 @@ export type Options = {
     gradient?: Gradient;
   };
   backgroundOptions?: {
+    round?: number;
     color?: string;
     gradient?: Gradient;
   };
@@ -141,7 +148,7 @@ export type FilterFunction = (i: number, j: number) => boolean;
 
 export type DownloadOptions = {
   name?: string;
-  extension?: Extension;
+  extension?: FileExtension;
 };
 
 export type DrawArgs = {
@@ -167,16 +174,6 @@ export type RotateFigureArgs = {
   draw: () => void;
 };
 
-export type DrawArgsCanvas = DrawArgs & {
-  context: CanvasRenderingContext2D;
-};
-
-export type BasicFigureDrawArgsCanvas = BasicFigureDrawArgs & {
-  context: CanvasRenderingContext2D;
-};
-
-export type RotateFigureArgsCanvas = RotateFigureArgs & {
-  context: CanvasRenderingContext2D;
-};
-
 export type GetNeighbor = (x: number, y: number) => boolean;
+
+export type ExtensionFunction = (svg: SVGElement, options: Options) => void;

@@ -7,7 +7,7 @@ describe("Test QRCodeStyling class", () => {
     global.document.body.innerHTML = "<div id='container'></div>";
   });
 
-  it("The README example should work correctly", done => {
+  it("The README example should work correctly", () => {
     const expectedQRCodeFile = fs.readFileSync(
       path.resolve(__dirname, "../assets/test/image_from_readme.png"),
       "base64"
@@ -31,10 +31,9 @@ describe("Test QRCodeStyling class", () => {
     const container = global.document.getElementById("container");
 
     qrCode.append(container);
-    //TODO remove setTimout
-    setTimeout(() => {
-      expect(qrCode._canvas.getCanvas().toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));
-      done();
+
+    return qrCode._getElement().then((element) => {
+      expect(element.toDataURL()).toEqual(expect.stringContaining(expectedQRCodeFile));
     });
   });
 });

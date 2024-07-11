@@ -21,6 +21,7 @@
     <script type="text/javascript">
       //Test out dot options
       const options = {
+        shape: "square",
         width: 512,
         height: 512,
         data: "https://google.com",
@@ -43,8 +44,9 @@
         }
       };
 
-      const dotOptions = ["rounded", "dots", "classy", "classy-rounded", "square", "extra-rounded"];
+      const dotOptions = ["rounded", "dots", "classy", "classy-rounded", "square", "extra-rounded", "daimonds"];
       const color = ["#e8977d", "#d3e87d", "#7de88e", "#7ddbe8", "#867de8", "#e87de4", "#e87d7d"];
+      const shape = ["square", "circle"]
 
       const container = document.getElementById("canvas");
 
@@ -62,6 +64,9 @@
         //   extension: "svg"
         // });
       });
+
+      options.shape = "circle"
+
 
       //Draw original dots
 

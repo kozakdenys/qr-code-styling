@@ -207,7 +207,39 @@ Gradient colorStops structure
 | ------- | ------ | -------------------------------------- |
 | options | object | The same options as for initialization |
 
-`QRCodeStyling.download(downloadOptions, quality) => Promise<void>`
+`QRCodeStyling.applyExtension(extension) => void`
+
+Param    |Type                  |Description
+---------|----------------------|------------------------------------------------------------------------------------------
+extension|(svg, options) => void|Extension is a function that takes svg and previously applied options and modifies an svg
+
+`applyExtension` example
+
+```JS
+const extension = (svg, options) => {
+    const { width, height } = options;
+    const size = Math.min(width, height);
+    const border = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const borderAttributes = {
+        "fill": "none",
+        "x": (width - size + 40) / 2,
+        "y": (height - size + 40) / 2,
+        "width": size - 40,
+        "height": size - 40,
+        "stroke": 'black',
+        "stroke-width": 40,
+        "rx": 100,
+    };
+    Object.keys(borderAttributes).forEach(attribute => {
+      border.setAttribute(attribute, borderAttributes[attribute]);
+    });
+    svg.appendChild(border);
+};
+```
+
+`QRCodeStyling.deleteExtension() => void`
+
+`QRCodeStyling.download(downloadOptions) => Promise<void>`
 
 | Param           | Type   | Description                                                                                                                                                                                                                                                                                                 |
 | --------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -221,12 +253,13 @@ Gradient colorStops structure
 | name      | string                               | `'qr'`        | Name of the downloaded file |
 | extension | string (`'png' 'jpeg' 'webp' 'svg'`) | `'png'`       | File extension              |
 
-`QRCodeStyling.toDataUrl(extension, quality) => Promise<void>`
+### Building this repo
 
-| Param     | Type                           | Default Value | Description                                                                                                                                                                                                                                                                                                  |
-| --------- | ------------------------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| extension | string (`'png' 'jpeg' 'webp')` | 'png'         | Blob type                                                                                                                                                                                                                                                                                                    |
-| quality   | number                         | undefined     | [A Number between 0 and 1 indicating the image quality to be used when creating images using file formats that support lossy compression (such as image/jpeg or image/webp). A user agent will use its default quality value if this option is not specified, or if the number is outside the allowed range. |
+If you get an error running `npm install` referring to `node-pre-gyp`, this is caused by an attempt to compile the [`canvas` dependency](https://github.com/Automattic/node-canvas#compiling). See Compiling instructions in the README. For example on MacOS you need to install dependencies: `brew install pkg-config cairo pango libpng jpeg giflib librsvg pixman`.
+
+Currently this repo will not build (`npm run build`) on Node v18, recommended version is v16. See https://stackoverflow.com/q/69692842/1375972 
+
+
 
 ### License
 
