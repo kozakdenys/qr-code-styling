@@ -30,7 +30,9 @@ export default class QRCodeStyling {
     }
   }
 
-  async _getQRStylingElement(extension: Extension = "png"): Promise<QRCanvas | QRSVG> {
+  async _getQRStylingElement(extension: "svg"): Promise<QRSVG>;
+  async _getQRStylingElement(extension: Omit<Extension, "svg">): Promise<QRCanvas>;
+  async _getQRStylingElement(extension: Extension): Promise<QRCanvas | QRSVG> {
     if (!this._qr) throw "QR code is empty";
 
     if (extension.toLowerCase() === "svg") {
@@ -113,34 +115,42 @@ export default class QRCodeStyling {
     this._container = container;
   }
 
-  async getRawData(extension: Extension = "png"): Promise<Blob | null> {
+  async getRawData(extension: Extension = "png", quality?: number): Promise<Blob | null> {
     if (!this._qr) throw "QR code is empty";
-    const element = await this._getQRStylingElement(extension);
 
-    if (extension.toLowerCase() === "svg") {
+    //A bit trickery to get typescript to behave
+    const lowerCasedExtension = extension.toLocaleLowerCase();
+
+    if (lowerCasedExtension === "svg") {
+      const element = await this._getQRStylingElement(lowerCasedExtension);
       const serializer = new XMLSerializer();
-      const source = serializer.serializeToString(((element as unknown) as QRSVG).getElement());
-
+      const source = serializer.serializeToString(element.getElement());
       return new Blob(['<?xml version="1.0" standalone="no"?>\r\n' + source], { type: "image/svg+xml" });
     } else {
-      return new Promise((resolve) =>
-        ((element as unknown) as QRCanvas).getCanvas().toBlob(resolve, `image/${extension}`, 1)
-      );
+      const element = await this._getQRStylingElement(lowerCasedExtension);
+      return new Promise((resolve) => element.getCanvas().toBlob(resolve, `image/${lowerCasedExtension}`, quality));
     }
   }
 
-  async download(downloadOptions?: Partial<DownloadOptions> | string): Promise<void> {
+  /**
+   *
+   * @param extension file format of the returned image
+   * @param quality [0-1] with 1 being the highest quality
+   * @returns
+   */
+  async toDataUrl(extension: Omit<Extension, "svg"> = "png", quality?: number): Promise<string> {
+    if (!this._qr) throw "QR code is empty";
+    const lowerCasedExtension = extension.toLocaleLowerCase();
+    const element = await this._getQRStylingElement(lowerCasedExtension);
+    return element.getCanvas().toDataURL(`image/${lowerCasedExtension}`, quality);
+  }
+
+  async download(downloadOptions?: Partial<DownloadOptions>): Promise<void> {
     if (!this._qr) throw "QR code is empty";
     let extension = "png" as Extension;
     let name = "qr";
 
-    //TODO remove deprecated code in the v2
-    if (typeof downloadOptions === "string") {
-      extension = downloadOptions as Extension;
-      console.warn(
-        "Extension is deprecated as argument for 'download' method, please pass object { name: '...', extension: '...' } as argument"
-      );
-    } else if (typeof downloadOptions === "object" && downloadOptions !== null) {
+    if (typeof downloadOptions === "object" && downloadOptions !== null) {
       if (downloadOptions.name) {
         name = downloadOptions.name;
       }
@@ -149,17 +159,20 @@ export default class QRCodeStyling {
       }
     }
 
-    const element = await this._getQRStylingElement(extension);
+    //A bit trickery to get typescript to behave
+    const lowerCasedExtension = extension.toLocaleLowerCase();
 
-    if (extension.toLowerCase() === "svg") {
+    if (lowerCasedExtension === "svg") {
+      const element = await this._getQRStylingElement(lowerCasedExtension);
       const serializer = new XMLSerializer();
-      let source = serializer.serializeToString(((element as unknown) as QRSVG).getElement());
+      let source = serializer.serializeToString((element as unknown as QRSVG).getElement());
 
       source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
       const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
       downloadURI(url, `${name}.svg`);
     } else {
-      const url = ((element as unknown) as QRCanvas).getCanvas().toDataURL(`image/${extension}`);
+      const element = await this._getQRStylingElement(lowerCasedExtension);
+      const url = element.getCanvas().toDataURL(`image/${extension}`);
       downloadURI(url, `${name}.${extension}`);
     }
   }

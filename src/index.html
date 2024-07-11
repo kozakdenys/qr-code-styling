@@ -1,45 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>QR Code Styling</title>
 
-<head>
-  <meta charset="UTF-8">
-  <title>QR Code Styling</title>
-</head>
-
-<body>
-  <div id="canvas"></div>
-  <div id="canvas2"></div>
-  <script type="text/javascript">
-    const options = {
-      width: 512,
-      height: 512,
-      data: "https://google.com",
-      image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
-      dotsOptions: {
-        type: "square",
-        color: "#AE1B1BFF",
-      },
-      cornersSquareOptions: {
-        type: "square",
-        color: "#1D2E5E65",
-      },
-      cornersDotOptions: {
-        type: "square",
-        color: "#1D2E5E65",
-      },
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 30
+    <style>
+      div {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
       }
-    };
-    const qrCode = new QRCodeStyling(options);
+    </style>
+  </head>
 
-    qrCode.append(document.getElementById("canvas"));
+  <body>
+    <div id="canvas"></div>
+    <hr />
+    <div id="canvas2"></div>
 
-    qrCode.download({
-      extension: 'svg'
-    })
-  </script>
-</body>
+    <script type="text/javascript">
+      //Test out dot options
+      const options = {
+        width: 512,
+        height: 512,
+        data: "https://google.com",
+        image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+        dotsOptions: {
+          type: "square",
+          color: "#AE1B1BFF"
+        },
+        cornersSquareOptions: {
+          type: "square",
+          color: "#1D2E5E65"
+        },
+        cornersDotOptions: {
+          type: "square",
+          color: "#1D2E5E65",
+        },
+        imageOptions: {
+          crossOrigin: "anonymous",
+          margin: 30
+        }
+      };
 
+      const dotOptions = ["rounded", "dots", "classy", "classy-rounded", "square", "extra-rounded"];
+      const color = ["#e8977d", "#d3e87d", "#7de88e", "#7ddbe8", "#867de8", "#e87de4", "#e87d7d"];
+
+      const container = document.getElementById("canvas");
+
+      //Draw fixed version
+
+      dotOptions.forEach((dotOption, i) => {
+        options["dotsOptions"] = {
+          type: dotOptions[i],
+          color: color[i]
+        };
+
+        const qrCode = new QRCodeStyling(options);
+        qrCode.append(container);
+        // qrCode.download({
+        //   extension: "svg"
+        // });
+      });
+
+      //Draw original dots
+
+      const container2 = document.getElementById("canvas2");
+      options["useLegacyDotRotation"] = true;
+
+      dotOptions.forEach((dotOption, i) => {
+        options["dotsOptions"] = {
+          type: dotOptions[i],
+          color: color[i]
+        };
+
+        const qrCode = new QRCodeStyling(options);
+        qrCode.append(container2);
+      });
+    </script>
+  </body>
 </html>

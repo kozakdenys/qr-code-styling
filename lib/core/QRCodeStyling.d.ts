@@ -12,9 +12,17 @@ export default class QRCodeStyling {
     _svgDrawingPromise?: Promise<void>;
     constructor(options?: Partial<Options>);
     static _clearContainer(container?: HTMLElement): void;
-    _getQRStylingElement(extension?: Extension): Promise<QRCanvas | QRSVG>;
+    _getQRStylingElement(extension: "svg"): Promise<QRSVG>;
+    _getQRStylingElement(extension: Omit<Extension, "svg">): Promise<QRCanvas>;
     update(options?: Partial<Options>): void;
     append(container?: HTMLElement): void;
-    getRawData(extension?: Extension): Promise<Blob | null>;
-    download(downloadOptions?: Partial<DownloadOptions> | string): Promise<void>;
+    getRawData(extension?: Extension, quality?: number): Promise<Blob | null>;
+    /**
+     *
+     * @param extension file format of the returned image
+     * @param quality [0-1] with 1 being the highest quality
+     * @returns
+     */
+    toDataUrl(extension?: Omit<Extension, "svg">, quality?: number): Promise<string>;
+    download(downloadOptions?: Partial<DownloadOptions>): Promise<void>;
 }

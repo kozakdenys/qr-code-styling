@@ -29,6 +29,7 @@ export interface RequiredOptions extends Options {
     color: string;
     gradient?: Gradient;
   };
+  useLegacyDotRotation: boolean;
 }
 
 const defaultOptions: RequiredOptions = {
@@ -54,7 +55,8 @@ const defaultOptions: RequiredOptions = {
   },
   backgroundOptions: {
     color: "#FFFFFF00"
-  }
+  },
+  useLegacyDotRotation: false
 };
 
 export default defaultOptions;

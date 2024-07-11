@@ -1,3 +1,4 @@
+// eslint-disable-next-line prettier/prettier
 import { UnknownObject } from "../types";
 
 const isObject = (obj: Record<string, unknown>): boolean => !!obj && typeof obj === "object" && !Array.isArray(obj);
