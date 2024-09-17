@@ -101,6 +101,7 @@ dotsOptions            |object                   |             |Dots styling opt
 cornersSquareOptions   |object                   |             |Square in the corners styling options
 cornersDotOptionsHelper|object                   |             |Dots in the corners styling options
 backgroundOptions      |object                   |             |QR background styling options
+svgOptions             |object                   |             |Only specify when you need to set things specific to the SVG implementation.
 nodeCanvas             |node-canvas              |             |Only specify when running on a node server for canvas type, please refer to node section below
 jsDom                  |jsdom                    |             |Only specify when running on a node server for svg type, please refer to node section below
 
@@ -185,6 +186,12 @@ Property|Type            |Default Value|Description
 --------|----------------|-------------|-----------------------------------
 offset  |number (`0 - 1`)|             |Position of color in gradient range
 color   |string          |             |Color of stop in gradient range
+
+`options.svgOptions` structure
+
+Property|Type   |Default Value|Description
+--------|-------|-------------|----------------------------------------------------------------------------------------------
+idPrefix|string?|`undefined`  |Use this to set different HTML IDs, for when you are using multiple QR-Codes on the same page.
 
 #### QRCodeStyling methods
 `QRCodeStyling.append(container) => void`

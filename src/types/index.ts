@@ -166,6 +166,9 @@ export type Options = {
     color?: string;
     gradient?: Gradient;
   };
+  svgOptions?: {
+    idPrefix?: string;
+  };
 };
 
 export type FilterFunction = (i: number, j: number) => boolean;
