@@ -17,6 +17,7 @@ export interface RequiredOptions extends Options {
     errorCorrectionLevel: ErrorCorrectionLevel;
   };
   imageOptions: {
+    saveAsBlob: boolean;
     hideBackgroundDots: boolean;
     imageSize: number;
     crossOrigin?: string;
@@ -47,6 +48,7 @@ const defaultOptions: RequiredOptions = {
     errorCorrectionLevel: errorCorrectionLevels.Q
   },
   imageOptions: {
+    saveAsBlob: false,
     hideBackgroundDots: true,
     imageSize: 0.4,
     crossOrigin: undefined,
