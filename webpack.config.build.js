@@ -13,5 +13,14 @@ module.exports = (env, argv) => {
     config.devtool = "source-map";
   }
 
-  return config;
+  return [{
+    ...config,
+  }, {
+    ...config,
+    output: {
+      ...config.output,
+      filename: "qr-code-styling.common.js",
+      libraryTarget: "commonjs",
+    },
+  }];
 };
