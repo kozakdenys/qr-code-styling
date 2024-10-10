@@ -1,8 +1,6 @@
 # QR Code Styling
 [![Version](https://img.shields.io/npm/v/qr-code-styling.svg)](https://www.npmjs.org/package/qr-code-styling)
 
-I am collecting community thoughts about future development of this library, please take a [small poll](https://docs.google.com/forms/d/e/1FAIpQLScJXv64WJQiCSW2pDmIEyMddsxE9KvY25IW_YnsOFd5FUqJig/viewform?usp=sf_link) to help me.
-
 JavaScript library for generating QR codes with a logo and styling.
 
 Try it here https://qr-code-styling.com
@@ -14,6 +12,17 @@ If you have issues / suggestions / notes / questions, please open an issue or co
 <img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/qr_code_example.png" width="240" />
 <img style="display:inline-block" src="https://raw.githubusercontent.com/kozakdenys/qr-code-styling/master/src/assets/telegram_example_new.png" width="240" />
 </p>
+
+### Extensions
+
+If you would like to use additional stiles, you can connect extensions.
+#### [qr-border-plugin](https://www.lefe.dev/marketplace/qr-border-plugin)
+
+<p float="left">
+<img style="display:inline-block" src="https://www.lefe.dev/_static/packages/qr-border-plugin-1.svg" width="240" />
+<img style="display:inline-block" src="https://www.lefe.dev/_static/packages/qr-border-plugin-2.svg" width="240" />
+</p>
+
 
 ### Installation
 
@@ -204,6 +213,38 @@ extension|string (`'png' 'jpeg' 'webp' 'svg'`)|`'png'`      |Blob type on browse
 Param  |Type  |Description
 -------|------|--------------------------------------
 options|object|The same options as for initialization
+
+`QRCodeStyling.applyExtension(extension) => void`
+
+Param    |Type                  |Description
+---------|----------------------|------------------------------------------------------------------------------------------
+extension|(svg, options) => void|Extension is a function that takes svg and previously applied options and modifies an svg
+
+`applyExtension` example
+
+```JS
+const extension = (svg, options) => {
+    const { width, height } = options;
+    const size = Math.min(width, height);
+    const border = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    const borderAttributes = {
+        "fill": "none",
+        "x": (width - size + 40) / 2,
+        "y": (height - size + 40) / 2,
+        "width": size - 40,
+        "height": size - 40,
+        "stroke": 'black',
+        "stroke-width": 40,
+        "rx": 100,
+    };
+    Object.keys(borderAttributes).forEach(attribute => {
+      border.setAttribute(attribute, borderAttributes[attribute]);
+    });
+    svg.appendChild(border);
+};
+```
+
+`QRCodeStyling.deleteExtension() => void`
 
 `QRCodeStyling.download(downloadOptions) => Promise<void>`
 

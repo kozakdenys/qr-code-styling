@@ -1,5 +1,5 @@
-import cornerSquareTypes from "../../../constants/cornerSquareTypes";
-import { CornerSquareType, DrawArgs, BasicFigureDrawArgs, RotateFigureArgs, Window } from "../../../types";
+import cornerSquareTypes from "../../constants/cornerSquareTypes";
+import { CornerSquareType, DrawArgs, BasicFigureDrawArgs, RotateFigureArgs, Window } from "../../types";
 
 export default class QRCornerSquare {
   _element?: SVGElement;

@@ -7,8 +7,15 @@ const srcPath = path.resolve(rootPath, "src");
 const libPath = path.resolve(rootPath, "lib");
 const tmpPath = path.resolve(rootPath, "tmp");
 
-const shared = {
+module.exports = {
   entry: srcPath + "/index.ts",
+  output: {
+    path: tmpPath,
+    filename: "qr-code-styling.js",
+    library: "QRCodeStyling",
+    libraryTarget: "umd",
+    libraryExport: "default"
+  },
   module: {
     rules: [
       {
@@ -41,23 +48,3 @@ const shared = {
     extensions: [".ts", ".js"]
   }
 };
-
-module.exports = [{
-  ...shared,
-  output: {
-    path: tmpPath,
-    filename: "qr-code-styling.js",
-    library: "QRCodeStyling",
-    libraryTarget: "umd",
-    libraryExport: "default"
-  },
-}, {
-  ...shared,
-  output: {
-    path: tmpPath,
-    filename: "qr-code-styling.common.js",
-    library: "QRCodeStyling",
-    libraryTarget: "commonjs",
-    libraryExport: "default"
-  },
-}];
