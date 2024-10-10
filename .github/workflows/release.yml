@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set PACKAGE_VERSION
-        run: echo "PACKAGE_VERSION=$(cat lerna.json | jq -r .version)" >> $GITHUB_ENV
+        run: echo "PACKAGE_VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
       - name: Tag Check
         id: tag_check
         run: |
@@ -70,13 +70,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set PACKAGE_VERSION
-        run: echo "PACKAGE_VERSION=$(cat lerna.json | jq -r .version)" >> $GITHUB_ENV
+        run: echo "PACKAGE_VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
       - name: Install
-        run: yarn install
+        run: npm install
       - name: Build
-        run: yarn run build
+        run: npm run build
       - name: Publish
-        run: yarn run ci:release
+        run: npm run ci:release
         env:
           # actions/setup-node create .npmrc with `NODE_AUTH_TOKEN` env if `registry-url` is defined
           # === `echo "${ registry-url }/:_authToken=${ NODE_AUTH_TOKEN }" > .npmrc`
