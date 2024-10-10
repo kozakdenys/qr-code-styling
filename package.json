@@ -38,7 +38,12 @@
     "build": "webpack --mode=production --config webpack.config.build.js",
     "build:dev": "webpack --mode=development --config webpack.config.build.js",
     "test": "jest",
-    "start": "webpack serve --open --config webpack.config.dev-server.js"
+    "start": "webpack serve --open --config webpack.config.dev-server.js",
+    "ci:versionup:patch": "npm version patch --no-git-tag-version --yes && npm run commit-version",
+    "ci:versionup:minor": "npm version minor --no-git-tag-version --yes && npm run commit-version",
+    "ci:versionup:major": "npm version major --no-git-tag-version --yes && npm run commit-version",
+    "commit-version": "git add . && git commit -m \"chore(release): v`node -p 'require(\"./package.json\").version'`\"",
+    "ci:release": "npm publish --yes"
   },
   "repository": {
     "type": "git",
