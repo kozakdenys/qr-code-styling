@@ -1,4 +1,4 @@
-# This workflow often runs following steps when a PR is merged to main branch.
+# This workflow often runs following steps when a PR is merged to master branch.
 # 1. jobs.check checks if we need to release
 # 2. jobs.release publish packages
 #
@@ -13,7 +13,7 @@ name: Release
 on:
   pull_request:
     branches:
-      - main
+      - master
     types: [closed]
   workflow_dispatch: # force release
 
