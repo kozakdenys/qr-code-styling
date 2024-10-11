@@ -143,10 +143,10 @@ type    |string (`'rounded' 'dots' 'classy' 'classy-rounded' 'square' 'extra-rou
 
 `options.backgroundOptions` structure
 
-Property|Type  |Default Value
---------|------|-------------
-color   |string|`'#fff'`
-gradient|object|
+Property|Type                                              |Default Value
+--------|--------------------------------------------------|-------------
+color   |string (`'#fff' 'rgb(255,255,255)' 'transparent'`)|`'#fff'`
+gradient|object                                            |
 
 `options.cornersSquareOptions` structure
 
