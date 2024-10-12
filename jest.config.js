@@ -1,5 +1,3 @@
-const { defaults: tsjPreset } = require("ts-jest/presets");
-
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
@@ -125,12 +123,10 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jest-environment-jsdom-fifteen",
+  testEnvironment: "jest-fixed-jsdom",
 
   // Options that will be passed to the testEnvironment
-  testEnvironmentOptions: {
-    resources: "usable"
-  },
+  testEnvironmentOptions: { "resources": "usable" },
 
   // Adds a location field to test results
   // testLocationInResults: false,

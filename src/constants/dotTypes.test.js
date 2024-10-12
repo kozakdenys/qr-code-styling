@@ -5,7 +5,7 @@ describe("Dot Types", () => {
     expect(typeof dotTypes).toBe("object");
   });
 
-  it.each(Object.values(dotTypes))("Values should be strings", value => {
+  it.each(Object.values(dotTypes))("Values should be strings", (value) => {
     expect(typeof value).toBe("string");
   });
 });

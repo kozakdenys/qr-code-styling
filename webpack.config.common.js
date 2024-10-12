@@ -1,6 +1,7 @@
 const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const FileManagerPlugin = require('filemanager-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const rootPath = path.resolve(__dirname, "./");
 const srcPath = path.resolve(rootPath, "src");
@@ -22,27 +23,20 @@ module.exports = {
         test: /\.ts$/,
         loader: "ts-loader",
         exclude: /node_modules/
-      },
-      {
-        enforce: "pre",
-        test: /\.ts$/,
-        loader: "eslint-loader",
-        exclude: /node_modules/
       }
     ]
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new ESLintPlugin(),
     new FileManagerPlugin({
       events: {
         onEnd: {
-          copy: [
-            { source: tmpPath + '/**/*', destination: libPath },
-          ],
-          delete: [tmpPath],
-        },
-      },
-    }),
+          copy: [{ source: tmpPath + "/**/*", destination: libPath }],
+          delete: [tmpPath]
+        }
+      }
+    })
   ],
   resolve: {
     extensions: [".ts", ".js"]
