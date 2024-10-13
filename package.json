@@ -7,8 +7,11 @@
   "files": [
     "lib"
   ],
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
-    "qrcode-generator": "^1.4.3"
+    "qrcode-generator": "^1.4.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
