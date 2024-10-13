@@ -5,11 +5,11 @@ describe("QR Types", () => {
     expect(typeof qrTypes).toBe("object");
   });
 
-  it.each(Object.values(qrTypes))("Values should be number", value => {
+  it.each(Object.values(qrTypes))("Values should be number", (value) => {
     expect(typeof value).toBe("number");
   });
 
-  it.each(Object.keys(qrTypes))("A key of the object should be the same as a value", key => {
+  it.each(Object.keys(qrTypes))("A key of the object should be the same as a value", (key) => {
     expect(key).toBe(qrTypes[key].toString());
   });
 

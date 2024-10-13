@@ -6,7 +6,7 @@ import { JSDOM } from "jsdom";
 
 describe("Test QRCodeStyling class", () => {
   beforeAll(() => {
-    global.document.body.innerHTML = "<div id='container'></div>";
+    document.body.innerHTML = "<div id='container'></div>";
   });
 
   it("The README example should work correctly", () => {
@@ -28,9 +28,9 @@ describe("Test QRCodeStyling class", () => {
         color: "#e9ebee"
       }
     });
-    global.document.body.innerHTML = "<div id='container'></div>";
+    document.body.innerHTML = "<div id='container'></div>";
 
-    const container = global.document.getElementById("container");
+    const container = document.getElementById("container");
 
     qrCode.append(container);
 
