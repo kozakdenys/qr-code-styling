@@ -38,7 +38,6 @@ export default class QRSVG {
   _dotsClipPath?: SVGElement;
   _cornersSquareClipPath?: SVGElement;
   _cornersDotClipPath?: SVGElement;
-  _dots?: SVGElement;
   _options: RequiredOptions;
   _qr?: QRCode;
   _image?: HTMLImageElement;
@@ -244,8 +243,6 @@ export default class QRSVG {
 
         if (dot._element && this._dotsClipPath) {
           this._dotsClipPath.appendChild(dot._element);
-        } else if (dot._element && this._dots) {
-          this._dots.appendChild(dot._element);
         }
       }
     }
