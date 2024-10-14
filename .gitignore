@@ -9,3 +9,5 @@
 
 # Tests coverage results
 /coverage
+
+.DS_Store

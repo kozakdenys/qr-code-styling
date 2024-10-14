@@ -175,7 +175,7 @@ export type Options = {
   };
 };
 
-export type FilterFunction = (i: number, j: number) => boolean;
+export type FilterFunction = (row: number, col: number) => boolean;
 
 export type DownloadOptions = {
   name?: string;
