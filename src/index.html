@@ -3,28 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <title>QR Code Styling</title>
-    <style>
-      div {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-      }
-    </style>
   </head>
 
   <body>
     <div id="canvas"></div>
-    <hr />
     <div id="canvas2"></div>
 
     <script type="text/javascript">
       //Test out dot options
       const options = {
+        type: "svg",
         shape: "square",
-        width: 512,
-        height: 512,
+        width: 200,
+        height: 200,
         data: "https://google.com",
-        image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+        image: "https://qr-code-styling.com/b9eac011a0558695563d6081a8395ccb.png",
         dotsOptions: {
           type: "square",
           color: "#AE1B1BFF"
@@ -39,8 +32,8 @@
         },
         imageOptions: {
           crossOrigin: "anonymous",
-          margin: 30
-        }
+          margin: 10,
+        },
       };
 
       const dotOptions = ["rounded", "dots", "classy", "classy-rounded", "square", "extra-rounded", "daimonds"];

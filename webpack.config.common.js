@@ -1,5 +1,4 @@
 const path = require("path");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const FileManagerPlugin = require('filemanager-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
@@ -28,7 +27,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new ESLintPlugin(),
     new FileManagerPlugin({
       events: {
