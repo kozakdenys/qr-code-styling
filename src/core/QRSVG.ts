@@ -154,8 +154,8 @@ export default class QRSVG {
 
       if (gradientOptions || color) {
         const size = Math.min(options.width, options.height);
-        const element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        this._backgroundClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
+        const element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        this._backgroundClipPath = this._window.document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
         this._backgroundClipPath.setAttribute("id", `clip-path-background-color-${this._instanceId}`);
         this._defs.appendChild(this._backgroundClipPath);
 
