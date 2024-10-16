@@ -153,19 +153,6 @@ export default class QRSVG {
       const color = options.backgroundOptions?.color;
 
       if (gradientOptions || color) {
-        this._createColor({
-          options: gradientOptions,
-          color: color,
-          additionalRotation: 0,
-          x: 0,
-          y: 0,
-          height: options.height,
-          width: options.width,
-          name: `background-color-${this._instanceId}`
-        });
-      }
-
-      if (options.backgroundOptions?.round) {
         const size = Math.min(options.width, options.height);
         const element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this._backgroundClipPath = document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
@@ -179,6 +166,17 @@ export default class QRSVG {
         element.setAttribute("rx", String((size / 2) * options.backgroundOptions.round));
 
         this._backgroundClipPath.appendChild(element);
+
+        this._createColor({
+          options: gradientOptions,
+          color: color,
+          additionalRotation: 0,
+          x: 0,
+          y: 0,
+          height: options.height,
+          width: options.width,
+          name: `background-color-${this._instanceId}`
+        });
       }
     }
   }
