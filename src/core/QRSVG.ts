@@ -118,7 +118,6 @@ export default class QRSVG {
       });
     }
 
-    console.log(this._image?.width, this._image?.height)
     this.drawBackground();
     this.drawDots((row: number, col: number): boolean => {
       if (this._options.imageOptions.hideBackgroundDots) {
