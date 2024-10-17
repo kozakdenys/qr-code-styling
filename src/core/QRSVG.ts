@@ -151,19 +151,24 @@ export default class QRSVG {
     if (element) {
       const gradientOptions = options.backgroundOptions?.gradient;
       const color = options.backgroundOptions?.color;
+      let height = options.height;
+      let width = options.width;
 
       if (gradientOptions || color) {
-        const size = Math.min(options.width, options.height);
         const element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this._backgroundClipPath = this._window.document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
         this._backgroundClipPath.setAttribute("id", `clip-path-background-color-${this._instanceId}`);
         this._defs.appendChild(this._backgroundClipPath);
 
-        element.setAttribute("x", String((options.width - size) / 2));
-        element.setAttribute("y", String((options.height - size) / 2));
-        element.setAttribute("width", String(size));
-        element.setAttribute("height", String(size));
-        element.setAttribute("rx", String((size / 2) * options.backgroundOptions.round));
+        if (options.backgroundOptions?.round) {
+          height = width = Math.min(options.width, options.height);
+          element.setAttribute("rx", String((height / 2) * options.backgroundOptions.round));
+        }
+
+        element.setAttribute("x", String((options.width - width) / 2));
+        element.setAttribute("y", String((options.height - height) / 2));
+        element.setAttribute("width", String(width));
+        element.setAttribute("height", String(height));
 
         this._backgroundClipPath.appendChild(element);
 
