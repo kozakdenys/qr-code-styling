@@ -53,6 +53,10 @@ export default class QRSVG {
     this._element.setAttribute("width", String(options.width));
     this._element.setAttribute("height", String(options.height));
     this._element.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+    if (!options.dotsOptions.roundSize) {
+      this._element.setAttribute("shape-rendering", "crispEdges");
+    }
+    this._element.setAttribute("viewBox", `0 0 ${options.width} ${options.height}`);
     this._defs = this._window.document.createElementNS("http://www.w3.org/2000/svg", "defs");
     this._element.appendChild(this._defs);
 
@@ -86,7 +90,7 @@ export default class QRSVG {
     const count = qr.getModuleCount();
     const minSize = Math.min(this._options.width, this._options.height) - this._options.margin * 2;
     const realQRSize = this._options.shape === shapeTypes.circle ? minSize / Math.sqrt(2) : minSize;
-    const dotSize = realQRSize / count;
+    const dotSize = this._roundSize(realQRSize / count);
     let drawImageSize = {
       hideXDots: 0,
       hideYDots: 0,
@@ -151,19 +155,24 @@ export default class QRSVG {
     if (element) {
       const gradientOptions = options.backgroundOptions?.gradient;
       const color = options.backgroundOptions?.color;
+      let height = options.height;
+      let width = options.width;
 
       if (gradientOptions || color) {
-        const size = Math.min(options.width, options.height);
         const element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "rect");
         this._backgroundClipPath = this._window.document.createElementNS("http://www.w3.org/2000/svg", "clipPath");
         this._backgroundClipPath.setAttribute("id", `clip-path-background-color-${this._instanceId}`);
         this._defs.appendChild(this._backgroundClipPath);
 
-        element.setAttribute("x", String((options.width - size) / 2));
-        element.setAttribute("y", String((options.height - size) / 2));
-        element.setAttribute("width", String(size));
-        element.setAttribute("height", String(size));
-        element.setAttribute("rx", String((size / 2) * options.backgroundOptions.round));
+        if (options.backgroundOptions?.round) {
+          height = width = Math.min(options.width, options.height);
+          element.setAttribute("rx", String((height / 2) * options.backgroundOptions.round));
+        }
+
+        element.setAttribute("x", String(this._roundSize((options.width - width) / 2)));
+        element.setAttribute("y", String(this._roundSize((options.height - height) / 2)));
+        element.setAttribute("width", String(width));
+        element.setAttribute("height", String(height));
 
         this._backgroundClipPath.appendChild(element);
 
@@ -195,9 +204,9 @@ export default class QRSVG {
 
     const minSize = Math.min(options.width, options.height) - options.margin * 2;
     const realQRSize = options.shape === shapeTypes.circle ? minSize / Math.sqrt(2) : minSize;
-    const dotSize = realQRSize / count;
-    const xBeginning = (options.width - count * dotSize) / 2;
-    const yBeginning = (options.height - count * dotSize) / 2;
+    const dotSize = this._roundSize(realQRSize / count);
+    const xBeginning = this._roundSize((options.width - count * dotSize) / 2);
+    const yBeginning = this._roundSize((options.height - count * dotSize) / 2);
     const dot = new QRDot({
       svg: this._element,
       type: options.dotsOptions.type,
@@ -246,12 +255,12 @@ export default class QRSVG {
     }
 
     if (options.shape === shapeTypes.circle) {
-      const additionalDots = Math.floor((minSize / dotSize - count) / 2);
+      const additionalDots = this._roundSize((minSize / dotSize - count) / 2);
       const fakeCount = count + additionalDots * 2;
       const xFakeBeginning = xBeginning - additionalDots * dotSize;
       const yFakeBeginning = yBeginning - additionalDots * dotSize;
       const fakeMatrix: number[][] = [];
-      const center = Math.floor(fakeCount / 2);
+      const center = this._roundSize(fakeCount / 2);
 
       for (let row = 0; row < fakeCount; row++) {
         fakeMatrix[row] = [];
@@ -316,11 +325,11 @@ export default class QRSVG {
     const count = this._qr.getModuleCount();
     const minSize = Math.min(options.width, options.height) - options.margin * 2;
     const realQRSize = options.shape === shapeTypes.circle ? minSize / Math.sqrt(2) : minSize;
-    const dotSize = realQRSize / count;
+    const dotSize = this._roundSize(realQRSize / count);
     const cornersSquareSize = dotSize * 7;
     const cornersDotSize = dotSize * 3;
-    const xBeginning = (options.width - count * dotSize) / 2;
-    const yBeginning = (options.height - count * dotSize) / 2;
+    const xBeginning = this._roundSize((options.width - count * dotSize) / 2);
+    const yBeginning = this._roundSize((options.height - count * dotSize) / 2);
 
     [
       [0, 0, 0],
@@ -450,11 +459,6 @@ export default class QRSVG {
 
   imageToBlob(): void {
     if (!this._image) return;
-    // fix blurry svg
-    if (/(\.svg$)|(^data:image\/svg)/.test(this._options.image ?? "")) {
-      this._image.width = this._options.width;
-      this._image.height = this._options.height;
-    }
     if (this._options.imageOptions.saveAsBlob && this._canvas) {
       const ctx = this._canvas.getContext("2d");
       if (ctx) {
@@ -513,10 +517,10 @@ export default class QRSVG {
     dotSize: number;
   }): Promise<void> {
     const options = this._options;
-    const xBeginning = (options.width - count * dotSize) / 2;
-    const yBeginning = (options.height - count * dotSize) / 2;
-    const dx = xBeginning + options.imageOptions.margin + (count * dotSize - width) / 2;
-    const dy = yBeginning + options.imageOptions.margin + (count * dotSize - height) / 2;
+    const xBeginning = this._roundSize((options.width - count * dotSize) / 2);
+    const yBeginning = this._roundSize((options.height - count * dotSize) / 2);
+    const dx = xBeginning + this._roundSize(options.imageOptions.margin + (count * dotSize - width) / 2);
+    const dy = yBeginning + this._roundSize(options.imageOptions.margin + (count * dotSize - height) / 2);
     const dw = width - options.imageOptions.margin * 2;
     const dh = height - options.imageOptions.margin * 2;
 
@@ -628,5 +632,12 @@ export default class QRSVG {
     }
 
     this._element.appendChild(rect);
+  }
+
+  _roundSize = (value: number) => {
+    if (this._options.dotsOptions.roundSize) {
+      return Math.floor(value);
+    }
+    return value;
   }
 }

@@ -135,11 +135,12 @@ When QR type is svg, the image may not load in certain applications as it is sav
 
 `options.dotsOptions` structure
 
-Property|Type                                                                          |Default Value|Description
---------|------------------------------------------------------------------------------|-------------|-------------------
-color   |string                                                                        |`'#000'`     |Color of QR dots
-gradient|object                                                                        |             |Gradient of QR dots
-type    |string (`'rounded' 'dots' 'classy' 'classy-rounded' 'square' 'extra-rounded'`)|`'square'`   |Style of QR dots
+Property | Type                                                                           | Default Value |Description
+-------- |--------------------------------------------------------------------------------|---------------|-------------------
+color    | string                                                                         | `'#000'`      |Color of QR dots
+gradient | object                                                                         |               |Gradient of QR dots
+type     | string (`'rounded' 'dots' 'classy' 'classy-rounded' 'square' 'extra-rounded'`) | `'square'`    |Style of QR dots
+roundSize| boolean                                                                        | true          |Whether to round dots size to integer. `true` value might create extra margin around qr code. If `false`, [shape-rendering="crispEdges"](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/shape-rendering#crispedges) will be applied to SVG element.
 
 `options.backgroundOptions` structure
 
