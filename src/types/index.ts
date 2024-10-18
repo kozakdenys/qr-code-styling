@@ -157,6 +157,7 @@ export type Options = {
     type?: DotType;
     color?: string;
     gradient?: Gradient;
+    roundSize?: boolean;
   };
   cornersSquareOptions?: {
     type?: CornerSquareType;
