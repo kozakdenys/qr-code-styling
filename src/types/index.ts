@@ -1,3 +1,5 @@
+import { DOMWindow, JSDOM } from "jsdom";
+
 export interface UnknownObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
@@ -16,28 +18,7 @@ export interface Canvas extends HTMLCanvasElement {
   createCanvas?: (width: number, height: number) => Canvas;
   loadImage?: (image: string) => Promise<HTMLImageElement>;
 }
-
-export interface Window {
-  Image: typeof HTMLImageElement;
-  XMLSerializer: typeof XMLSerializer;
-  document: Document;
-}
-declare const window: Window;
-
-interface JsDomOptions {
-  resources: string;
-}
-export class JSDom {
-  window: Window;
-  _options: JsDomOptions;
-  _input: string;
-
-  constructor(input: string, options: JsDomOptions) {
-    this._options = options;
-    this._input = input;
-    this.window = window;
-  }
-}
+export type Window = DOMWindow;
 
 export type Gradient = {
   type: GradientType;
@@ -140,7 +121,7 @@ export type Options = {
   data?: string;
   image?: string;
   nodeCanvas?: Canvas;
-  jsdom?: typeof JSDom;
+  jsdom?: typeof JSDOM;
   qrOptions?: {
     typeNumber?: TypeNumber;
     mode?: Mode;
