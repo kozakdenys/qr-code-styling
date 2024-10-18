@@ -16,6 +16,7 @@
   "devDependencies": {
     "@eslint/js": "^9.12.0",
     "@types/eslint__js": "^8.42.3",
+    "@types/jsdom": "^21.1.7",
     "canvas": "^2.11.2",
     "eslint": "^9.12.0",
     "eslint-config-prettier": "^9.1.0",

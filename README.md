@@ -296,8 +296,14 @@ const options = {
 
 // For canvas type
 const qrCodeImage = new QRCodeStyling({
-    nodeCanvas, // this is required
-    ...options
+    jsdom: JSDOM, // this is required
+    nodeCanvas, // this is required,
+    ...options,
+    imageOptions: {
+        saveAsBlob: true,
+        crossOrigin: "anonymous",
+        margin: 20
+    },
 });
 
 qrCodeImage.getRawData("png").then((buffer) => {

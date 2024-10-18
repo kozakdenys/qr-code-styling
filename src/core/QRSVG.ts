@@ -1,5 +1,4 @@
 import calculateImageSize from "../tools/calculateImageSize";
-import toDataUrl from "../tools/toDataUrl";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "../figures/dot/QRDot";
 import QRCornerSquare from "../figures/cornerSquare/QRCornerSquare";
@@ -530,10 +529,6 @@ export default class QRSVG {
     image.setAttribute("y", String(dy));
     image.setAttribute("width", `${dw}px`);
     image.setAttribute("height", `${dh}px`);
-
-    const imageUrl = await toDataUrl(options.image || "");
-
-    image.setAttribute("href", imageUrl || "");
 
     this._element.appendChild(image);
   }
