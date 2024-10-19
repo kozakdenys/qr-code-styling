@@ -83,6 +83,10 @@ npm install qr-code-styling
 
 [**Vue example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/vue)
 
+[**Node.js example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/nodejs)
+
+[**Next.js example (source)**](https://github.com/kozakdenys/qr-code-styling-examples/tree/master/examples/nextjs)
+
 ---
 
 ### API Documentation
