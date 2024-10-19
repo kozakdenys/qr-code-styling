@@ -8,6 +8,7 @@ import defaultOptions, { RequiredOptions } from "./QROptions";
 import sanitizeOptions from "../tools/sanitizeOptions";
 import { FileExtension, QRCode, Options, DownloadOptions, ExtensionFunction, Window, Canvas } from "../types";
 import qrcode from "qrcode-generator";
+import getMimeType from "../tools/getMimeType";
 
 declare const window: Window;
 
@@ -71,7 +72,7 @@ export default class QRCodeStyling {
       const svg = this._svg;
       const xml = new this._window.XMLSerializer().serializeToString(svg);
       const svg64 = btoa(xml);
-      const image64 = "data:image/svg+xml;base64," + svg64;
+      const image64 = `data:${getMimeType('svg')};base64,${svg64}`;
 
       if (this._options.nodeCanvas?.loadImage) {
         return this._options.nodeCanvas.loadImage(image64).then((image: HTMLImageElement) => {
@@ -183,7 +184,7 @@ export default class QRCodeStyling {
       const source = serializer.serializeToString(element);
       const svgString = `<?xml version="1.0" standalone="no"?>\r\n${source}`;
       if (typeof Blob !== "undefined" && !this._options.jsdom) {
-        return new Blob([svgString], { type: "image/svg+xml" });
+        return new Blob([svgString], { type: getMimeType(extension) });
       } else {
         return Buffer.from(svgString);
       }
@@ -191,9 +192,9 @@ export default class QRCodeStyling {
       return new Promise((resolve) => {
         const canvas = element as Canvas;
         if (canvas.toBuffer) {
-          resolve(canvas.toBuffer(`image/${extension}`));
+          resolve(canvas.toBuffer(getMimeType(extension)));
         } else {
-          canvas.toBlob(resolve, `image/${extension}`, 1);
+          canvas.toBlob(resolve, getMimeType(extension), 1);
         }
       });
     }
@@ -231,10 +232,10 @@ export default class QRCodeStyling {
       let source = serializer.serializeToString(element);
 
       source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-      const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+      const url = `data:${getMimeType(extension)};charset=utf-8,${encodeURIComponent(source)}`;
       downloadURI(url, `${name}.svg`);
     } else {
-      const url = (element as HTMLCanvasElement).toDataURL(`image/${extension}`);
+      const url = (element as HTMLCanvasElement).toDataURL(getMimeType(extension));
       downloadURI(url, `${name}.${extension}`);
     }
   }

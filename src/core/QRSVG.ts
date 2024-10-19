@@ -7,6 +7,7 @@ import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
 import shapeTypes from "../constants/shapeTypes";
 import { QRCode, FilterFunction, Gradient, Window, Canvas } from "../types";
+import getMimeType from "../tools/getMimeType";
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -462,7 +463,7 @@ export default class QRSVG {
       const ctx = this._canvas.getContext("2d");
       if (ctx) {
         ctx.drawImage(this._image, 0, 0, this._canvas.width, this._canvas.height);
-        this._imageUri = this._canvas.toDataURL("image/png");
+        this._imageUri = this._canvas.toDataURL(getMimeType('png'));
       }
     }
   }
