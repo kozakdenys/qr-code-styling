@@ -16,7 +16,7 @@ If you have issues / suggestions / notes / questions, please open an issue or co
 ### Extensions
 
 If you would like to use additional stiles, you can connect extensions.
-#### [qr-border-plugin](https://www.lefe.dev/marketplace/qr-border-plugin)
+#### [qr-border-plugin](https://www.npmjs.com/package/qr-border-plugin)
 
 <p float="left">
 <img style="display:inline-block" src="https://www.lefe.dev/_static/packages/qr-border-plugin-1.svg" width="240" />
