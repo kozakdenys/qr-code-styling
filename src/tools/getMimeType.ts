@@ -14,6 +14,7 @@ export default function getMimeType(extension: string) {
     "tif": "image/tiff",
     "tiff": "image/tiff",
     "webp": "image/webp",
+    "pdf": "application/pdf",
   }[extension.toLowerCase()]
 
   if (!type) {

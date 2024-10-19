@@ -1,76 +1,169 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>QR Code Styling</title>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Styling</title>
+</head>
+<body>
+<div id="canvas1"></div>
+<div id="canvas2"></div>
+<div id="canvas3"></div>
+<script type="text/javascript">
+  const options1 = {
+    width: 300,
+    height: 500,
+    type: "svg",
+    data: "https://www.facebook.com/",
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+    dotsOptions: {
+      color: "#4267b2",
+      type: "rounded",
+      roundSize: false,
+    },
+    backgroundOptions: {
+      color: "#e9ebee",
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 20
+    }
+  };
+  const options2 = {
+    width: 500,
+    height: 700,
+    type: "svg",
+    data: "h",
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+    dotsOptions: {
+      type: "extra-rounded",
+      roundSize: false,
 
-  <body>
-    <div id="canvas"></div>
-    <div id="canvas2"></div>
+      gradient: {
+        type: "linear", //radial,
+        rotation: Math.PI / 2,
+        colorStops: [{ offset: 0, color: 'black' }, { offset: 1, color: 'green' }]
+      },
+    },
+    cornersSquareOptions: {
+      type: "rounded",
+      gradient: {
+        type: "linear",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'black'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    cornersDotOptions: {
+      type: "rounded",
+      gradient: {
+        type: "linear",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'black'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    backgroundOptions: {
+      gradient: {
+        type: "linear",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'white'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 30
+    }
+  };
+  const options3 = {
+    width: 500,
+    height: 500,
+    type: "svg",
+    data: "h",
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
+    dotsOptions: {
+      roundSize: false,
 
-    <script type="text/javascript">
-      //Test out dot options
-      const options = {
-        type: "svg",
-        shape: "square",
-        width: 200,
-        height: 200,
-        data: "https://google.com",
-        image: "https://qr-code-styling.com/b9eac011a0558695563d6081a8395ccb.png",
-        dotsOptions: {
-          type: "square",
-          color: "#AE1B1BFF"
-        },
-        cornersSquareOptions: {
-          type: "square",
-          color: "#1D2E5E65"
-        },
-        cornersDotOptions: {
-          type: "square",
-          color: "#1D2E5E65",
-        },
-        imageOptions: {
-          crossOrigin: "anonymous",
-          margin: 10,
-        },
-      };
+      type: "extra-rounded",
+      gradient: {
+        type: "radial", //radial,
+        rotation: Math.PI / 2,
+        colorStops: [{ offset: 0, color: 'black' }, { offset: 1, color: 'green' }]
+      },
+    },
+    cornersSquareOptions: {
+      type: "rounded",
+      gradient: {
+        type: "radial",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'black'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    cornersDotOptions: {
+      type: "rounded",
+      gradient: {
+        type: "radial",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'black'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    backgroundOptions: {
+      gradient: {
+        type: "radial",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'white'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 30
+    }
+  };
+  const qrCode1 = new QRCodeStyling(options1);
+  const qrCode2 = new QRCodeStyling(options2);
+  const qrCode3 = new QRCodeStyling(options3);
 
-      const dotOptions = ["rounded", "dots", "classy", "classy-rounded", "square", "extra-rounded", "daimonds"];
-      const color = ["#e8977d", "#d3e87d", "#7de88e", "#7ddbe8", "#867de8", "#e87de4", "#e87d7d"];
+  qrCode1.append(document.getElementById("canvas1"));
+  qrCode2.append(document.getElementById("canvas2"));
+  qrCode3.append(document.getElementById("canvas3"));
 
-      const container = document.getElementById("canvas");
-
-      //Draw fixed version
-
-      dotOptions.forEach((dotOption, i) => {
-        options["dotsOptions"] = {
-          type: dotOptions[i],
-          color: color[i]
-        };
-
-        const qrCode = new QRCodeStyling(options);
-        qrCode.append(container);
-        // qrCode.download({
-        //   extension: "svg"
-        // });
-      });
-
-      options.shape = "circle"
-
-
-      //Draw original dots
-
-      const container2 = document.getElementById("canvas2");
-      dotOptions.forEach((dotOption, i) => {
-        options["dotsOptions"] = {
-          type: dotOptions[i],
-          color: color[i]
-        };
-
-        const qrCode = new QRCodeStyling(options);
-        qrCode.append(container2);
-      });
-    </script>
-  </body>
+  // qrCode1.download({ name: 'qr-codes/Vanbilloen'+'-color', extension: 'svg' })
+  // qrCode2.download({ name: 'qr-codes/Vanbilloen'+'-linear', extension: 'svg' })
+  // qrCode3.download({ name: 'qr-codes/Vanbilloen'+'-rounded', extension: 'svg' })
+</script>
+</body>
 </html>
+
