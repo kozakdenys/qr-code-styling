@@ -6,7 +6,8 @@ import QRCornerDot from "../figures/cornerDot/QRCornerDot";
 import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
 import shapeTypes from "../constants/shapeTypes";
-import { QRCode, FilterFunction, Gradient, Window, Canvas } from "../types";
+import { QRCode, FilterFunction, Gradient, Window } from "../types";
+import { Canvas as NodeCanvas, Image } from "canvas";
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -29,7 +30,8 @@ const dotMask = [
 ];
 
 export default class QRSVG {
-  _canvas?: Canvas;
+  _domCanvas?: HTMLCanvasElement;
+  _nodeCanvas?: NodeCanvas;
   _window: Window;
   _element: SVGElement;
   _defs: SVGElement;
@@ -39,7 +41,7 @@ export default class QRSVG {
   _cornersDotClipPath?: SVGElement;
   _options: RequiredOptions;
   _qr?: QRCode;
-  _image?: HTMLImageElement;
+  _image?: HTMLImageElement | Image;
   _imageUri?: string;
   _instanceId: number;
 
@@ -61,12 +63,14 @@ export default class QRSVG {
 
     if (options.imageOptions.saveAsBlob) {
       if (options.nodeCanvas?.createCanvas) {
-        this._canvas = options.nodeCanvas.createCanvas(options.width, options.height);
+        this._nodeCanvas = options.nodeCanvas.createCanvas(options.width, options.height);
+        this._nodeCanvas.width = options.width;
+        this._nodeCanvas.height = options.height;
       } else {
-        this._canvas = document.createElement("canvas");
+        this._domCanvas = document.createElement("canvas");
+        this._domCanvas.width = options.width;
+        this._domCanvas.height = options.height;
       }
-      this._canvas.width = options.width;
-      this._canvas.height = options.height;
     }
     this._imageUri = options.image;
     this._instanceId = QRSVG.instanceCount++;
@@ -103,7 +107,6 @@ export default class QRSVG {
       //We need it to get image size
       await this.loadImage();
       if (!this._image) return;
-      this.imageToBlob();
       const { imageOptions, qrOptions } = this._options;
       const coverLevel = imageOptions.imageSize * errorCorrectionPercents[qrOptions.errorCorrectionLevel];
       const maxHiddenDots = Math.floor(coverLevel * count * count);
@@ -456,17 +459,6 @@ export default class QRSVG {
     });
   }
 
-  imageToBlob(): void {
-    if (!this._image) return;
-    if (this._options.imageOptions.saveAsBlob && this._canvas) {
-      const ctx = this._canvas.getContext("2d");
-      if (ctx) {
-        ctx.drawImage(this._image, 0, 0, this._canvas.width, this._canvas.height);
-        this._imageUri = this._canvas.toDataURL("image/png");
-      }
-    }
-  }
-
   loadImage(): Promise<void> {
     return new Promise((resolve, reject) => {
       const options = this._options;
@@ -478,13 +470,17 @@ export default class QRSVG {
       if (options.nodeCanvas?.loadImage) {
         options.nodeCanvas
           .loadImage(options.image)
-          .then((image: HTMLImageElement) => {
+          .then((image: Image) => {
             // fix blurry svg
             if (/(\.svg$)|(^data:image\/svg)/.test(options.image ?? "")) {
               image.width = this._options.width;
               image.height = this._options.height;
             }
             this._image = image;
+            if (this._options.imageOptions.saveAsBlob && this._nodeCanvas) {
+              this._nodeCanvas.getContext('2d')?.drawImage(image, 0, 0, this._nodeCanvas.width, this._nodeCanvas.height);
+              this._imageUri = this._nodeCanvas.toDataURL('image/png');
+            }
             resolve();
           })
           .catch(reject);
@@ -497,6 +493,10 @@ export default class QRSVG {
 
         this._image = image;
         image.onload = (): void => {
+          if (this._options.imageOptions.saveAsBlob && this._domCanvas) {
+            this._domCanvas.getContext('2d')?.drawImage(image, 0, 0, this._domCanvas.width, this._domCanvas.height);
+            this._imageUri = this._domCanvas.toDataURL('image/png');
+          }
           resolve();
         };
         image.src = options.image;
