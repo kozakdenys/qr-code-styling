@@ -1,4 +1,5 @@
 import calculateImageSize from "../tools/calculateImageSize";
+import toDataUrl from "../tools/toDataUrl";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "../figures/dot/QRDot";
 import QRCornerSquare from "../figures/cornerSquare/QRCornerSquare";
@@ -7,7 +8,7 @@ import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
 import shapeTypes from "../constants/shapeTypes";
 import { QRCode, FilterFunction, Gradient, Window } from "../types";
-import { Canvas as NodeCanvas, Image } from "canvas";
+import { Image } from "canvas";
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -30,8 +31,6 @@ const dotMask = [
 ];
 
 export default class QRSVG {
-  _domCanvas?: HTMLCanvasElement;
-  _nodeCanvas?: NodeCanvas;
   _window: Window;
   _element: SVGElement;
   _defs: SVGElement;
@@ -60,18 +59,6 @@ export default class QRSVG {
     this._element.setAttribute("viewBox", `0 0 ${options.width} ${options.height}`);
     this._defs = this._window.document.createElementNS("http://www.w3.org/2000/svg", "defs");
     this._element.appendChild(this._defs);
-
-    if (options.imageOptions.saveAsBlob) {
-      if (options.nodeCanvas?.createCanvas) {
-        this._nodeCanvas = options.nodeCanvas.createCanvas(options.width, options.height);
-        this._nodeCanvas.width = options.width;
-        this._nodeCanvas.height = options.height;
-      } else {
-        this._domCanvas = document.createElement("canvas");
-        this._domCanvas.width = options.width;
-        this._domCanvas.height = options.height;
-      }
-    }
     this._imageUri = options.image;
     this._instanceId = QRSVG.instanceCount++;
     this._options = options;
@@ -471,15 +458,11 @@ export default class QRSVG {
         options.nodeCanvas
           .loadImage(options.image)
           .then((image: Image) => {
-            // fix blurry svg
-            if (/(\.svg$)|(^data:image\/svg)/.test(options.image ?? "")) {
-              image.width = this._options.width;
-              image.height = this._options.height;
-            }
             this._image = image;
-            if (this._options.imageOptions.saveAsBlob && this._nodeCanvas) {
-              this._nodeCanvas.getContext('2d')?.drawImage(image, 0, 0, this._nodeCanvas.width, this._nodeCanvas.height);
-              this._imageUri = this._nodeCanvas.toDataURL('image/png');
+            if (this._options.imageOptions.saveAsBlob) {
+              const canvas = options.nodeCanvas?.createCanvas( this._image.width,  this._image.height);
+              canvas?.getContext('2d')?.drawImage(image, 0, 0);
+              this._imageUri = canvas?.toDataURL();
             }
             resolve();
           })
@@ -492,10 +475,9 @@ export default class QRSVG {
         }
 
         this._image = image;
-        image.onload = (): void => {
-          if (this._options.imageOptions.saveAsBlob && this._domCanvas) {
-            this._domCanvas.getContext('2d')?.drawImage(image, 0, 0, this._domCanvas.width, this._domCanvas.height);
-            this._imageUri = this._domCanvas.toDataURL('image/png');
+        image.onload = async () => {
+          if (this._options.imageOptions.saveAsBlob) {
+            this._imageUri = await toDataUrl(options.image || "", this._window);
           }
           resolve();
         };

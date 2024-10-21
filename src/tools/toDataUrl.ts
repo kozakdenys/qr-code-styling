@@ -1,8 +1,10 @@
-export default async function toDataURL(url: string): Promise<string> {
+import { Window } from "../types";
+
+export default async function toDataURL(url: string, window: Window): Promise<string> {
   return new Promise((resolve) => {
-    const xhr = new XMLHttpRequest();
+    const xhr = new window.XMLHttpRequest();
     xhr.onload = function () {
-      const reader = new FileReader();
+      const reader = new window.FileReader();
       reader.onloadend = function () {
         resolve(reader.result as string);
       };

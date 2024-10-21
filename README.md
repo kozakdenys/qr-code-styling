@@ -127,13 +127,13 @@ errorCorrectionLevel|string (`'L' 'M' 'Q' 'H'`)                        |`'Q'`
 
 `options.imageOptions` structure
 
-Property          |Type                                   |Default Value|Description
-------------------|---------------------------------------|-------------|------------------------------------------------------------------------------
-hideBackgroundDots|boolean                                |`true`       |Hide all dots covered by the image
-imageSize         |number                                 |`0.4`        |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
-margin            |number                                 |`0`          |Margin of the image in px
-crossOrigin       |string(`'anonymous' 'use-credentials'`)|             |Set "anonymous" if you want to download QR code from other origins.
-saveAsBlob        |boolean                                |`false`      |Saves image as base64 blob in svg type, see bellow
+Property          |Type                                   | Default Value |Description
+------------------|---------------------------------------|---------------|------------------------------------------------------------------------------
+hideBackgroundDots|boolean                                | `true`        |Hide all dots covered by the image
+imageSize         |number                                 | `0.4`         |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
+margin            |number                                 | `0`           |Margin of the image in px
+crossOrigin       |string(`'anonymous' 'use-credentials'`)|               |Set "anonymous" if you want to download QR code from other origins.
+saveAsBlob        |boolean                                | `true`        |Saves image as base64 blob in svg type, see bellow
 
 When QR type is svg, the image may not load in certain applications as it is saved as a url, and some svg applications will not render url images for security reasons. Setting `saveAsBlob` to true will instead save the image as a blob, allowing it to render correctly in more places, but will also increase the file size.
 
