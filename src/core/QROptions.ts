@@ -49,7 +49,7 @@ const defaultOptions: RequiredOptions = {
     errorCorrectionLevel: errorCorrectionLevels.Q
   },
   imageOptions: {
-    saveAsBlob: false,
+    saveAsBlob: true,
     hideBackgroundDots: true,
     imageSize: 0.4,
     crossOrigin: undefined,

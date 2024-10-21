@@ -87,6 +87,9 @@ describe("Test QRCodeStyling class", () => {
         },
         backgroundOptions: {
           color: "#e9ebee"
+        },
+        imageOptions: {
+          saveAsBlob: false
         }
       });
       qrCode.getRawData("svg").then((buffer) => {
