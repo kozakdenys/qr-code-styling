@@ -29,6 +29,9 @@ export default class QRCornerSquare {
       case cornerSquareTypes.frame2:
         drawFunction = this._frame2;
           break;
+      case cornerSquareTypes.frame4:
+        drawFunction = this._frame4;
+          break;
       case cornerSquareTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -129,7 +132,7 @@ export default class QRCornerSquare {
     const { size, x, y } = args;
     const borderRadius = size / 4; // Adjust the border radius as needed
     const dotSize = size / 7;
-  
+    console.log('_basicFrame2', size, x, y)
     this._rotateFigure({
       ...args,
       draw: () => {
@@ -146,16 +149,12 @@ export default class QRCornerSquare {
             `a ${borderRadius} ${borderRadius} ${x === 0 && y === 100 ? '1 1 1' : '0 0 1'} ${-borderRadius} ${-borderRadius}` + // Bottom-left corner
             `v ${-size + 2 * borderRadius}` + // Left edge
             `a ${borderRadius} ${borderRadius} ${x === 0 && y > 100 ? '1 1 1' : '0 0 1'} ${borderRadius} ${-borderRadius}` + // Top-left corner
-            `z` +
-            `M ${x + dotSize + borderRadius} ${y + dotSize}` + // Inner rounded square
-            `h ${size - 2 * dotSize - 2 * borderRadius}` +
-            `a ${borderRadius} ${borderRadius} 0 0 1 ${borderRadius} ${borderRadius}` +
-            `v ${size - 2 * dotSize - 2 * borderRadius}` +
-            `a ${borderRadius} ${borderRadius} 1 0 1 ${-borderRadius} ${borderRadius}` +
-            `h ${-size + 2 * dotSize + 2 * borderRadius}` +
-            `a ${borderRadius} ${borderRadius} 0 0 1 ${-borderRadius} ${-borderRadius}` +
-            `v ${-size + 2 * dotSize + 2 * borderRadius}` +
-            `a ${borderRadius} ${borderRadius} 0 0 1 ${borderRadius} ${-borderRadius}` +
+            `z` + 
+            `M ${x + dotSize} ${y + dotSize} ` + //inner border
+            `h ${size - 2 * dotSize} ` +
+            `v ${size - 2 * dotSize} ` +
+            `h ${-size + 2 * dotSize} ` +
+            `v ${-size + 2 * dotSize} ` +
             `z`
         );
       }
@@ -165,8 +164,7 @@ export default class QRCornerSquare {
   _basicFrame2(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
     const borderRadius = size / 4; // Adjust the border radius as needed
-    const dotSize = size / 7;
-    console.log('_basicFrame2', size, x, y)
+    const dotSize = size / 7;    
     this._rotateFigure({
       ...args,
       draw: () => {
@@ -199,6 +197,67 @@ export default class QRCornerSquare {
     });
   }
 
+  _basicFrame4(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    const circleRadius = size / 14; // Adjust the radius of the circles
+    const circleSpacing = circleRadius * 2; // Spacing between circles
+  
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element.setAttribute("clip-rule", "evenodd");
+  
+        // Generate the path data
+        let pathData = "";
+  
+        // Top edge circles (excluding corners)
+        for (let i = 1; i < size / circleSpacing - 1; i++) {
+          const cx = x + circleSpacing * i + circleRadius;
+          const cy = y + circleRadius;
+          pathData += `M ${cx - circleRadius}, ${cy} a ${circleRadius},${circleRadius} 0 1,0 ${circleRadius * 2},0 a ${circleRadius},${circleRadius} 0 1,0 -${circleRadius * 2},0 `;
+        }
+  
+        // Right edge circles (excluding corners)
+        for (let i = 1; i < size / circleSpacing - 1; i++) {
+          const cx = x + size - circleRadius;
+          const cy = y + circleSpacing * i + circleRadius;
+          pathData += `M ${cx - circleRadius}, ${cy} a ${circleRadius},${circleRadius} 0 1,0 ${circleRadius * 2},0 a ${circleRadius},${circleRadius} 0 1,0 -${circleRadius * 2},0 `;
+        }
+  
+        // Bottom edge circles (excluding corners)
+        for (let i = 1; i < size / circleSpacing - 1; i++) {
+          const cx = x + size - circleSpacing * i - circleRadius;
+          const cy = y + size - circleRadius;
+          pathData += `M ${cx - circleRadius}, ${cy} a ${circleRadius},${circleRadius} 0 1,0 ${circleRadius * 2},0 a ${circleRadius},${circleRadius} 0 1,0 -${circleRadius * 2},0 `;
+        }
+  
+        // Left edge circles (excluding corners)
+        for (let i = 1; i < size / circleSpacing - 1; i++) {
+          const cx = x + circleRadius;
+          const cy = y + size - circleSpacing * i - circleRadius;
+          pathData += `M ${cx - circleRadius}, ${cy} a ${circleRadius},${circleRadius} 0 1,0 ${circleRadius * 2},0 a ${circleRadius},${circleRadius} 0 1,0 -${circleRadius * 2},0 `;
+        }
+  
+        // Corner circles
+        const corners = [
+          { cx: x + circleRadius, cy: y + circleRadius }, // Top-left
+          { cx: x + size - circleRadius, cy: y + circleRadius }, // Top-right
+          { cx: x + size - circleRadius, cy: y + size - circleRadius }, // Bottom-right
+          { cx: x + circleRadius, cy: y + size - circleRadius }, // Bottom-left
+        ];
+  
+        for (const { cx, cy } of corners) {
+          pathData += `M ${cx - circleRadius}, ${cy} a ${circleRadius},${circleRadius} 0 1,0 ${circleRadius * 2},0 a ${circleRadius},${circleRadius} 0 1,0 -${circleRadius * 2},0 `;
+        }
+  
+        // Set the 'd' attribute to the path data
+        this._element.setAttribute("d", pathData);
+      },
+    });
+  }
+  
+
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
   }
@@ -217,5 +276,9 @@ export default class QRCornerSquare {
 
   _frame2({ x, y, size, rotation }: DrawArgs): void {
     this._basicFrame2({ x, y, size, rotation });
+  }
+
+  _frame4({ x, y, size, rotation }: DrawArgs): void {
+    this._basicFrame4({ x, y, size, rotation });
   }
 }
