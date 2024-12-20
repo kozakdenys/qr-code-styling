@@ -21,6 +21,9 @@ export default class QRCornerDot {
       case cornerDotTypes.square:
         drawFunction = this._drawSquare;
         break;
+      case cornerDotTypes.ball1:
+        drawFunction = this._drawBall1;
+        break;
       case cornerDotTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -66,11 +69,51 @@ export default class QRCornerDot {
     });
   }
 
+  _basicBall1(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+        const cornerRadius = size / 5; // Adjust radius as needed
+
+        // Define path data for a square with three rounded corners
+        /*const pathData = `M ${x + cornerRadius},${y} 
+          H ${x + size - cornerRadius} 
+          A ${cornerRadius} ${cornerRadius} 0 0 1 ${x + size},${y + cornerRadius} 
+          V ${y + size - cornerRadius} 
+          A ${cornerRadius} ${cornerRadius} 0 0 1 ${x + size - cornerRadius},${y + size} 
+          H ${x + cornerRadius} 
+          A ${cornerRadius} ${cornerRadius} 0 0 1 ${x},${y + size - cornerRadius} 
+          V ${y} Z`;*/
+
+          const pathData = `M ${x + cornerRadius},${y} 
+          H ${x + size - cornerRadius} 
+          A ${cornerRadius} ${cornerRadius} 0 0 1 ${x + size},${y + cornerRadius} 
+          V ${y + size - cornerRadius} 
+          A ${cornerRadius} ${cornerRadius} 1 1 1 ${x + size - cornerRadius},${y + size} 
+          H ${x + cornerRadius} 
+          A ${cornerRadius} ${cornerRadius} 0 0 1 ${x},${y + size - cornerRadius} 
+          V ${y + cornerRadius} 
+          A ${cornerRadius} ${cornerRadius} 0 0 1 ${x + cornerRadius},${y} Z`;
+
+        this._element.setAttribute("d", pathData);
+        this._element.setAttribute("fill", "black"); // Adjust fill color as needed
+      }
+    });
+  }
+
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
   }
 
   _drawSquare({ x, y, size, rotation }: DrawArgs): void {
     this._basicSquare({ x, y, size, rotation });
+  }
+
+  _drawBall1({ x, y, size, rotation }: DrawArgs): void {
+    this._basicBall1({ x, y, size, rotation });
   }
 }

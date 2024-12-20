@@ -155,7 +155,7 @@
   };
   
   const options4 = {
-    width: 300,
+    width: 500,
     height: 500,
     type: "svg",
     data: "https://www.trakid.com/",
@@ -178,9 +178,23 @@
       margin: 20
     },
     cornersSquareOptions: {
-      type: "frame4",
+      type: "frame16",
       gradient: {
         type: "linear",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'black'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    cornersDotOptions: {
+      type: "ball1",
+      gradient: {
+        type: "radial",
         rotation: Math.PI / 2,
         colorStops: [{
           offset: 0,

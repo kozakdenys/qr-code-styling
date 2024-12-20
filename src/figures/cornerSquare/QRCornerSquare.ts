@@ -32,6 +32,9 @@ export default class QRCornerSquare {
       case cornerSquareTypes.frame4:
         drawFunction = this._frame4;
           break;
+      case cornerSquareTypes.frame16:
+        drawFunction = this._frame16;
+          break;
       case cornerSquareTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -258,6 +261,83 @@ export default class QRCornerSquare {
   }
   
 
+  _basicFrame16(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+  
+    // Adjust square size and spacing for the desired pattern
+    const squareSize = size / 8; // Adjust for less space between squares
+    const squareSpacing = squareSize * 1.141; // Adjust for less space between squares
+  
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element.setAttribute("clip-rule", "evenodd");
+  
+        // Generate the path data
+        let pathData = "";
+  
+        // Helper function to draw a rotated square
+        const drawRotatedSquare = (cx: number, cy: number, rotation: number) => {
+          const halfSize = squareSize / 2.7;
+          const cos = Math.cos(rotation);
+          const sin = Math.sin(rotation);
+          const points = [
+            { x: -halfSize, y: -halfSize },
+            { x: halfSize, y: -halfSize },
+            { x: halfSize, y: halfSize },
+            { x: -halfSize, y: halfSize },
+          ].map(({ x, y }) => ({
+            x: cx + x * cos - y * sin,
+            y: cy + x * sin + y * cos,
+          }));
+          return `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')} Z `;
+        };
+  
+        // Draw edge squares (excluding corners) with adjustments for the pattern
+        for (let i = 0; i < size / squareSpacing - 1; i++) {
+          const cx = x + squareSpacing * i + squareSize / 2;
+          const cy = y + squareSize / 2;
+          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
+        }
+  
+        for (let i = 1; i < size / squareSpacing - 1; i++) {
+          const cx = x + size - squareSize / 2;
+          const cy = y + squareSpacing * i + squareSize / 2;
+          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
+        }
+  
+        for (let i = 1; i < size / squareSpacing - 1; i++) {
+          const cx = x + size - squareSpacing * i - squareSize / 2;
+          const cy = y + size - squareSize / 2;
+          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
+        }
+  
+        for (let i = 1; i < size / squareSpacing - 1; i++) {
+          const cx = x + squareSize / 2;
+          const cy = y + size - squareSpacing * i - squareSize / 2;
+          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
+        }
+  
+        // Draw corner squares with adjustments for the pattern
+        /*const corners = [
+          { cx: x + squareSize / 1.65, cy: y + squareSize / 1.65 }, // Top-left
+          { cx: x + size - squareSize / 1.65, cy: y + squareSize / 1.65 }, // Top-right
+          { cx: x + size - squareSize / 1.65, cy: y + size - squareSize / 1.65 }, // Bottom-right
+          { cx: x + squareSize / 1.65, cy: y + size - squareSize / 1.65 }, // Bottom-left
+        ];
+  
+        for (const { cx, cy } of corners) {
+          pathData += drawRotatedSquare(cx, cy, Math.PI / 2.3);
+        }*/
+  
+        // Set the 'd' attribute to the path data
+        this._element.setAttribute("d", pathData);
+      },
+    });
+  }
+  
+
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
   }
@@ -280,5 +360,9 @@ export default class QRCornerSquare {
 
   _frame4({ x, y, size, rotation }: DrawArgs): void {
     this._basicFrame4({ x, y, size, rotation });
+  }
+
+  _frame16({ x, y, size, rotation }: DrawArgs): void {
+    this._basicFrame16({ x, y, size, rotation });
   }
 }
