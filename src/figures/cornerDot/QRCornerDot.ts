@@ -30,6 +30,9 @@ export default class QRCornerDot {
       case cornerDotTypes.ball3:
         drawFunction = this._drawBall3;
         break;
+      case cornerDotTypes.ball15:
+        drawFunction = this._drawBall15;
+        break;
       case cornerDotTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -159,6 +162,36 @@ export default class QRCornerDot {
     });
   }
 
+  _basicBall15(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+  
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");  
+        const circleRadius = size / 6;
+        const spacing = size / 3;
+  
+        let pathData = "";
+  
+        for (let row = 0; row < 3; row++) {
+          for (let col = 0; col < 3; col++) {
+            const cx = x + col * spacing + circleRadius;
+            const cy = y + row * spacing + circleRadius;
+            const startX = cx - circleRadius;
+            const startY = cy;
+            const sweepFlag = 1;
+            pathData += `M${startX},${startY} `;
+            pathData += `A${circleRadius},${circleRadius} 0 0,${sweepFlag} ${cx + circleRadius},${cy} `;
+            pathData += `A${circleRadius},${circleRadius} 0 0,${sweepFlag} ${startX},${startY} `;
+          }
+        }
+        this._element.setAttribute("d", pathData);
+        this._element.setAttribute("fill", "black");
+      }
+    });
+  }  
+
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
   }
@@ -177,5 +210,9 @@ export default class QRCornerDot {
 
   _drawBall3({ x, y, size, rotation }: DrawArgs): void {
     this._basicBall3({ x, y, size, rotation });
+  }
+
+  _drawBall15({ x, y, size, rotation }: DrawArgs): void {
+    this._basicBall15({ x, y, size, rotation });
   }
 }
