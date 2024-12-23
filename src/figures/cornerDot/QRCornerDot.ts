@@ -30,6 +30,9 @@ export default class QRCornerDot {
       case cornerDotTypes.ball3:
         drawFunction = this._drawBall3;
         break;
+      case cornerDotTypes.ball5:
+          drawFunction = this._drawBall5;
+          break;
       case cornerDotTypes.ball15:
         drawFunction = this._drawBall15;
         break;
@@ -165,7 +168,7 @@ export default class QRCornerDot {
     });
   }
 
-  _basicBall15(args: BasicFigureDrawArgs): void {
+  _basicBall5(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
   
     this._rotateFigure({
@@ -192,6 +195,43 @@ export default class QRCornerDot {
         this._element.setAttribute("d", pathData);
         this._element.setAttribute("fill", "black");
       }
+    });
+  }
+
+  _basicBall15(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    const curveDepth = size / 10; // Depth of the inward curve
+    const halfSize = size / 2;
+
+    this._rotateFigure({
+        ...args,
+        draw: () => {
+            const topLeftX = x;
+            const topLeftY = y;
+
+            // Create a path element to represent the square
+            this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+            // Define the path data for a square with inward-curved sides
+            const pathData = `
+                M${topLeftX + curveDepth},${topLeftY} 
+                C${topLeftX + halfSize},${topLeftY - curveDepth} ${topLeftX + halfSize},${topLeftY - curveDepth} ${topLeftX + size - curveDepth},${topLeftY} 
+                
+                L${topLeftX + size},${topLeftY + curveDepth} 
+                C${topLeftX + size + curveDepth},${topLeftY + halfSize} ${topLeftX + size + curveDepth},${topLeftY + halfSize} ${topLeftX + size},${topLeftY + size - curveDepth} 
+                
+                L${topLeftX + size - curveDepth},${topLeftY + size} 
+                C${topLeftX + halfSize},${topLeftY + size + curveDepth} ${topLeftX + halfSize},${topLeftY + size + curveDepth} ${topLeftX + curveDepth},${topLeftY + size} 
+                
+                L${topLeftX},${topLeftY + size - curveDepth} 
+                C${topLeftX - curveDepth},${topLeftY + halfSize} ${topLeftX - curveDepth},${topLeftY + halfSize} ${topLeftX},${topLeftY + curveDepth} 
+                
+                Z
+            `;
+
+            // Set the path data
+            this._element.setAttribute("d", pathData.trim());
+        }
     });
   }
   
@@ -272,6 +312,10 @@ export default class QRCornerDot {
 
   _drawBall3({ x, y, size, rotation }: DrawArgs): void {
     this._basicBall3({ x, y, size, rotation });
+  }
+
+  _drawBall5({ x, y, size, rotation }: DrawArgs): void {
+    this._basicBall5({ x, y, size, rotation });
   }
 
   _drawBall15({ x, y, size, rotation }: DrawArgs): void {
