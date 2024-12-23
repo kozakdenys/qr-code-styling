@@ -7,4 +7,5 @@ export default {
   ball2: "ball2",
   ball3: "ball3",
   ball15: "ball15",
+  ball18: "ball18",
 } as CornerDotTypes;
