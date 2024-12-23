@@ -39,6 +39,9 @@ export default class QRCornerDot {
       case cornerDotTypes.ball18:
         drawFunction = this._drawBall18;
         break;
+      case cornerDotTypes.ball19:
+         drawFunction = this._drawBall19;
+        break;
       case cornerDotTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -238,7 +241,7 @@ export default class QRCornerDot {
   _basicBall18(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
     const halfSize = size / 2;
-    const inset = size / 4.3;
+    const inset = size / 4.2;
     const angle = 41.62;
     const centerX = x + halfSize;
     const centerY = y + halfSize;
@@ -286,13 +289,67 @@ export default class QRCornerDot {
     this._element.setAttribute("fill", "none");
     this._element.setAttribute("stroke", "black");
     this._element.setAttribute("stroke-width", "2");
+  }
+  
+  _basicBall19(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
 
-    // Append the path to the SVG container
-    const svgContainer = this._window.document.querySelector("svg");
-    if (svgContainer) {
-        svgContainer.appendChild(this._element);
-    }
-  }  
+    this._rotateFigure({
+        ...args,
+        draw: () => {
+            this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+            const squareSize = size / 4;
+            const spacing = size / 3;
+            const squareSizeBig = size / 1.8;
+
+            let pathData = "";
+
+            const drawRotatedSquare = (cx: number, cy: number, rotation: number) => {
+                const halfSize = squareSize / 2.5;
+                const cos = Math.cos(rotation);
+                const sin = Math.sin(rotation);
+                const points = [
+                    { x: -halfSize, y: -halfSize },
+                    { x: halfSize, y: -halfSize },
+                    { x: halfSize, y: halfSize },
+                    { x: -halfSize, y: halfSize },
+                ].map(({ x, y }) => ({
+                    x: cx + x * cos - y * sin,
+                    y: cy + x * sin + y * cos,
+                }));
+                return `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')} Z `;
+            };
+
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+                    const squareX = x + col * spacing;
+                    const squareY = y + row * spacing;
+
+                    if (row === 1 && col === 1) {
+                        const centerOffset = (squareSizeBig - squareSize) / 2;
+                        const centeredX = squareX - centerOffset;
+                        const centeredY = squareY - centerOffset;
+
+                        pathData += `M${centeredX},${centeredY} `;
+                        pathData += `h${squareSizeBig} `;
+                        pathData += `v${squareSizeBig} `;
+                        pathData += `h-${squareSizeBig} `;
+                        pathData += `v-${squareSizeBig} `;
+                    } else {
+                        const rotationAngle = Math.random() * 360 - 180;
+                        pathData += drawRotatedSquare(squareX + squareSize / 2, squareY + squareSize / 2, rotationAngle);
+                    }
+                }
+            }
+
+            this._element.setAttribute("d", pathData);
+            this._element.setAttribute("fill", "none");
+            this._element.setAttribute("stroke", "black");
+            this._element.setAttribute("stroke-width", "2");
+        }
+    });
+  }
 
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
@@ -324,5 +381,9 @@ export default class QRCornerDot {
 
   _drawBall18({ x, y, size, rotation }: DrawArgs): void {
     this._basicBall18({ x, y, size, rotation });
+  }
+
+  _drawBall19({ x, y, size, rotation }: DrawArgs): void {
+    this._basicBall19({ x, y, size, rotation });
   }
 }
