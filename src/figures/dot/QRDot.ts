@@ -33,6 +33,9 @@ export default class QRDot {
       case dotTypes.extraRounded:
         drawFunction = this._drawExtraRounded;
         break;
+      case dotTypes.circleZebra:
+        drawFunction = this._drawCircleZebra;
+        break;
       case dotTypes.square:
       default:
         drawFunction = this._drawSquare;
@@ -314,4 +317,59 @@ export default class QRDot {
 
     this._basicSquare({ x, y, size, rotation: 0 });
   }
+
+  _drawCircleZebra({ x, y, size, getNeighbor }: DrawArgs): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+
+    console.log('_drawCircleZebra')
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    // Determine the circle pattern based on neighbors
+    const maxRings = 3; // Number of concentric circles
+    const gap = size / (2 * maxRings); // Gap between circles
+    
+
+    if (neighborsCount === 0) {
+        // Draw concentric circles for isolated dots
+        let pathData = "";
+        for (let i = 0; i < maxRings; i++) {
+            const radius = (size / 2) - i * gap;
+            if (radius > 0) {
+                pathData += `
+                    M ${x + size / 2} ${y + size / 2 - radius}
+                    a ${radius} ${radius} 0 1 1 0 ${2 * radius}
+                    a ${radius} ${radius} 0 1 1 0 ${-2 * radius}
+                `;
+            }
+        }
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element.setAttribute("d", pathData);
+        this._element.setAttribute("fill", "none");
+        this._element.setAttribute("stroke", "black");
+        this._element.setAttribute("stroke-width", "1");
+        this._svg.appendChild(this._element);
+        return;
+    }
+
+    if (!leftNeighbor && !topNeighbor) {
+        // Top-left corner has no neighbors, draw a quarter-circle pattern
+        //this._basicCornerExtraRounded({ x, y, size, rotation: -Math.PI / 2 });
+        this._basicSquare({ x, y, size, rotation: 0 });
+        return;
+    }
+
+    if (!rightNeighbor && !bottomNeighbor) {
+        // Bottom-right corner has no neighbors, draw a quarter-circle pattern
+        this._basicDot({ x, y, size, rotation: 0 });
+        return;
+    }
+
+    // Default case: Draw a square if surrounded by neighbors
+    this._basicSquare({ x, y, size, rotation: 0 });
+}
+
 }
