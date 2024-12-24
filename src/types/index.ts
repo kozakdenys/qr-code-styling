@@ -7,7 +7,7 @@ export interface UnknownObject {
 }
 
 export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded" | "circle-zebra";
-export type CornerDotType = "dot" | "square" | "ball1" | "ball2" | "ball3" | "ball5"| "ball15" | "ball18" | "ball19";
+export type CornerDotType = "dot" | "square" | "ball1" | "ball2" | "ball3" | "ball5" | "ball12" | "ball13" | "ball15" | "ball18" | "ball19";
 export type CornerSquareType = "dot" | "square" | "extra-rounded" | "frame1" | "frame2" | "frame4" | "frame16";
 export type FileExtension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";

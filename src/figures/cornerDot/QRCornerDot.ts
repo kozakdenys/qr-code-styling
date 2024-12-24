@@ -33,6 +33,12 @@ export default class QRCornerDot {
       case cornerDotTypes.ball5:
           drawFunction = this._drawBall5;
           break;
+      case cornerDotTypes.ball12:
+          drawFunction = this._drawBall12;
+          break;
+      case cornerDotTypes.ball13:
+          drawFunction = this._drawBall13;
+          break;
       case cornerDotTypes.ball15:
         drawFunction = this._drawBall15;
         break;
@@ -200,6 +206,98 @@ export default class QRCornerDot {
       }
     });
   }
+
+  _basicBall12(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    console.log('_basicBall12', x, y)
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        let pathData = "";
+
+        if(x < 200 && y < 200){
+          const rectWidth = size / 3.2;
+          const spacing = size / 62;
+          const rectHeight = size;
+          const rx = rectWidth / 2;
+
+          for (let i = 0; i < 3; i++) {
+            const rectX = x + i * (rectWidth + spacing);
+            const rectY = y;
+            pathData += `M${rectX},${rectY + rx} `;
+            pathData += `a${rx},${rx} 0 0,1 ${rx},${-rx} `;
+            pathData += `h${rectWidth - 2 * rx} `;
+            pathData += `a${rx},${rx} 0 0,1 ${rx},${rx} `;
+            pathData += `v${rectHeight - 2 * rx} `;
+            pathData += `a${rx},${rx} 0 0,1 ${-rx},${rx} `;
+            pathData += `h${-rectWidth + 2 * rx} `;
+            pathData += `a${rx},${rx} 0 0,1 ${-rx},${-rx} `;
+            pathData += `z `;
+          }
+        }else{
+          const rectHeight = size / 3.2;
+          const spacing = size / 62;
+          const rectWidth = size;
+          const rx = rectHeight / 2;
+
+          for (let i = 0; i < 3; i++) {
+            const rectX = x;
+            const rectY = y + i * (rectHeight + spacing); 
+
+            pathData += `M${rectX + rx},${rectY} `;
+            pathData += `a${rx},${rx} 0 0,0 ${-rx},${rx} `;
+            pathData += `v${rectHeight - 2 * rx} `;
+            pathData += `a${rx},${rx} 0 0,0 ${rx},${rx} `;
+            pathData += `h${rectWidth - 2 * rx} `;
+            pathData += `a${rx},${rx} 0 0,0 ${rx},${-rx} `;
+            pathData += `v${-rectHeight + 2 * rx} `;
+            pathData += `a${rx},${rx} 0 0,0 ${-rx},${-rx} `;
+            pathData += `z `;
+          }          
+        }
+
+        this._element.setAttribute("d", pathData);
+        this._element.setAttribute("fill", "black");
+      }
+    });
+  }
+
+  _basicBall13(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    console.log('_basicBall12', size, x, y);
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const rectHeight = size / 3.2;
+        const spacing = size / 62;
+        const rectWidth = size;
+        const rx = rectHeight / 2;
+  
+        let pathData = "";
+  
+        for (let i = 0; i < 3; i++) {
+          const rectX = x;
+          const rectY = y + i * (rectHeight + spacing); 
+
+          pathData += `M${rectX + rx},${rectY} `;
+          pathData += `a${rx},${rx} 0 0,0 ${-rx},${rx} `;
+          pathData += `v${rectHeight - 2 * rx} `;
+          pathData += `a${rx},${rx} 0 0,0 ${rx},${rx} `;
+          pathData += `h${rectWidth - 2 * rx} `;
+          pathData += `a${rx},${rx} 0 0,0 ${rx},${-rx} `;
+          pathData += `v${-rectHeight + 2 * rx} `;
+          pathData += `a${rx},${rx} 0 0,0 ${-rx},${-rx} `;
+          pathData += `z `;
+        }
+  
+        this._element.setAttribute("d", pathData);
+        this._element.setAttribute("fill", "black");
+      }
+    });
+  }
+  
 
   _basicBall15(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
@@ -373,6 +471,14 @@ export default class QRCornerDot {
 
   _drawBall5({ x, y, size, rotation }: DrawArgs): void {
     this._basicBall5({ x, y, size, rotation });
+  }
+
+  _drawBall12({ x, y, size, rotation }: DrawArgs): void {
+    this._basicBall12({ x, y, size, rotation });
+  }
+
+  _drawBall13({ x, y, size, rotation }: DrawArgs): void {
+    this._basicBall13({ x, y, size, rotation });
   }
 
   _drawBall15({ x, y, size, rotation }: DrawArgs): void {
