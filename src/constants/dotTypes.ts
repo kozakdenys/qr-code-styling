@@ -7,5 +7,6 @@ export default {
   classyRounded: "classy-rounded",
   square: "square",
   extraRounded: "extra-rounded",
-  circleZebra: "circle-zebra"
+  circleZebra: "circle-zebra",
+  circleZebraVertical: "circle-zebra-vertical"
 } as DotTypes;

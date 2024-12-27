@@ -36,6 +36,9 @@ export default class QRDot {
       case dotTypes.circleZebra:
         drawFunction = this._drawCircleZebra;
         break;
+      case dotTypes.circleZebraVertical:
+        drawFunction = this._drawCircleZebraVertical;
+        break;        
       case dotTypes.square:
       default:
         drawFunction = this._drawSquare;
@@ -421,6 +424,47 @@ export default class QRDot {
     }
 
     this._basicRectangle({ x, y, size, rotation: 0, margin: 1 });
+  }
+
+  _drawCircleZebraVertical({ x, y, size, getNeighbor }: DrawArgs): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    if (neighborsCount === 0) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!topNeighbor && !bottomNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!bottomNeighbor) {
+      this._basicRectangleRounded({ x, y, size, rotation: Math.PI / -2, margin: 1 })
+      return;
+    }
+
+    if (!topNeighbor) {
+      this._basicRectangleRounded({ x, y, size, rotation: Math.PI / 2, margin: 1 })
+      return;
+    }
+
+    if (!topNeighbor && !bottomNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!topNeighbor && !bottomNeighbor && !rightNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    this._basicRectangle({ x, y, size, rotation: Math.PI / 2, margin: 1 });
   }
 
 }
