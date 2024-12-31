@@ -1,6 +1,6 @@
 {
   "name": "trakid-qr-code-styling",
-  "version": "1.9.5",
+  "version": "1.9.7",
   "description": "Add a style and an image to your QR code",
   "main": "lib/qr-code-styling.js",
   "types": "lib/index.d.ts",
