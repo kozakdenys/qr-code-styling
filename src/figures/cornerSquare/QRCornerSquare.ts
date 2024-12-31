@@ -302,65 +302,93 @@ export default class QRCornerSquare {
 
   _basicFrame16(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
+    const squareSize = size / 8.5;
+    const squareSpacing = squareSize * 1.4;
+    const shrinkFactor = size / 45;
 
-    // Adjust square size and spacing for the desired pattern
-    const squareSize = size / 8; // Adjust for less space between squares
-    const squareSpacing = squareSize * 1.141; // Adjust for less space between squares
+    const adjustedSize = size - shrinkFactor * 2;
+    const adjustedX = x + shrinkFactor;
+    const adjustedY = y + shrinkFactor;
 
     this._rotateFigure({
-      ...args,
-      draw: () => {
-        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
-        this._element.setAttribute("clip-rule", "evenodd");
+        ...args,
+        draw: () => {
+            this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+            this._element.setAttribute("clip-rule", "evenodd");
 
-        // Generate the path data
-        let pathData = "";
+            // Generate the path data
+            let pathData = "";
 
-        // Helper function to draw a rotated square
-        const drawRotatedSquare = (cx: number, cy: number, rotation: number) => {
-          const halfSize = squareSize / 2.7;
-          const cos = Math.cos(rotation);
-          const sin = Math.sin(rotation);
-          const points = [
-            { x: -halfSize, y: -halfSize },
-            { x: halfSize, y: -halfSize },
-            { x: halfSize, y: halfSize },
-            { x: -halfSize, y: halfSize },
-          ].map(({ x, y }) => ({
-            x: cx + x * cos - y * sin,
-            y: cy + x * sin + y * cos,
-          }));
-          return `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')} Z `;
-        };
+            const drawSquare = (cx: number, cy: number, size: number, rotation: number) => {
+                const halfSize = size / 2;
 
-        // Draw edge squares (excluding corners) with adjustments for the pattern
-        for (let i = 0; i < size / squareSpacing - 1; i++) {
-          const cx = x + squareSpacing * i + squareSize / 2;
-          const cy = y + squareSize / 2;
-          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
-        }
+                // Calculate rotated square corners
+                const points = [
+                    { x: -halfSize, y: -halfSize },
+                    { x: halfSize, y: -halfSize },
+                    { x: halfSize, y: halfSize },
+                    { x: -halfSize, y: halfSize },
+                ].map(point => ({
+                    x: point.x * Math.cos(rotation) - point.y * Math.sin(rotation) + cx,
+                    y: point.x * Math.sin(rotation) + point.y * Math.cos(rotation) + cy,
+                }));
 
-        for (let i = 1; i < size / squareSpacing - 1; i++) {
-          const cx = x + size - squareSize / 2;
-          const cy = y + squareSpacing * i + squareSize / 2;
-          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
-        }
+                // Construct path data for a square
+                return `M ${points[0].x},${points[0].y} L ${points[1].x},${points[1].y} L ${points[2].x},${points[2].y} L ${points[3].x},${points[3].y} Z `;
+            };
 
-        for (let i = 1; i < size / squareSpacing - 1; i++) {
-          const cx = x + size - squareSpacing * i - squareSize / 2;
-          const cy = y + size - squareSize / 2;
-          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
-        }
+            const addSquares = (
+                startX: number,
+                startY: number,
+                isVertical: boolean,
+                direction: 1 | -1
+            ) => {
+                const count = Math.floor(adjustedSize / squareSpacing) - 1;
+                for (let i = 0; i < count; i++) {
+                    const cx = isVertical
+                        ? startX
+                        : startX + direction * (squareSpacing * (i + 1));
+                    const cy = isVertical
+                        ? startY + direction * (squareSpacing * (i + 1))
+                        : startY;
+                    const rotation = Math.random() * Math.PI * 2; // Random rotation in radians
+                    pathData += drawSquare(cx, cy, squareSize, rotation);
+                }
+            };
 
-        for (let i = 1; i < size / squareSpacing - 1; i++) {
-          const cx = x + squareSize / 2;
-          const cy = y + size - squareSpacing * i - squareSize / 2;
-          pathData += drawRotatedSquare(cx, cy, Math.PI / 4);
-        }
-        this._element.setAttribute("d", pathData);
-      },
+            // Top edge squares
+            addSquares(adjustedX + squareSize / 2, adjustedY + squareSize / 2, false, 1);
+
+            // Right edge squares
+            addSquares(adjustedX + adjustedSize - squareSize / 2, adjustedY + squareSize / 2, true, 1);
+
+            // Bottom edge squares
+            addSquares(adjustedX + adjustedSize - squareSize / 2, adjustedY + adjustedSize - squareSize / 2, false, -1);
+
+            // Left edge squares
+            addSquares(adjustedX + squareSize / 2, adjustedY + adjustedSize - squareSize / 2, true, -1);
+
+            // Corner squares
+            const corners = [
+                { cx: adjustedX + squareSize / 2, cy: adjustedY + squareSize / 2 }, // Top-left
+                { cx: adjustedX + adjustedSize - squareSize / 2, cy: adjustedY + squareSize / 2 }, // Top-right
+                { cx: adjustedX + adjustedSize - squareSize / 2, cy: adjustedY + adjustedSize - squareSize / 2 }, // Bottom-right
+                { cx: adjustedX + squareSize / 2, cy: adjustedY + adjustedSize - squareSize / 2 }, // Bottom-left
+            ];
+
+            for (const { cx, cy } of corners) {
+                const rotation = Math.random() * Math.PI * 2; // Random rotation in radians
+                pathData += drawSquare(cx, cy, squareSize, rotation);
+            }
+
+            // Set the 'd' attribute to the path data
+            this._element.setAttribute("d", pathData);
+        },
     });
-  }
+}
+
+
+
 
 
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
