@@ -8,6 +8,7 @@
 <div id="canvas1"></div>
 <div id="canvas2"></div>
 <div id="canvas3"></div>
+<div id="canvas4"></div>
 <script type="text/javascript">
   const options1 = {
     width: 300,
@@ -152,13 +153,69 @@
       margin: 30
     }
   };
+  
+  const options4 = {
+    width: 800,
+    height: 800,
+    type: "svg",
+    data: "https://development.sqrl.zcl.lol/explore/ca9e9a5f-771e-4def-95d0-ae192415ec00",
+    image: "https://www.trakid.com/assets/xplorerquestLogo-CP8P5ItA.svg",
+    qrOptions: {
+        typeNumber: 0,
+        mode: 'Byte',
+        errorCorrectionLevel: 'H',
+      },
+    dotsOptions: {
+      color: "red",
+      type: "circle-zebra-vertical",
+      roundSize: true,
+    },
+    backgroundOptions: {
+      color: "#ffffff",
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 20
+    },
+    cornersSquareOptions: {
+      type: "frame16",
+      gradient: {
+        type: "linear",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'black'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    },
+    cornersDotOptions: {
+      type: "ball12",
+      gradient: {
+        type: "radial",
+        rotation: Math.PI / 2,
+        colorStops: [{
+          offset: 0,
+          color: 'black'
+        }, {
+          offset: 1,
+          color: 'red'
+        }]
+      },
+    }
+  };
   const qrCode1 = new QRCodeStyling(options1);
   const qrCode2 = new QRCodeStyling(options2);
   const qrCode3 = new QRCodeStyling(options3);
+  const qrCode4 = new QRCodeStyling(options4);
 
   qrCode1.append(document.getElementById("canvas1"));
   qrCode2.append(document.getElementById("canvas2"));
   qrCode3.append(document.getElementById("canvas3"));
+  qrCode4.append(document.getElementById("canvas4"));
+
 
   // qrCode1.download({ name: 'qr-codes/Vanbilloen'+'-color', extension: 'svg' })
   // qrCode2.download({ name: 'qr-codes/Vanbilloen'+'-linear', extension: 'svg' })

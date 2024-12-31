@@ -33,6 +33,12 @@ export default class QRDot {
       case dotTypes.extraRounded:
         drawFunction = this._drawExtraRounded;
         break;
+      case dotTypes.circleZebra:
+        drawFunction = this._drawCircleZebra;
+        break;
+      case dotTypes.circleZebraVertical:
+        drawFunction = this._drawCircleZebraVertical;
+        break;        
       case dotTypes.square:
       default:
         drawFunction = this._drawSquare;
@@ -49,16 +55,34 @@ export default class QRDot {
     this._element?.setAttribute("transform", `rotate(${(180 * rotation) / Math.PI},${cx},${cy})`);
   }
 
-  _basicDot(args: BasicFigureDrawArgs): void {
-    const { size, x, y } = args;
+  _basicDot(args: BasicFigureDrawArgs & { margin?: number; }): void {
+    const { size, x, y, margin = 0 } = args;
+
+    // Adjust the effective radius and y-position based on margins
+    const adjustedRadius = (size - margin - margin) / 2;
+    const adjustedY = y + margin;
 
     this._rotateFigure({
       ...args,
       draw: () => {
         this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        this._element.setAttribute("cx", String(x + size / 2));
-        this._element.setAttribute("cy", String(y + size / 2));
-        this._element.setAttribute("r", String(size / 2));
+        this._element.setAttribute("cx", String(x + size / 2)); // Center X remains unchanged
+        this._element.setAttribute("cy", String(adjustedY + adjustedRadius)); // Center Y accounts for top margin
+        this._element.setAttribute("r", String(adjustedRadius)); // Adjust radius for top and bottom margins
+      }
+    });
+  }
+
+  _basicSmallDot(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    let small = size - 5
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        this._element.setAttribute("cx", String(x + small / 2));
+        this._element.setAttribute("cy", String(y + small / 2));
+        this._element.setAttribute("r", String(small / 2));
       }
     });
   }
@@ -89,9 +113,9 @@ export default class QRDot {
         this._element.setAttribute(
           "d",
           `M ${x} ${y}` + //go to top left position
-            `v ${size}` + //draw line to left bottom corner
-            `h ${size / 2}` + //draw line to left bottom corner + half of size right
-            `a ${size / 2} ${size / 2}, 0, 0, 0, 0 ${-size}` // draw rounded corner
+          `v ${size}` + //draw line to left bottom corner
+          `h ${size / 2}` + //draw line to left bottom corner + half of size right
+          `a ${size / 2} ${size / 2}, 0, 0, 0, 0 ${-size}` // draw rounded corner
         );
       }
     });
@@ -108,10 +132,10 @@ export default class QRDot {
         this._element.setAttribute(
           "d",
           `M ${x} ${y}` + //go to top left position
-            `v ${size}` + //draw line to left bottom corner
-            `h ${size}` + //draw line to right bottom corner
-            `v ${-size / 2}` + //draw line to right bottom corner + half of size top
-            `a ${size / 2} ${size / 2}, 0, 0, 0, ${-size / 2} ${-size / 2}` // draw rounded corner
+          `v ${size}` + //draw line to left bottom corner
+          `h ${size}` + //draw line to right bottom corner
+          `v ${-size / 2}` + //draw line to right bottom corner + half of size top
+          `a ${size / 2} ${size / 2}, 0, 0, 0, ${-size / 2} ${-size / 2}` // draw rounded corner
         );
       }
     });
@@ -128,9 +152,9 @@ export default class QRDot {
         this._element.setAttribute(
           "d",
           `M ${x} ${y}` + //go to top left position
-            `v ${size}` + //draw line to left bottom corner
-            `h ${size}` + //draw line to right bottom corner
-            `a ${size} ${size}, 0, 0, 0, ${-size} ${-size}` // draw rounded top right corner
+          `v ${size}` + //draw line to left bottom corner
+          `h ${size}` + //draw line to right bottom corner
+          `a ${size} ${size}, 0, 0, 0, ${-size} ${-size}` // draw rounded top right corner
         );
       }
     });
@@ -147,15 +171,61 @@ export default class QRDot {
         this._element.setAttribute(
           "d",
           `M ${x} ${y}` + //go to left top position
-            `v ${size / 2}` + //draw line to left top corner + half of size bottom
-            `a ${size / 2} ${size / 2}, 0, 0, 0, ${size / 2} ${size / 2}` + // draw rounded left bottom corner
-            `h ${size / 2}` + //draw line to right bottom corner
-            `v ${-size / 2}` + //draw line to right bottom corner + half of size top
-            `a ${size / 2} ${size / 2}, 0, 0, 0, ${-size / 2} ${-size / 2}` // draw rounded right top corner
+          `v ${size / 2}` + //draw line to left top corner + half of size bottom
+          `a ${size / 2} ${size / 2}, 0, 0, 0, ${size / 2} ${size / 2}` + // draw rounded left bottom corner
+          `h ${size / 2}` + //draw line to right bottom corner
+          `v ${-size / 2}` + //draw line to right bottom corner + half of size top
+          `a ${size / 2} ${size / 2}, 0, 0, 0, ${-size / 2} ${-size / 2}` // draw rounded right top corner
         );
       }
     });
   }
+
+  _basicRectangle(args: BasicFigureDrawArgs & { margin?: number; }): void {
+    const { size, x, y, margin = 0 } = args;
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element.setAttribute(
+          "d",
+          `M ${x} ${y + margin}` +
+          `h ${size}` +
+          `v ${size - margin * 2}` +
+          `h ${-size}` +
+          `v ${-size + margin * 2}` +
+          `z`
+        );
+      }
+    });
+  }
+
+
+  _basicRectangleRounded(args: BasicFigureDrawArgs & { margin?: number; }): void {
+    const { size, x, y, margin = 0 } = args;
+    const adjustedHeight = size - margin - margin;
+    const radius = adjustedHeight / 2;
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element.setAttribute(
+          "d",
+          `M ${x + radius} ${y + margin}` +
+          `h ${size - radius}` +
+          `v ${adjustedHeight}` +
+          `h ${-(size - radius)}` +
+          `a ${radius} ${radius} 0 0 1 ${-radius} ${-radius}` +
+          `v ${-(adjustedHeight - radius * 2)}` +
+          `a ${radius} ${radius} 0 0 1 ${radius} ${-radius}` +
+          `z`
+        );
+      }
+    });
+  }
+
 
   _drawDot({ x, y, size }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation: 0 });
@@ -314,4 +384,87 @@ export default class QRDot {
 
     this._basicSquare({ x, y, size, rotation: 0 });
   }
+
+  _drawCircleZebra({ x, y, size, getNeighbor }: DrawArgs): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    if (neighborsCount === 0) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!leftNeighbor && !rightNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!rightNeighbor) {
+      this._basicRectangleRounded({ x, y, size, rotation: Math.PI / 1, margin: 1 })
+      return;
+    }
+
+    if (!leftNeighbor) {
+      this._basicRectangleRounded({ x, y, size, rotation: 0, margin: 1 })
+      return;
+    }
+
+    if (!leftNeighbor && !rightNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!leftNeighbor && !rightNeighbor && !bottomNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    this._basicRectangle({ x, y, size, rotation: 0, margin: 1 });
+  }
+
+  _drawCircleZebraVertical({ x, y, size, getNeighbor }: DrawArgs): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    if (neighborsCount === 0) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!topNeighbor && !bottomNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!bottomNeighbor) {
+      this._basicRectangleRounded({ x, y, size, rotation: Math.PI / -2, margin: 1 })
+      return;
+    }
+
+    if (!topNeighbor) {
+      this._basicRectangleRounded({ x, y, size, rotation: Math.PI / 2, margin: 1 })
+      return;
+    }
+
+    if (!topNeighbor && !bottomNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!topNeighbor && !bottomNeighbor && !rightNeighbor) {
+      this._basicDot({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    this._basicRectangle({ x, y, size, rotation: Math.PI / 2, margin: 1 });
+  }
+
 }
