@@ -100,22 +100,23 @@ options|object|Init object
 
 `options` structure
 
-Property               |Type                     |Default Value|Description
------------------------|-------------------------|-------------|-----------------------------------------------------
-width                  |number                   |`300`        |Size of canvas
-height                 |number                   |`300`        |Size of canvas
-type                   |string (`'canvas' 'svg'`)|`canvas`     |The type of the element that will be rendered
-data                   |string                   |             |The date will be encoded to the QR code
-image                  |string                   |             |The image will be copied to the center of the QR code
-margin                 |number                   |`0`          |Margin around canvas
-qrOptions              |object                   |             |Options will be passed to `qrcode-generator` lib
-imageOptions           |object                   |             |Specific image options, details see below
-dotsOptions            |object                   |             |Dots styling options
-cornersSquareOptions   |object                   |             |Square in the corners styling options
-cornersDotOptions      |object                   |             |Dots in the corners styling options
-backgroundOptions      |object                   |             |QR background styling options
-nodeCanvas             |node-canvas              |             |Only specify when running on a node server for canvas type, please refer to node section below
-jsDom                  |jsdom                    |             |Only specify when running on a node server for svg type, please refer to node section below
+Property               | Type                       |Default Value|Description
+-----------------------|----------------------------|---------|-----------------------------------------------------
+width                  | number                     |`300`    |Size of canvas
+height                 | number                     |`300`    |Size of canvas
+type                   | string (`'canvas' 'svg'`)  |`canvas` |The type of the element that will be rendered
+shape                  | string (`'square' 'circle')|`square` |The shape of the qr-code, circle shape adds rundom extra dots arround
+data                   | string                     |         |The data will be encoded to the QR code
+image                  | string                     |         |The image will be copied to the center of the QR code
+margin                 | number                     |`0`      |Margin around canvas
+qrOptions              | object                     |         |Options will be passed to `qrcode-generator` lib
+imageOptions           | object                     |         |Specific image options, details see below
+dotsOptions            | object                     |         |Dots styling options
+cornersSquareOptions   | object                     |         |Square in the corners styling options
+cornersDotOptions      | object                     |         |Dots in the corners styling options
+backgroundOptions      | object                     |         |QR background styling options
+nodeCanvas             | node-canvas                |         |Only specify when running on a node server for canvas type, please refer to node section below
+jsDom                  | jsdom                      |         |Only specify when running on a node server for svg type, please refer to node section below
 
 `options.qrOptions` structure
 
@@ -155,19 +156,19 @@ gradient|object                                            |
 
 `options.cornersSquareOptions` structure
 
-Property|Type                                     |Default Value|Description
---------|-----------------------------------------|-------------|-----------------
-color   |string                                   |             |Color of Corners Square
-gradient|object                                   |             |Gradient of Corners Square
-type    |string (`'dot' 'square' 'extra-rounded'`)|             |Style of Corners Square
+Property| Type                                       |Default Value|Description
+--------|--------------------------------------------|-------------|-----------------
+color   | string                                     |             |Color of Corners Square
+gradient| object                                     |             |Gradient of Corners Square
+type    | string (`'dot' 'square' 'extra-rounded' 'rounded' 'dots' 'classy' 'classy-rounded'`) |             |Style of Corners Square
 
 `options.cornersDotOptions` structure
 
-Property|Type                     |Default Value|Description
---------|-------------------------|-------------|-----------------
-color   |string                   |             |Color of Corners Dot
-gradient|object                   |             |Gradient of Corners Dot
-type    |string (`'dot' 'square'`)|             |Style of Corners Dot
+Property| Type                       |Default Value|Description
+--------|----------------------------|-------------|-----------------
+color   | string                     |             |Color of Corners Dot
+gradient| object                     |             |Gradient of Corners Dot
+type    | string (`'dot' 'square' 'rounded' 'dots' 'classy' 'classy-rounded' 'extra-rounded'`) |             |Style of Corners Dot
 
 Gradient structure
 
