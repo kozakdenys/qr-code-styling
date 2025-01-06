@@ -2,12 +2,12 @@ import calculateImageSize from "../tools/calculateImageSize";
 import toDataUrl from "../tools/toDataUrl";
 import errorCorrectionPercents from "../constants/errorCorrectionPercents";
 import QRDot from "../figures/dot/QRDot";
-import QRCornerSquare from "../figures/cornerSquare/QRCornerSquare";
-import QRCornerDot from "../figures/cornerDot/QRCornerDot";
+import QRCornerSquare, { availableCornerSquareTypes } from "../figures/cornerSquare/QRCornerSquare";
+import QRCornerDot, { availableCornerDotTypes } from "../figures/cornerDot/QRCornerDot";
 import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
 import shapeTypes from "../constants/shapeTypes";
-import { QRCode, FilterFunction, Gradient, Window } from "../types";
+import { DotType, QRCode, FilterFunction, Gradient, Window } from "../types";
 import { Image } from "canvas";
 
 const squareMask = [
@@ -348,7 +348,7 @@ export default class QRSVG {
         });
       }
 
-      if (options.cornersSquareOptions?.type) {
+      if (options.cornersSquareOptions?.type && availableCornerSquareTypes.includes(options.cornersSquareOptions.type)) {
         const cornersSquare = new QRCornerSquare({
           svg: this._element,
           type: options.cornersSquareOptions.type,
@@ -363,7 +363,7 @@ export default class QRSVG {
       } else {
         const dot = new QRDot({
           svg: this._element,
-          type: options.dotsOptions.type,
+          type: (options.cornersSquareOptions?.type as DotType) || options.dotsOptions.type,
           window: this._window
         });
 
@@ -405,7 +405,7 @@ export default class QRSVG {
         });
       }
 
-      if (options.cornersDotOptions?.type) {
+      if (options.cornersDotOptions?.type && availableCornerDotTypes.includes(options.cornersDotOptions.type)) {
         const cornersDot = new QRCornerDot({
           svg: this._element,
           type: options.cornersDotOptions.type,
@@ -420,7 +420,7 @@ export default class QRSVG {
       } else {
         const dot = new QRDot({
           svg: this._element,
-          type: options.dotsOptions.type,
+          type: (options.cornersDotOptions?.type as DotType) || options.dotsOptions.type,
           window: this._window
         });
 
