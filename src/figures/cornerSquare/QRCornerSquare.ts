@@ -1,7 +1,7 @@
 import cornerSquareTypes from "../../constants/cornerSquareTypes";
 import { CornerSquareType, DrawArgs, BasicFigureDrawArgs, RotateFigureArgs, Window } from "../../types";
 
-export const availableCornerSquareTypes = Object.keys(cornerSquareTypes);
+export const availableCornerSquareTypes = Object.values(cornerSquareTypes);
 
 export default class QRCornerSquare {
   _element?: SVGElement;
