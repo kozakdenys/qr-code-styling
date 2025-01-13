@@ -125,7 +125,7 @@ export default class QRCodeStyling {
     if (!this._options.data) {
       return;
     }
-
+    qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
     this._qr = qrcode(this._options.qrOptions.typeNumber, this._options.qrOptions.errorCorrectionLevel);
     this._qr.addData(this._options.data, this._options.qrOptions.mode || getMode(this._options.data));
     this._qr.make();
