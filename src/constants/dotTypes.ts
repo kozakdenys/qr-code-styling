@@ -8,5 +8,6 @@ export default {
   square: "square",
   extraRounded: "extra-rounded",
   circleZebra: "circle-zebra",
-  circleZebraVertical: "circle-zebra-vertical"
+  circleZebraVertical: "circle-zebra-vertical",
+  mosaic: "mosaic"
 } as DotTypes;

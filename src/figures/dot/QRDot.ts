@@ -38,7 +38,10 @@ export default class QRDot {
         break;
       case dotTypes.circleZebraVertical:
         drawFunction = this._drawCircleZebraVertical;
-        break;        
+        break;
+      case dotTypes.mosaic:
+          drawFunction = this._drawMosaic;
+          break;
       case dotTypes.square:
       default:
         drawFunction = this._drawSquare;
@@ -87,20 +90,26 @@ export default class QRDot {
     });
   }
 
-  _basicSquare(args: BasicFigureDrawArgs): void {
-    const { size, x, y } = args;
+  _basicSquare(args: BasicFigureDrawArgs & { margin?: number }): void {
+    const { size, x, y, margin = 0 } = args;
+
+    // Adjusted size and position to account for margins
+    const adjustedSize = size - margin * 2;
+    const adjustedX = x + margin;
+    const adjustedY = y + margin;
 
     this._rotateFigure({
       ...args,
       draw: () => {
         this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        this._element.setAttribute("x", String(x));
-        this._element.setAttribute("y", String(y));
-        this._element.setAttribute("width", String(size));
-        this._element.setAttribute("height", String(size));
+        this._element.setAttribute("x", String(adjustedX));
+        this._element.setAttribute("y", String(adjustedY));
+        this._element.setAttribute("width", String(adjustedSize));
+        this._element.setAttribute("height", String(adjustedSize));
       }
     });
   }
+
 
   //if rotation === 0 - right side is rounded
   _basicSideRounded(args: BasicFigureDrawArgs): void {
@@ -424,6 +433,48 @@ export default class QRDot {
     }
 
     this._basicRectangle({ x, y, size, rotation: 0, margin: 1 });
+  }
+
+  _drawMosaic({ x, y, size, getNeighbor }: DrawArgs): void {
+    const leftNeighbor = getNeighbor ? +getNeighbor(-1, 0) : 0;
+    const rightNeighbor = getNeighbor ? +getNeighbor(1, 0) : 0;
+    const topNeighbor = getNeighbor ? +getNeighbor(0, -1) : 0;
+    const bottomNeighbor = getNeighbor ? +getNeighbor(0, 1) : 0;
+
+    const neighborsCount = leftNeighbor + rightNeighbor + topNeighbor + bottomNeighbor;
+
+    if (neighborsCount === 0) {
+      this._basicSquare({ x, y, size, rotation: -45 / Math.PI, margin: 2 });
+      return;
+    }
+
+    if (!leftNeighbor && !rightNeighbor) {
+      this._basicSquare({ x, y, size, rotation: 0, margin: 2 });
+      return;
+    }
+
+    if (!rightNeighbor) {
+      const randomRotation = Math.random() < 0.5 ? 45 : -45;
+      this._basicSquare({ x, y, size, rotation:  randomRotation / Math.PI / 1, margin: 2 })
+      return;
+    }
+
+    if (!leftNeighbor) {
+      this._basicSquare({ x, y, size, rotation: -45 / Math.PI, margin: 3})
+      return;
+    }
+
+    if (!leftNeighbor && !rightNeighbor) {
+      this._basicSquare({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    if (!leftNeighbor && !rightNeighbor && !bottomNeighbor) {
+      this._basicSquare({ x, y, size, rotation: 0, margin: 1 });
+      return;
+    }
+
+    this._basicSquare({ x, y, size, rotation: 15 / Math.PI, margin: 1 });
   }
 
   _drawCircleZebraVertical({ x, y, size, getNeighbor }: DrawArgs): void {
