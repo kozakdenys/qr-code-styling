@@ -8,7 +8,7 @@ export interface UnknownObject {
 
 export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 export type CornerDotType = "dot" | "square" | DotType;
-export type CornerSquareType = "dot" | "square" | "extra-rounded" | DotType;
+export type CornerSquareType = "dot" | "square" | "extra-rounded" | "partially-rounded" | DotType;
 export type FileExtension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";

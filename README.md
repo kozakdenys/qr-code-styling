@@ -160,7 +160,7 @@ Property| Type                                       |Default Value|Description
 --------|--------------------------------------------|-------------|-----------------
 color   | string                                     |             |Color of Corners Square
 gradient| object                                     |             |Gradient of Corners Square
-type    | string (`'dot' 'square' 'extra-rounded' 'rounded' 'dots' 'classy' 'classy-rounded'`) |             |Style of Corners Square
+type    | string (`'dot' 'square' 'extra-rounded' 'partially-rounded' 'rounded' 'dots' 'classy' 'classy-rounded'`) |             |Style of Corners Square
 
 `options.cornersDotOptions` structure
 
