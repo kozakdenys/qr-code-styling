@@ -23,6 +23,9 @@ export default class QRCornerDot {
       case cornerDotTypes.square:
         drawFunction = this._drawSquare;
         break;
+      case cornerDotTypes.partiallyRounded:
+        drawFunction = this._drawPartiallyRounded;
+        break;
       case cornerDotTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -68,11 +71,41 @@ export default class QRCornerDot {
     });
   }
 
+  _basicPartiallyRounded(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    const dotSize = size / 7;
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element.setAttribute("clip-rule", "evenodd");
+        
+        const outerPath = `M ${x} ${y + 2.5 * dotSize}` +
+          `v ${2 * dotSize}` +
+          `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${dotSize * 2.5} ${dotSize * 2.5}` +
+          `h ${2 * dotSize}` +
+          `v 0` +
+          `h ${dotSize * 2.5}` +
+          `v ${-4.5 * dotSize}` +
+          `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${-dotSize * 2.5} ${-dotSize * 2.5}` +
+          `h ${-2 * dotSize}` +
+          `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${-dotSize * 2.5} ${dotSize * 2.5}`;
+
+        this._element.setAttribute("d", `${outerPath}`);
+      }
+    });
+  }
+
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
   }
 
   _drawSquare({ x, y, size, rotation }: DrawArgs): void {
     this._basicSquare({ x, y, size, rotation });
+  }
+
+  _drawPartiallyRounded({ x, y, size, rotation }: DrawArgs): void {
+    this._basicPartiallyRounded({ x, y, size, rotation });
   }
 }

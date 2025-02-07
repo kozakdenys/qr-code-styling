@@ -168,7 +168,7 @@ Property| Type                       |Default Value|Description
 --------|----------------------------|-------------|-----------------
 color   | string                     |             |Color of Corners Dot
 gradient| object                     |             |Gradient of Corners Dot
-type    | string (`'dot' 'square' 'rounded' 'dots' 'classy' 'classy-rounded' 'extra-rounded'`) |             |Style of Corners Dot
+type    | string (`'dot' 'square' 'partially-rounded' 'rounded' 'dots' 'classy' 'classy-rounded' 'extra-rounded'`) |             |Style of Corners Dot
 
 Gradient structure
 
