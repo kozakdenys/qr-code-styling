@@ -4,5 +4,5 @@ export default {
   dot: "dot",
   square: "square",
   extraRounded: "extra-rounded",
-  partiallyRounded: "partially-rounded"
+  inpoint: "inpoint"
 } as CornerSquareTypes;

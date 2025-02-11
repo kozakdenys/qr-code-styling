@@ -23,8 +23,8 @@ export default class QRCornerDot {
       case cornerDotTypes.square:
         drawFunction = this._drawSquare;
         break;
-      case cornerDotTypes.partiallyRounded:
-        drawFunction = this._drawPartiallyRounded;
+      case cornerDotTypes.inpoint:
+        drawFunction = this._drawInpoint;
         break;
       case cornerDotTypes.dot:
       default:
@@ -71,7 +71,7 @@ export default class QRCornerDot {
     });
   }
 
-  _basicPartiallyRounded(args: BasicFigureDrawArgs): void {
+  _basicInpoint(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
     const dotSize = size / 7;
 
@@ -105,7 +105,7 @@ export default class QRCornerDot {
     this._basicSquare({ x, y, size, rotation });
   }
 
-  _drawPartiallyRounded({ x, y, size, rotation }: DrawArgs): void {
-    this._basicPartiallyRounded({ x, y, size, rotation });
+  _drawInpoint({ x, y, size, rotation }: DrawArgs): void {
+    this._basicInpoint({ x, y, size, rotation });
   }
 }
