@@ -29,6 +29,9 @@ export default class QRCornerSquare {
       case cornerSquareTypes.inpoint:
         drawFunction = this._drawInpoint;
         break;
+      case cornerSquareTypes.outpoint:
+        drawFunction = this._drawOutpoint;
+        break;
       case cornerSquareTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -178,5 +181,9 @@ export default class QRCornerSquare {
 
   _drawInpoint({ x, y, size, rotation }: DrawArgs): void {
     this._basicInpoint({ x, y, size, rotation });
+  }
+
+  _drawOutpoint({ x, y, size, rotation }: DrawArgs): void {
+    this._basicInpoint({ x, y, size, rotation: (rotation || 0) + Math.PI });
   }
 }
