@@ -2,5 +2,7 @@ import { CornerDotTypes } from "../types";
 
 export default {
   dot: "dot",
-  square: "square"
+  square: "square",
+  inpoint: "inpoint",
+  outpoint: "outpoint",
 } as CornerDotTypes;
