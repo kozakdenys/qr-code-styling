@@ -8,5 +8,6 @@ export default {
   frame2: "frame2",
   frame3: "frame3",
   frame4: "frame4",
+  frame7: "frame7",
   frame16: "frame16"
 } as CornerSquareTypes;

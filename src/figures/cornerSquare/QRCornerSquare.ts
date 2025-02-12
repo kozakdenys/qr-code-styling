@@ -35,6 +35,9 @@ export default class QRCornerSquare {
       case cornerSquareTypes.frame4:
         drawFunction = this._frame4;
         break;
+      case cornerSquareTypes.frame7:
+          drawFunction = this._frame7;
+        break;
       case cornerSquareTypes.frame16:
         drawFunction = this._frame16;
         break;
@@ -299,6 +302,47 @@ export default class QRCornerSquare {
     });
   }
 
+  _basicFrame7(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    const radius = size / 2.2; // Outer corner radius
+    const innerMargin = size / 6; // Margin for inner cutout
+    const innerRadius = size / 3.7; // Inner corner radius
+
+    this._rotateFigure({
+        ...args,
+        draw: () => {
+            this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+            this._element.setAttribute("clip-rule", "evenodd");
+            this._element.setAttribute(
+                "d",
+                `M ${x + radius} ${y} 
+                 H ${x + size - radius} 
+                 A ${radius} ${radius} 0 0 1 ${x + size} ${y + radius} 
+                 V ${y + size - radius} 
+                 A ${radius} ${radius} 0 0 1 ${x + size - radius} ${y + size} 
+                 H ${x + radius} 
+                 A ${radius} ${radius} 0 0 1 ${x} ${y + size - radius} 
+                 V ${y + radius} 
+                 A ${radius} ${radius} 0 0 1 ${x + radius} ${y} 
+                 Z
+                 
+                 M ${x + innerMargin + innerRadius} ${y + innerMargin} 
+                 H ${x + size - innerMargin - innerRadius} 
+                 A ${innerRadius} ${innerRadius} 0 0 1 ${x + size - innerMargin} ${y + innerMargin + innerRadius} 
+                 V ${y + size - innerMargin - innerRadius} 
+                 A ${innerRadius} ${innerRadius} 0 0 1 ${x + size - innerMargin - innerRadius} ${y + size - innerMargin} 
+                 H ${x + innerMargin + innerRadius} 
+                 A ${innerRadius} ${innerRadius} 0 0 1 ${x + innerMargin} ${y + size - innerMargin - innerRadius} 
+                 V ${y + innerMargin + innerRadius} 
+                 A ${innerRadius} ${innerRadius} 0 0 1 ${x + innerMargin + innerRadius} ${y + innerMargin} 
+                 Z`
+            );
+        }
+    });
+}
+
+
+
 
   _basicFrame16(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
@@ -417,6 +461,10 @@ export default class QRCornerSquare {
 
   _frame4({ x, y, size, rotation }: DrawArgs): void {
     this._basicFrame4({ x, y, size, rotation });
+  }
+
+  _frame7({ x, y, size, rotation }: DrawArgs): void {
+    this._basicFrame7({ x, y, size, rotation });
   }
 
   _frame16({ x, y, size, rotation }: DrawArgs): void {
