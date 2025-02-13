@@ -347,7 +347,7 @@ export default class QRCornerSquare {
   _basicFrame16(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
     const squareSize = size / 8.5;
-    const squareSpacing = squareSize * 1.4;
+    const squareSpacing = squareSize * 1.22;
     const shrinkFactor = size / 45;
 
     const adjustedSize = size - shrinkFactor * 2;
@@ -364,41 +364,52 @@ export default class QRCornerSquare {
             let pathData = "";
 
             const drawSquare = (cx: number, cy: number, size: number, rotation: number) => {
-                const halfSize = size / 2;
-
-                // Calculate rotated square corners
-                const points = [
-                    { x: -halfSize, y: -halfSize },
-                    { x: halfSize, y: -halfSize },
-                    { x: halfSize, y: halfSize },
-                    { x: -halfSize, y: halfSize },
-                ].map(point => ({
-                    x: point.x * Math.cos(rotation) - point.y * Math.sin(rotation) + cx,
-                    y: point.x * Math.sin(rotation) + point.y * Math.cos(rotation) + cy,
-                }));
-
-                // Construct path data for a square
-                return `M ${points[0].x},${points[0].y} L ${points[1].x},${points[1].y} L ${points[2].x},${points[2].y} L ${points[3].x},${points[3].y} Z `;
-            };
-
+              const halfSize = size / 2;
+          
+              // Ensure rotation is within -30 to 30 degrees
+              const maxRotation = Math.PI / 6; // 30 degrees in radians
+              rotation = Math.max(-maxRotation, Math.min(maxRotation, rotation)); // Clamping rotation
+          
+              // Calculate rotated square corners
+              const points = [
+                  { x: -halfSize, y: -halfSize },
+                  { x: halfSize, y: -halfSize },
+                  { x: halfSize, y: halfSize },
+                  { x: -halfSize, y: halfSize },
+              ].map(point => ({
+                  x: point.x * Math.cos(rotation) - point.y * Math.sin(rotation) + cx,
+                  y: point.x * Math.sin(rotation) + point.y * Math.cos(rotation) + cy,
+              }));
+          
+              // Construct path data for an SVG square
+              return `M ${points[0].x},${points[0].y} 
+                      L ${points[1].x},${points[1].y} 
+                      L ${points[2].x},${points[2].y} 
+                      L ${points[3].x},${points[3].y} Z `;
+          };
+          
             const addSquares = (
-                startX: number,
-                startY: number,
-                isVertical: boolean,
-                direction: 1 | -1
-            ) => {
-                const count = Math.floor(adjustedSize / squareSpacing) - 1;
-                for (let i = 0; i < count; i++) {
-                    const cx = isVertical
-                        ? startX
-                        : startX + direction * (squareSpacing * (i + 1));
-                    const cy = isVertical
-                        ? startY + direction * (squareSpacing * (i + 1))
-                        : startY;
-                    const rotation = Math.random() * Math.PI * 2; // Random rotation in radians
-                    pathData += drawSquare(cx, cy, squareSize, rotation);
-                }
-            };
+              startX: number,
+              startY: number,
+              isVertical: boolean,
+              direction: 1 | -1
+          ) => {
+              const count = Math.floor(adjustedSize / squareSpacing) - 1;
+              for (let i = 0; i < count; i++) {
+                  const cx = isVertical
+                      ? startX
+                      : startX + direction * (squareSpacing * (i + 1));
+                  const cy = isVertical
+                      ? startY + direction * (squareSpacing * (i + 1))
+                      : startY;
+          
+                  const maxRotation = Math.PI / 6; // 30 degrees in radians
+                  const rotation = (Math.random() * maxRotation) * (Math.random() < 0.5 ? 1 : -1); // Random rotation between -30 and 30 degrees
+          
+                  pathData += drawSquare(cx, cy, squareSize, rotation);
+              }
+          };
+          
 
             // Top edge squares
             addSquares(adjustedX + squareSize / 2, adjustedY + squareSize / 2, false, 1);
@@ -421,9 +432,11 @@ export default class QRCornerSquare {
             ];
 
             for (const { cx, cy } of corners) {
-                const rotation = Math.random() * Math.PI * 2; // Random rotation in radians
-                pathData += drawSquare(cx, cy, squareSize, rotation);
-            }
+              const maxRotation = Math.PI / 6; // 30 degrees in radians
+              const rotation = (Math.random() * 2 - 1) * maxRotation; // Random value between -30° and +30°
+              pathData += drawSquare(cx, cy, squareSize, rotation);
+          }
+          
 
             // Set the 'd' attribute to the path data
             this._element.setAttribute("d", pathData);
