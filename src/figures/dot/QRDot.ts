@@ -58,23 +58,24 @@ export default class QRDot {
     this._element?.setAttribute("transform", `rotate(${(180 * rotation) / Math.PI},${cx},${cy})`);
   }
 
-  _basicDot(args: BasicFigureDrawArgs & { margin?: number; }): void {
+  _basicDot(args: BasicFigureDrawArgs & { margin?: number }): void {
     const { size, x, y, margin = 0 } = args;
 
-    // Adjust the effective radius and y-position based on margins
-    const adjustedRadius = (size - margin - margin) / 2;
+    // Ensure radius is always non-negative
+    const adjustedRadius = Math.max((size - margin * 2) / 2, 0);
     const adjustedY = y + margin;
 
     this._rotateFigure({
-      ...args,
-      draw: () => {
-        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        this._element.setAttribute("cx", String(x + size / 2)); // Center X remains unchanged
-        this._element.setAttribute("cy", String(adjustedY + adjustedRadius)); // Center Y accounts for top margin
-        this._element.setAttribute("r", String(adjustedRadius)); // Adjust radius for top and bottom margins
-      }
+        ...args,
+        draw: () => {
+            this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            this._element.setAttribute("cx", String(x + size / 2));
+            this._element.setAttribute("cy", String(adjustedY + adjustedRadius));
+            this._element.setAttribute("r", String(adjustedRadius));
+        }
     });
   }
+
 
   _basicSmallDot(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
