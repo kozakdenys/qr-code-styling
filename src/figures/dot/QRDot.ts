@@ -94,8 +94,8 @@ export default class QRDot {
   _basicSquare(args: BasicFigureDrawArgs & { margin?: number }): void {
     const { size, x, y, margin = 0 } = args;
 
-    // Adjusted size and position to account for margins
-    const adjustedSize = size - margin * 2;
+    // Ensure margin does not cause negative sizes
+    const adjustedSize = Math.max(0, size - margin * 2);
     const adjustedX = x + margin;
     const adjustedY = y + margin;
 
@@ -109,7 +109,8 @@ export default class QRDot {
         this._element.setAttribute("height", String(adjustedSize));
       }
     });
-  }
+}
+
 
 
   //if rotation === 0 - right side is rounded
