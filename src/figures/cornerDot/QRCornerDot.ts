@@ -358,33 +358,35 @@ export default class QRCornerDot {
 
   _basicBall18(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
-    const halfSize = size / 2;
-    const inset = size / 4.2;
-    const angle = 41.62;
-    const centerX = x + halfSize;
-    const centerY = y + halfSize;
+    // Increased size for a bigger image.  Adjust this multiplier as needed.
+    const enlargedSize = size * 1.6; // Example: 20% larger
+    const halfEnlargedSize = enlargedSize / 2;
+    const inset = enlargedSize / 4.3;
+    const angle = 45;
+    const centerX = x + halfEnlargedSize;
+    const centerY = y + halfEnlargedSize;
 
     const rotatePoint = (px: number, py: number, cx: number, cy: number, angle: number) => {
-      const cosAngle = Math.cos(angle);
-      const sinAngle = Math.sin(angle);
-      const dx = px - cx;
-      const dy = py - cy;
+        const cosAngle = Math.cos(angle * Math.PI / 180); // Convert angle to radians
+        const sinAngle = Math.sin(angle * Math.PI / 180); // Convert angle to radians
+        const dx = px - cx;
+        const dy = py - cy;
 
-      const newX = cosAngle * dx - sinAngle * dy + cx;
-      const newY = sinAngle * dx + cosAngle * dy + cy;
+        const newX = cosAngle * dx - sinAngle * dy + cx;
+        const newY = sinAngle * dx + cosAngle * dy + cy;
 
-      return { x: newX, y: newY };
+        return { x: newX, y: newY };
     };
 
     const points = [
-      { x: centerX, y: centerY - halfSize },
-      { x: centerX + inset, y: centerY - inset },
-      { x: centerX + halfSize, y: centerY },
-      { x: centerX + inset, y: centerY + inset },
-      { x: centerX, y: centerY + halfSize },
-      { x: centerX - inset, y: centerY + inset },
-      { x: centerX - halfSize, y: centerY },
-      { x: centerX - inset, y: centerY - inset },
+        { x: centerX, y: centerY - halfEnlargedSize },
+        { x: centerX + inset, y: centerY - inset },
+        { x: centerX + halfEnlargedSize, y: centerY },
+        { x: centerX + inset, y: centerY + inset },
+        { x: centerX, y: centerY + halfEnlargedSize },
+        { x: centerX - inset, y: centerY + inset },
+        { x: centerX - halfEnlargedSize, y: centerY },
+        { x: centerX - inset, y: centerY - inset },
     ];
 
     const rotatedPoints = points.map((point) => rotatePoint(point.x, point.y, centerX, centerY, angle));
@@ -401,13 +403,18 @@ export default class QRCornerDot {
         Z
     `;
 
-    // Create the path element
     this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
     this._element.setAttribute("d", pathData.trim());
     this._element.setAttribute("fill", "none");
     this._element.setAttribute("stroke", "black");
     this._element.setAttribute("stroke-width", "2");
-  }
+
+    // Compute center for rotation in the transform (use the original center)
+    this._element.setAttribute("transform", 
+      `translate(${-halfEnlargedSize + size/2}, ${-halfEnlargedSize + size/2})`
+    );
+ 
+}
 
   _basicBall19(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
