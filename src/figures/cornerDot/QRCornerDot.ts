@@ -359,7 +359,7 @@ export default class QRCornerDot {
   _basicBall18(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
     // Increased size for a bigger image.  Adjust this multiplier as needed.
-    const enlargedSize = size * 1.6; // Example: 20% larger
+    const enlargedSize = size * 1.4;
     const halfEnlargedSize = enlargedSize / 2;
     const inset = enlargedSize / 4.3;
     const angle = 45;
@@ -416,65 +416,83 @@ export default class QRCornerDot {
  
 }
 
-  _basicBall19(args: BasicFigureDrawArgs): void {
-    const { size, x, y } = args;
+_basicBall19(args: BasicFigureDrawArgs): void {
+  const { size, x, y } = args;
 
-    this._rotateFigure({
-      ...args,
-      draw: () => {
-        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+  this._rotateFigure({
+    ...args,
+    draw: () => {
+      this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+      
+      // Define a scale factor.
+      const scaleFactor = 2;
+      // The "enlarged size" if we were drawing at full scale.
+      const enlargedSize = size * scaleFactor;
+      // We'll still use the original size for internal calculations.
+      const squareSize = size / 3.7;
+      const spacing = size / 2.7;
+      const squareSizeBig = size / 1.5;
 
-        const squareSize = size / 4;
-        const spacing = size / 3;
-        const squareSizeBig = size / 1.8;
+      let pathData = "";
 
-        let pathData = "";
+      const drawRotatedSquare = (cx: number, cy: number, rotation: number) => {
+        const halfSize = squareSize / 2.5;
+        // Convert rotation to radians.
+        const rad = rotation * Math.PI / 180;
+        const cos = Math.cos(rad);
+        const sin = Math.sin(rad);
+        const points = [
+          { x: -halfSize, y: -halfSize },
+          { x: halfSize, y: -halfSize },
+          { x: halfSize, y: halfSize },
+          { x: -halfSize, y: halfSize },
+        ].map(({ x, y }) => ({
+          x: cx + x * cos - y * sin,
+          y: cy + x * sin + y * cos,
+        }));
+        return `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')} Z `;
+      };
 
-        const drawRotatedSquare = (cx: number, cy: number, rotation: number) => {
-          const halfSize = squareSize / 2.5;
-          const cos = Math.cos(rotation);
-          const sin = Math.sin(rotation);
-          const points = [
-            { x: -halfSize, y: -halfSize },
-            { x: halfSize, y: -halfSize },
-            { x: halfSize, y: halfSize },
-            { x: -halfSize, y: halfSize },
-          ].map(({ x, y }) => ({
-            x: cx + x * cos - y * sin,
-            y: cy + x * sin + y * cos,
-          }));
-          return `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')} Z `;
-        };
+      for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+          const squareX = x + col * spacing;
+          const squareY = y + row * spacing;
 
-        for (let row = 0; row < 3; row++) {
-          for (let col = 0; col < 3; col++) {
-            const squareX = x + col * spacing;
-            const squareY = y + row * spacing;
+          if (row === 1 && col === 1) {
+            const centerOffset = (squareSizeBig - squareSize) / 2;
+            const centeredX = squareX - centerOffset;
+            const centeredY = squareY - centerOffset;
 
-            if (row === 1 && col === 1) {
-              const centerOffset = (squareSizeBig - squareSize) / 2;
-              const centeredX = squareX - centerOffset;
-              const centeredY = squareY - centerOffset;
-
-              pathData += `M${centeredX},${centeredY} `;
-              pathData += `h${squareSizeBig} `;
-              pathData += `v${squareSizeBig} `;
-              pathData += `h-${squareSizeBig} `;
-              pathData += `v-${squareSizeBig} `;
-            } else {
-              const rotationAngle = Math.random() * 360 - 180;
-              pathData += drawRotatedSquare(squareX + squareSize / 2, squareY + squareSize / 2, rotationAngle);
-            }
+            pathData += `M${centeredX},${centeredY} `;
+            pathData += `h${squareSizeBig} `;
+            pathData += `v${squareSizeBig} `;
+            pathData += `h-${squareSizeBig} `;
+            pathData += `v-${squareSizeBig} `;
+          } else {
+            const rotationAngle = Math.random() * 360 - 180;
+            pathData += drawRotatedSquare(squareX + squareSize / 2, squareY + squareSize / 2, rotationAngle);
           }
         }
-
-        this._element.setAttribute("d", pathData);
-        this._element.setAttribute("fill", "none");
-        this._element.setAttribute("stroke", "black");
-        this._element.setAttribute("stroke-width", "2");
       }
-    });
-  }
+
+      this._element.setAttribute("d", pathData);
+      this._element.setAttribute("fill", "none");
+      this._element.setAttribute("stroke", "black");
+      this._element.setAttribute("stroke-width", "2");
+
+      // Calculate the offset needed to center the enlarged drawing.
+      // The original center is at size/2, but the enlarged drawing's center is at enlargedSize/2.
+      // So, the translation offset is:
+      const translateOffset = (size - enlargedSize) / 2; // typically a negative number
+
+      // Apply translation then scaling.
+      this._element.setAttribute("transform", 
+        `translate(${translateOffset}, ${translateOffset}) scale(${scaleFactor})`
+      );
+    }
+  });
+}
+
 
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
