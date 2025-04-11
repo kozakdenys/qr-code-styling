@@ -160,7 +160,7 @@ Property| Type                                       |Default Value|Description
 --------|--------------------------------------------|-------------|-----------------
 color   | string                                     |             |Color of Corners Square
 gradient| object                                     |             |Gradient of Corners Square
-type    | string (`'dot' 'square' 'extra-rounded' 'rounded' 'dots' 'classy' 'classy-rounded'`) |             |Style of Corners Square
+type    | string (`'dot' 'square' 'extra-rounded' 'inpoint' 'outpoint' 'rounded' 'dots' 'classy' 'classy-rounded'`) |             |Style of Corners Square
 
 `options.cornersDotOptions` structure
 
@@ -168,7 +168,7 @@ Property| Type                       |Default Value|Description
 --------|----------------------------|-------------|-----------------
 color   | string                     |             |Color of Corners Dot
 gradient| object                     |             |Gradient of Corners Dot
-type    | string (`'dot' 'square' 'rounded' 'dots' 'classy' 'classy-rounded' 'extra-rounded'`) |             |Style of Corners Dot
+type    | string (`'dot' 'square' 'inpoint' 'outpoint' 'rounded' 'dots' 'classy' 'classy-rounded' 'extra-rounded'`) |             |Style of Corners Dot
 
 Gradient structure
 

@@ -26,6 +26,12 @@ export default class QRCornerSquare {
       case cornerSquareTypes.extraRounded:
         drawFunction = this._drawExtraRounded;
         break;
+      case cornerSquareTypes.inpoint:
+        drawFunction = this._drawInpoint;
+        break;
+      case cornerSquareTypes.outpoint:
+        drawFunction = this._drawOutpoint;
+        break;
       case cornerSquareTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -124,6 +130,43 @@ export default class QRCornerSquare {
     });
   }
 
+  _basicInpoint(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    const dotSize = size / 7;
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+        this._element.setAttribute("clip-rule", "evenodd");
+        
+        const outerPath = `M ${x} ${y + 2.5 * dotSize}` +
+          `v ${2 * dotSize}` +
+          `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${dotSize * 2.5} ${dotSize * 2.5}` +
+          `h ${2 * dotSize}` +
+          `v 0` +
+          `h ${dotSize * 2.5}` +
+          `v ${-4.5 * dotSize}` +
+          `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${-dotSize * 2.5} ${-dotSize * 2.5}` +
+          `h ${-2 * dotSize}` +
+          `a ${2.5 * dotSize} ${2.5 * dotSize}, 0, 0, 0, ${-dotSize * 2.5} ${dotSize * 2.5}`;
+
+        const innerPath = `M ${x + 2.5 * dotSize} ${y + dotSize}` +
+          `h ${2 * dotSize}` +
+          `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 1, ${dotSize * 1.5} ${dotSize * 1.5}` +
+          `v ${3.5 * dotSize}` +
+          `h ${-dotSize * 1.5}` +
+          `v 0` +
+          `h ${-2 * dotSize}` +
+          `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 1, ${-dotSize * 1.5} ${-dotSize * 1.5}` +
+          `v ${-2 * dotSize}` +
+          `a ${1.5 * dotSize} ${1.5 * dotSize}, 0, 0, 1, ${dotSize * 1.5} ${-dotSize * 1.5}`;
+
+        this._element.setAttribute("d", `${outerPath} ${innerPath}`);
+      }
+    });
+  }
+
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
   }
@@ -134,5 +177,13 @@ export default class QRCornerSquare {
 
   _drawExtraRounded({ x, y, size, rotation }: DrawArgs): void {
     this._basicExtraRounded({ x, y, size, rotation });
+  }
+
+  _drawInpoint({ x, y, size, rotation }: DrawArgs): void {
+    this._basicInpoint({ x, y, size, rotation });
+  }
+
+  _drawOutpoint({ x, y, size, rotation }: DrawArgs): void {
+    this._basicInpoint({ x, y, size, rotation: (rotation || 0) + Math.PI });
   }
 }
