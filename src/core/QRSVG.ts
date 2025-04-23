@@ -481,6 +481,7 @@ export default class QRSVG {
           }
           resolve();
         };
+        image.onerror = reject;
         image.src = options.image;
       }
     });
