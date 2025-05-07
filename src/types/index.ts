@@ -13,6 +13,7 @@ export type FileExtension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
 export type ShapeType = "square" | "circle";
+export type Multibyte = "default" | "UTF-8";
 
 export type Window = DOMWindow;
 
@@ -94,6 +95,7 @@ export type TypeNumber =
 
 export type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 export type Mode = "Numeric" | "Alphanumeric" | "Byte" | "Kanji";
+export type Multibyte = "default" | "UTF-8"
 export interface QRCode {
   addData(data: string, mode?: Mode): void;
   make(): void;
