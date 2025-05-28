@@ -276,7 +276,7 @@ You can use this on a node server by passing through the node-canvas or jsdom ob
 Calling `getRawData` in node will return a Buffer instead of a Blob.
 
 ```js
-const { QRCodeStyling } = require("qr-code-styling/lib/qr-code-styling.common.js");
+const { QRCodeStyling } = require("qr-code-styling-node/lib/qr-code-styling.common.js");
 const nodeCanvas = require("canvas");
 const { JSDOM } = require("jsdom");
 const fs = require("fs");
