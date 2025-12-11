@@ -541,7 +541,7 @@ export default class QRSVG {
     rect.setAttribute("y", String(y));
     rect.setAttribute("height", String(height));
     rect.setAttribute("width", String(width));
-    rect.setAttribute("clip-path", `url('#clip-path-${name}')`);
+    rect.setAttribute("clip-path", `url(#clip-path-${name})`);
 
     if (options) {
       let gradient: SVGElement;
@@ -603,7 +603,7 @@ export default class QRSVG {
         gradient.appendChild(stop);
       });
 
-      rect.setAttribute("fill", `url('#${name}')`);
+      rect.setAttribute("fill", `url(#${name})`);
       this._defs.appendChild(gradient);
     } else if (color) {
       rect.setAttribute("fill", color);
