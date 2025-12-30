@@ -43,6 +43,7 @@ export default class QRSVG {
   _image?: HTMLImageElement | Image;
   _imageUri?: string;
   _instanceId: number;
+  _rawSvg: boolean;
 
   static instanceCount = 0;
 
@@ -62,6 +63,7 @@ export default class QRSVG {
     this._imageUri = options.image;
     this._instanceId = QRSVG.instanceCount++;
     this._options = options;
+    this._rawSvg = options.imageOptions.rawSvg ?? false
   }
 
   get width(): number {
@@ -91,19 +93,20 @@ export default class QRSVG {
     this._qr = qr;
 
     if (this._options.image) {
-      //We need it to get image size
-      await this.loadImage();
-      if (!this._image) return;
+      if (!this._options.imageOptions.rawSvg) {
+        // We need it to get image size unless it's a raw SVG string.
+        await this.loadImage();
+        if (!this._image) return;
+      }
       const { imageOptions, qrOptions } = this._options;
       const coverLevel = imageOptions.imageSize * errorCorrectionPercents[qrOptions.errorCorrectionLevel];
       const maxHiddenDots = Math.floor(coverLevel * count * count);
-
       drawImageSize = calculateImageSize({
-        originalWidth: this._image.width,
-        originalHeight: this._image.height,
-        maxHiddenDots,
-        maxHiddenAxisDots: count - 14,
-        dotSize
+          originalWidth: imageOptions.rawSvg ? imageOptions.svgAspectRatio ?? 1 : (this._image?.width as number),
+          originalHeight:imageOptions.rawSvg ? 1 : (this._image?.height as number),
+          maxHiddenDots,
+          maxHiddenAxisDots: count - 14,
+          dotSize
       });
     }
 
@@ -506,8 +509,14 @@ export default class QRSVG {
     const dh = height - options.imageOptions.margin * 2;
 
     const image = this._window.document.createElementNS("http://www.w3.org/2000/svg", "image");
-    image.setAttribute("href", this._imageUri || "");
-    image.setAttribute("xlink:href", this._imageUri || "");
+    if (options.imageOptions.rawSvg) {
+        const encoded = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(options.image as string)}`;
+        image.setAttribute("href", encoded);
+        image.setAttribute("xlink:href", encoded);
+    } else {
+        image.setAttribute("href", this._imageUri || "");
+        image.setAttribute("xlink:href", this._imageUri || "");
+    }
     image.setAttribute("x", String(dx));
     image.setAttribute("y", String(dy));
     image.setAttribute("width", `${dw}px`);

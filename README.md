@@ -107,7 +107,7 @@ height                 | number                     |`300`    |Size of canvas
 type                   | string (`'canvas' 'svg'`)  |`canvas` |The type of the element that will be rendered
 shape                  | string (`'square' 'circle')|`square` |The shape of the qr-code, circle shape adds rundom extra dots arround
 data                   | string                     |         |The data will be encoded to the QR code
-image                  | string                     |         |The image will be copied to the center of the QR code
+image                  | string                     |         |The image will be copied to the center of the QR code. It should be a URL to an image file or a raw SVG string if using `rawSvg`.
 margin                 | number                     |`0`      |Margin around canvas
 qrOptions              | object                     |         |Options will be passed to `qrcode-generator` lib
 imageOptions           | object                     |         |Specific image options, details see below
@@ -133,8 +133,10 @@ Property          |Type                                   | Default Value |Descr
 hideBackgroundDots|boolean                                | `true`        |Hide all dots covered by the image
 imageSize         |number                                 | `0.4`         |Coefficient of the image size. Not recommended to use ove 0.5. Lower is better
 margin            |number                                 | `0`           |Margin of the image in px
-crossOrigin       |string(`'anonymous' 'use-credentials'`)|               |Set "anonymous" if you want to download QR code from other origins.
-saveAsBlob        |boolean                                | `true`        |Saves image as base64 blob in svg type, see bellow
+crossOrigin       |string(`'anonymous' 'use-credentials'`)|               |Set "anonymous" if you want to download QR code from other origins. Ignored if `rawSvg` is `true`.
+saveAsBlob        |boolean                                | `true`        |Saves image as base64 blob in SVG type. See below. Ignored if `rawSvg` is `true`.
+rawSvg            |boolean                                | `false`       |If true, the `image` property must be a raw SVG string. `saveAsBlob` is ignored.
+svgAspectRatio    |number                                 | `1`           |When using raw SVG, provide the aspect ratio of the SVG (width/height) in order to correctly calculate which dots will be covered.
 
 When QR type is svg, the image may not load in certain applications as it is saved as a url, and some svg applications will not render url images for security reasons. Setting `saveAsBlob` to true will instead save the image as a blob, allowing it to render correctly in more places, but will also increase the file size.
 

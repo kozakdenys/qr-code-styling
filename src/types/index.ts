@@ -129,6 +129,8 @@ export type Options = {
     imageSize?: number;
     crossOrigin?: string;
     margin?: number;
+    rawSvg?: boolean;
+    svgAspectRatio?: number
   };
   dotsOptions?: {
     type?: DotType;

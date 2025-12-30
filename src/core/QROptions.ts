@@ -22,6 +22,8 @@ export interface RequiredOptions extends Options {
     imageSize: number;
     crossOrigin?: string;
     margin: number;
+    rawSvg?: boolean,
+    svgAspectRatio?: number
   };
   dotsOptions: {
     type: DotType;
@@ -53,7 +55,9 @@ const defaultOptions: RequiredOptions = {
     hideBackgroundDots: true,
     imageSize: 0.4,
     crossOrigin: undefined,
-    margin: 0
+    margin: 0,
+    rawSvg: false,
+    svgAspectRatio: undefined
   },
   dotsOptions: {
     type: "square",
