@@ -113,6 +113,7 @@ export type Options = {
   shape?: ShapeType;
   width?: number;
   height?: number;
+  fixedSize?: boolean;
   margin?: number;
   data?: string;
   image?: string;

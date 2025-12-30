@@ -51,8 +51,10 @@ export default class QRSVG {
   constructor(options: RequiredOptions, window: Window) {
     this._window = window;
     this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this._element.setAttribute("width", String(options.width));
-    this._element.setAttribute("height", String(options.height));
+    if (options.fixedSize) {
+      this._element.setAttribute("width", String(options.width));
+      this._element.setAttribute("height", String(options.height));
+    }
     this._element.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
     if (!options.dotsOptions.roundSize) {
       this._element.setAttribute("shape-rendering", "crispEdges");

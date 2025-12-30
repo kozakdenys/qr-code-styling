@@ -108,6 +108,7 @@ type                   | string (`'canvas' 'svg'`)  |`canvas` |The type of the e
 shape                  | string (`'square' 'circle')|`square` |The shape of the qr-code, circle shape adds rundom extra dots arround
 data                   | string                     |         |The data will be encoded to the QR code
 image                  | string                     |         |The image will be copied to the center of the QR code. It should be a URL to an image file or a raw SVG string if using `rawSvg`.
+fixedSize              | boolean                    |`true`   |Whether to add explicit width and height to the QR code SVG. Set to `false` to let the QR codes fit their container.
 margin                 | number                     |`0`      |Margin around canvas
 qrOptions              | object                     |         |Options will be passed to `qrcode-generator` lib
 imageOptions           | object                     |         |Specific image options, details see below
