@@ -1,6 +1,3 @@
-import { DOMWindow, JSDOM } from "jsdom";
-import nodeCanvas  from "canvas";
-
 export interface UnknownObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
@@ -14,7 +11,44 @@ export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
 export type ShapeType = "square" | "circle";
 
-export type Window = DOMWindow;
+// Minimal window-like interface — compatible with both browser Window and jsdom DOMWindow
+export interface BrowserWindow {
+  document: Document;
+  XMLSerializer: typeof XMLSerializer;
+  Image: { new(): HTMLImageElement };
+  XMLHttpRequest: typeof XMLHttpRequest;
+  FileReader: typeof FileReader;
+}
+
+export type Window = BrowserWindow;
+
+// Minimal node-canvas interfaces — avoids importing the "canvas" package in browser bundles
+export interface NodeCanvasImage {
+  width: number;
+  height: number;
+}
+
+export interface NodeCanvasRenderingContext2D {
+  drawImage(image: NodeCanvasImage, dx: number, dy: number): void;
+}
+
+export interface NodeCanvasElement {
+  width: number;
+  height: number;
+  getContext(contextId: "2d"): NodeCanvasRenderingContext2D | null;
+  toBuffer(mimeType: string): Buffer;
+  toDataURL(type?: string): string;
+}
+
+export interface NodeCanvasFactory {
+  createCanvas(width: number, height: number): NodeCanvasElement;
+  loadImage(src: string): Promise<NodeCanvasImage>;
+}
+
+// Minimal jsdom constructor interface — avoids importing "jsdom" in browser bundles
+export interface JSDOMConstructor {
+  new(html: string, options?: { resources?: string }): { window: BrowserWindow };
+}
 
 export type Gradient = {
   type: GradientType;
@@ -116,8 +150,8 @@ export type Options = {
   margin?: number;
   data?: string;
   image?: string;
-  nodeCanvas?: typeof nodeCanvas;
-  jsdom?: typeof JSDOM;
+  nodeCanvas?: NodeCanvasFactory;
+  jsdom?: JSDOMConstructor;
   qrOptions?: {
     typeNumber?: TypeNumber;
     mode?: Mode;
