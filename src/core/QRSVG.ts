@@ -7,8 +7,7 @@ import QRCornerDot, { availableCornerDotTypes } from "../figures/cornerDot/QRCor
 import { RequiredOptions } from "./QROptions";
 import gradientTypes from "../constants/gradientTypes";
 import shapeTypes from "../constants/shapeTypes";
-import { DotType, QRCode, FilterFunction, Gradient, Window } from "../types";
-import { Image } from "canvas";
+import { DotType, QRCode, FilterFunction, Gradient, Window, NodeCanvasImage } from "../types";
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -40,7 +39,7 @@ export default class QRSVG {
   _cornersDotClipPath?: SVGElement;
   _options: RequiredOptions;
   _qr?: QRCode;
-  _image?: HTMLImageElement | Image;
+  _image?: HTMLImageElement | NodeCanvasImage;
   _imageUri?: string;
   _instanceId: number;
 
@@ -457,7 +456,7 @@ export default class QRSVG {
       if (options.nodeCanvas?.loadImage) {
         options.nodeCanvas
           .loadImage(options.image)
-          .then((image: Image) => {
+          .then((image) => {
             this._image = image;
             if (this._options.imageOptions.saveAsBlob) {
               const canvas = options.nodeCanvas?.createCanvas( this._image.width,  this._image.height);

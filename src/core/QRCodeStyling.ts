@@ -6,10 +6,9 @@ import drawTypes from "../constants/drawTypes";
 
 import defaultOptions, { RequiredOptions } from "./QROptions";
 import sanitizeOptions from "../tools/sanitizeOptions";
-import { FileExtension, QRCode, Options, DownloadOptions, ExtensionFunction, Window } from "../types";
+import { FileExtension, QRCode, Options, DownloadOptions, ExtensionFunction, Window, NodeCanvasElement } from "../types";
 import qrcode from "qrcode-generator";
 import getMimeType from "../tools/getMimeType";
-import { Canvas as NodeCanvas, Image } from "canvas";
 
 declare const window: Window;
 
@@ -18,7 +17,7 @@ export default class QRCodeStyling {
   _window: Window;
   _container?: HTMLElement;
   _domCanvas?: HTMLCanvasElement;
-  _nodeCanvas?: NodeCanvas;
+  _nodeCanvas?: NodeCanvasElement;
   _svg?: SVGElement;
   _qr?: QRCode;
   _extension?: ExtensionFunction;
@@ -79,7 +78,7 @@ export default class QRCodeStyling {
       const image64 = `data:${getMimeType('svg')};base64,${svg64}`;
 
       if (this._options.nodeCanvas?.loadImage) {
-        return this._options.nodeCanvas.loadImage(image64).then((image: Image) => {
+        return this._options.nodeCanvas.loadImage(image64).then((image) => {
           // fix blurry svg
           image.width = this._options.width;
           image.height = this._options.height;
