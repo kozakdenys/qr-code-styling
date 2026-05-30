@@ -6,11 +6,13 @@ export default class QRDot {
   _svg: SVGElement;
   _type: DotType;
   _window: Window;
+  _dotScale?: number;
 
-  constructor({ svg, type, window }: { svg: SVGElement; type: DotType; window: Window }) {
+  constructor({ svg, type, window, dotScale }: { svg: SVGElement; type: DotType; window: Window; dotScale?: number }) {
     this._svg = svg;
     this._type = type;
     this._window = window;
+    this._dotScale = dotScale;
   }
 
   draw(x: number, y: number, size: number, getNeighbor: GetNeighbor): void {
@@ -38,7 +40,7 @@ export default class QRDot {
         drawFunction = this._drawSquare;
     }
 
-    drawFunction.call(this, { x, y, size, getNeighbor });
+    drawFunction.call(this, { x, y, size, getNeighbor, dotScale: this._dotScale });
   }
 
   _rotateFigure({ x, y, size, rotation = 0, draw }: RotateFigureArgs): void {
@@ -161,8 +163,26 @@ export default class QRDot {
     this._basicDot({ x, y, size, rotation: 0 });
   }
 
-  _drawSquare({ x, y, size }: DrawArgs): void {
-    this._basicSquare({ x, y, size, rotation: 0 });
+  _drawSquare({ x, y, size, dotScale }: DrawArgs): void {
+    if (dotScale && dotScale !== 1) {
+      const scaledSize = size * dotScale;
+      const offset = (size - scaledSize) / 2;
+      this._rotateFigure({
+        x: x + offset,
+        y: y + offset,
+        size: scaledSize,
+        rotation: 0,
+        draw: () => {
+          this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          this._element.setAttribute("x", String(x + offset));
+          this._element.setAttribute("y", String(y + offset));
+          this._element.setAttribute("width", String(scaledSize));
+          this._element.setAttribute("height", String(scaledSize));
+        }
+      });
+    } else {
+      this._basicSquare({ x, y, size, rotation: 0 });
+    }
   }
 
   _drawRounded({ x, y, size, getNeighbor }: DrawArgs): void {

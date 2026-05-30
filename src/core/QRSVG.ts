@@ -199,7 +199,8 @@ export default class QRSVG {
     const dot = new QRDot({
       svg: this._element,
       type: options.dotsOptions.type,
-      window: this._window
+      window: this._window,
+      dotScale: options.dotsOptions.dotScale
     });
 
     this._dotsClipPath = this._window.document.createElementNS("http://www.w3.org/2000/svg", "clipPath");

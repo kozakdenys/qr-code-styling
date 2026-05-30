@@ -135,6 +135,7 @@ export type Options = {
     color?: string;
     gradient?: Gradient;
     roundSize?: boolean;
+    dotScale?: number;
   };
   cornersSquareOptions?: {
     type?: CornerSquareType;
@@ -166,6 +167,7 @@ export type DrawArgs = {
   size: number;
   rotation?: number;
   getNeighbor?: GetNeighbor;
+  dotScale?: number;
 };
 
 export type BasicFigureDrawArgs = {
