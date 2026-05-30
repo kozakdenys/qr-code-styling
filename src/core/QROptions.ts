@@ -28,6 +28,7 @@ export interface RequiredOptions extends Options {
     color: string;
     gradient?: Gradient;
     roundSize?: boolean;
+    dotScale?: number;
   };
   backgroundOptions: {
     round: number;
@@ -59,6 +60,7 @@ const defaultOptions: RequiredOptions = {
     type: "square",
     color: "#000",
     roundSize: true,
+    dotScale: 1,
   },
   backgroundOptions: {
     round: 0,
