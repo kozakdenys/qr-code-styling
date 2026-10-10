@@ -244,7 +244,8 @@ export default class QRSVG {
     }
 
     if (options.shape === shapeTypes.circle) {
-      const additionalDots = this._roundSize((minSize / dotSize - count) / 2);
+      // Matrix dimensions and indexes must be integers even when dot sizes are fractional.
+      const additionalDots = Math.floor((minSize / dotSize - count) / 2);
       const fakeCount = count + additionalDots * 2;
       const xFakeBeginning = xBeginning - additionalDots * dotSize;
       const yFakeBeginning = yBeginning - additionalDots * dotSize;
