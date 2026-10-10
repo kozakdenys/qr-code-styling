@@ -130,6 +130,11 @@ export default class QRCodeStyling {
     this._qr.addData(this._options.data, this._options.qrOptions.mode || getMode(this._options.data));
     this._qr.make();
 
+    // Raster exports must be regenerated even when only the SVG preview is updated.
+    this._domCanvas = undefined;
+    this._nodeCanvas = undefined;
+    this._canvasDrawingPromise = undefined;
+
     if (this._options.type === drawTypes.canvas) {
       this._setupCanvas();
     } else {
